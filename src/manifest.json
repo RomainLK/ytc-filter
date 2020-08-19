@@ -11,6 +11,10 @@
     "default_title": "vchatter",
     "default_popup": "popup/popup.html"
   },
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
   "options_ui": {
     "page": "options/options.html",
     "chrome_style": true
