@@ -1,0 +1,30 @@
+{
+  "name": "vchatter",
+  "description": "When Youtube chat is too fast",
+  "version": "1.0.0",
+  "manifest_version": 2,
+  "icons": {
+    "48": "icons/icon_48.png",
+    "128": "icons/icon_128.png"
+  },
+  "browser_action": {
+    "default_title": "vchatter",
+    "default_popup": "popup/popup.html"
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "chrome_style": true
+  },
+  "content_scripts": [
+    {
+      "run_at": "document_start",
+      "matches": ["https://www.youtube.com/live_chat*"],
+      "all_frames": true,
+      "css": ["content-style.css"],
+      "js": ["content.js"]
+    }
+  ],
+  "permissions": [
+    "storage"
+  ]
+}

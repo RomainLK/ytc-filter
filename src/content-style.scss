@@ -1,0 +1,79 @@
+$dark-bg: #181818;
+$light-bg: #fff;
+$grey-color: #7e7e7e;
+$primary: rgb(50, 146, 255);
+$rounding: 0.5rem;
+
+html[dark] #vchatter {
+  button {
+    background-color: $dark-bg;
+  }
+
+  .vc-container {
+    color: $light-bg;
+    background-color: $dark-bg;
+  }
+
+  .vc-toolbar {
+    background-color: $dark-bg;
+  }
+}
+
+#vchatter {
+  
+  button {
+    cursor: pointer;
+    background-color: $light-bg;
+    color: $primary;
+    border-radius: $rounding;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    border: 2px solid $primary;
+    outline: none;
+  }
+  input {
+    border-radius: $rounding;
+    outline: none;
+  }
+  .vc-container {
+    height: 100%;
+    color: $dark-bg;
+    background-color: $light-bg;
+    font-size: 1.3rem;
+  }
+  .vc-toolbar {
+    display: flex;
+    background-color: $light-bg;
+    justify-content: space-between;
+  }
+
+  .vc-title {
+    font-weight:  500;
+    font-size: 1.5rem;
+  }
+  
+  .vc-options {
+    padding: 2rem 1rem;
+  }
+
+  .vc-content {
+    padding: 1rem;
+    max-height: 25rem;
+    overflow-y: scroll;
+  }
+  .vc-message-item {
+    margin-top: 0.5rem;
+
+    .vc-timestamp {
+      font-size: 1rem;
+      color: $grey-color;
+    }
+    .vc-author {
+      margin-left: 1rem;
+      color: $grey-color;
+    }
+    .vc-message {
+      margin-left: 1rem;
+    }
+  }
+}
