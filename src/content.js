@@ -1,4 +1,4 @@
-import { browser } from 'webextension-polyfill'
+
 import Vchatter from '@/components/vchatter'
 import Vue from 'vue'
 const vchatter = new Vue({

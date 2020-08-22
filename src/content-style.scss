@@ -31,7 +31,7 @@ html[dark] #vchatter {
     border: 2px solid $primary;
     outline: none;
   }
-  input {
+  input, select {
     border-radius: $rounding;
     outline: none;
   }
@@ -53,13 +53,21 @@ html[dark] #vchatter {
   }
   
   .vc-options {
-    padding: 2rem 1rem;
+    padding: 2rem 1rem 0rem 1rem;
+  }
+  .vc-options-item {
+    padding: 0.5rem
   }
 
   .vc-content {
     padding: 1rem;
     max-height: 25rem;
     overflow-y: scroll;
+  }
+  .vc-filter-list {
+    max-height: 10rem;
+    overflow-y: scroll;
+    list-style-type: none;
   }
   .vc-message-item {
     margin-top: 0.5rem;

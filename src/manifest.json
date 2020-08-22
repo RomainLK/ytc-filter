@@ -1,7 +1,7 @@
 {
-  "name": "vchatter",
+  "name": "VChatter",
   "description": "When Youtube chat is too fast",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "manifest_version": 2,
   "icons": {
     "48": "icons/icon_48.png",
