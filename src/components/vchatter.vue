@@ -1,21 +1,12 @@
 <template>
   <div id="vchatter">
     <div class="vc-toolbar">
-      <button
-        type="button"
-        @click="displayVchatter = !displayVchatter"
-      >{{ displayVchatter ? 'Hide VChatter' : 'Show VChatter' }}</button>
+      <button type="button" @click="displayVchatter = !displayVchatter">{{ displayVchatter ? 'Hide VChatter' : 'Show VChatter' }}</button>
       <div v-show="displayVchatter">
-        <button
-          type="button"
-          @click="displayFilters = !displayFilters"
-        >{{ displayFilters ? 'Hide filters' : 'Show filters' }}</button>
+        <button type="button" @click="displayFilters = !displayFilters">{{ displayFilters ? 'Hide filters' : 'Show filters' }}</button>
       </div>
       <div v-show="displayVchatter">
-        <button
-          type="button"
-          @click="displayOptions = !displayOptions"
-        >{{ displayOptions ? 'Hide options' : 'Show options' }}</button>
+        <button type="button" @click="displayOptions = !displayOptions">{{ displayOptions ? 'Hide options' : 'Show options' }}</button>
       </div>
     </div>
     <div v-show="displayVchatter" class="vc-container">
@@ -35,22 +26,17 @@
           </div>
           <div class="vc-options-item">
             <label for="filter">Case sensitive:</label>
-            <input
-              id="case-sensitive"
-              type="checkbox"
-              v-model="caseSensitive"
-              :disabled="filterType === 'regex'"
-            />
+            <input id="case-sensitive" type="checkbox" v-model="caseSensitive" :disabled="filterType === 'regex'" />
             <button type="submit" @click.prevent="addFilter">Add</button>
           </div>
         </form>
         <div class="vc-title">Current filter:</div>
         <ul class="vc-filter-list">
-          <li class="vc-filter-item" v-for="(filter, index) in filters" :key="'f'+index">
+          <li class="vc-filter-item" v-for="(filter, index) in filters" :key="'f' + index">
             <span v-if="!filter.regex && filter.caseSensitive">(Case sensitive)</span>
-            <span v-if="filter.author">Author: {{filter.author}}</span>
-            <span v-else-if="filter.msgIncludes">Text includes: {{filter.msgIncludes}}</span>
-            <span v-else-if="filter.regex">Regex: {{filter.regex}}</span>
+            <span v-if="filter.author">Author: {{ filter.author }}</span>
+            <span v-else-if="filter.msgIncludes">Text includes: {{ filter.msgIncludes }}</span>
+            <span v-else-if="filter.regex">Regex: {{ filter.regex }}</span>
             <button @click="removeFilter(filter)">X</button>
           </li>
         </ul>
@@ -65,20 +51,13 @@
         <div class="vc-options-item">
           <button type="button" @click="clearMessages">Clear filtered chat</button>
         </div>
-        <div
-          class="vc-options-item"
-        >In order for VChatter to work, your Livechat should be autoscrolling
-         and timestamps should be displayed</div>
+        <div class="vc-options-item">In order for VChatter to work, your Livechat should be autoscrolling and timestamps should be displayed</div>
       </div>
       <div class="vc-content" ref="content">
-        <div
-          class="vc-message-item"
-          v-for="msg in messages"
-          :key="msg.timestamp +  msg.author + msg.message"
-        >
-          <span class="vc-timestamp">{{msg.timestamp}}</span>
-          <span class="vc-author">{{msg.author}}</span>
-          <span class="vc-message">{{msg.message}}</span>
+        <div class="vc-message-item" v-for="msg in messages" :key="msg.timestamp + msg.author + msg.message">
+          <span class="vc-timestamp">{{ msg.timestamp }}</span>
+          <span class="vc-author">{{ msg.author }}</span>
+          <span class="vc-message">{{ msg.message }}</span>
         </div>
       </div>
     </div>
@@ -88,7 +67,7 @@
 import { browser } from 'webextension-polyfill'
 import { ChatObserver } from '@/utils/chat-observer'
 import { getVideoId, getChannelId } from '@/utils/information-extractor'
-import Vue from 'vue'
+
 import cache from 'webext-storage-cache'
 import { sha1 } from 'crypto-hash'
 import RegexParser from 'regex-parser'
@@ -127,7 +106,7 @@ export default {
     }
   },
   beforeDestroy() {
-    this.observer?.clear()
+    this.observer.clear()
   },
   watch: {
     options: {

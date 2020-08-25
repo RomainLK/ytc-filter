@@ -1,3 +1,7 @@
+# 1.1.2
+
+Code cleaning
+
 # 1.1.1
 
 Bugfix:

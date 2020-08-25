@@ -3,5 +3,8 @@ export const getVideoId = () => {
 }
 
 export const getChannelId = () => {
-  return window.parent.top.document.querySelector('ytd-channel-name .yt-simple-endpoint').href.split('/').pop()
+  return window.parent.top.document
+    .querySelector('ytd-channel-name .yt-simple-endpoint')
+    .href.split('/')
+    .pop()
 }

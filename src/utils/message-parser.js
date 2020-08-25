@@ -12,18 +12,17 @@ const getBackgroundColor = (el, opacity) => {
   }
 }
 
-const parseCommonElements = async (el) => {
+const parseCommonElements = async el => {
   const author = el.querySelector('#author-name')?.textContent ?? undefined
   const authorType = el.getAttribute('author-type') ?? undefined
-  const avatorImage = el.querySelector('#img') 
-  const avatarUrl =
-    (avatorImage && (await getImageSourceAsync(avatorImage))) ?? undefined
+  const avatorImage = el.querySelector('#img')
+  const avatarUrl = (avatorImage && (await getImageSourceAsync(avatorImage))) ?? undefined
   const message = el.querySelector('#message')?.textContent ?? undefined
 
   return { message, author, authorType, avatarUrl }
 }
 
-const parseTextMessage = async (el) => {
+const parseTextMessage = async el => {
   const params = await parseCommonElements(el)
 
   const html = el.querySelector('#message')?.innerHTML
@@ -33,16 +32,15 @@ const parseTextMessage = async (el) => {
     ...params,
     html,
     messageType: 'text-message',
-    timestamp
+    timestamp,
   }
 }
 
-const parsePaidMessage = async (el) => {
+const parsePaidMessage = async el => {
   const params = await parseCommonElements(el)
 
   const html = el.querySelector('#message')?.innerHTML
-  const purchaseAmount =
-    el.querySelector('#purchase-amount')?.textContent ?? undefined
+  const purchaseAmount = el.querySelector('#purchase-amount')?.textContent ?? undefined
   const card = el.querySelector('#card > #header')
   const backgroundColor = (card && getBackgroundColor(card, 0.8)) ?? undefined
 
@@ -55,18 +53,14 @@ const parsePaidMessage = async (el) => {
   }
 }
 
-const parsePaidSticker = async (el) => {
+const parsePaidSticker = async el => {
   const params = await parseCommonElements(el)
 
-  const purchaseAmount =
-    el.querySelector('#purchase-amount-chip')?.textContent ?? ''
+  const purchaseAmount = el.querySelector('#purchase-amount-chip')?.textContent ?? ''
   const card = el.querySelector('#card')
   const backgroundColor = (card && getBackgroundColor(card, 0.8)) ?? undefined
-  const stickerImage = el.querySelector(
-    '#sticker > #img'
-  )
-  const stickerUrl =
-    (stickerImage && (await getImageSourceAsync(stickerImage))) ?? undefined
+  const stickerImage = el.querySelector('#sticker > #img')
+  const stickerUrl = (stickerImage && (await getImageSourceAsync(stickerImage))) ?? undefined
 
   return {
     ...params,
@@ -77,14 +71,12 @@ const parsePaidSticker = async (el) => {
   }
 }
 
-const parseMembershipItem = async (el) => {
+const parseMembershipItem = async el => {
   const params = await parseCommonElements(el)
 
-  const detailText =
-    el.querySelector('#header-subtext')?.textContent ?? undefined
+  const detailText = el.querySelector('#header-subtext')?.textContent ?? undefined
   const header = el.querySelector('#card > #header')
-  const backgroundColor =
-    (header && getBackgroundColor(header, 0.8)) ?? undefined
+  const backgroundColor = (header && getBackgroundColor(header, 0.8)) ?? undefined
 
   return {
     ...params,
@@ -94,7 +86,7 @@ const parseMembershipItem = async (el) => {
   }
 }
 
-export const parse = async (el) => {
+export const parse = async el => {
   const tagName = el.tagName.toLowerCase()
   switch (tagName) {
     case 'yt-live-chat-text-message-renderer':
