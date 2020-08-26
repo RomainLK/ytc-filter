@@ -1,4 +1,4 @@
-# YT Chat Filter
+# ytcFilter
 
 A web extension to help you when Youtube chat is too fast.
 
