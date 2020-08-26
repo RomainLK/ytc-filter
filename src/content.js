@@ -1,10 +1,10 @@
-import Vchatter from '@/components/vchatter'
+import ytcFilter from '@/components/ytc-filter'
 import Vue from 'vue'
 const vchatter = new Vue({
   components: {
-    Vchatter,
+    ytcFilter,
   },
-  template: `<vchatter></vchatter>`,
+  template: `<ytc-filter></ytc-filter>`,
 })
 const listener = async () => {
   const primaryContent = document.querySelector('#contents')

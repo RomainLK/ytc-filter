@@ -4,8 +4,9 @@ $grey-color: #7e7e7e;
 $primary: rgb(50, 146, 255);
 $rounding: 0.5rem;
 
-html[dark] #vchatter {
-  button {
+html[dark] #ytc-filter {
+  button,
+  .vc-toolbar {
     background-color: $dark-bg;
   }
 
@@ -13,14 +14,25 @@ html[dark] #vchatter {
     color: $light-bg;
     background-color: $dark-bg;
   }
-
-  .vc-toolbar {
-    background-color: $dark-bg;
+  .vc-notification {
+    color: $light-bg;
+    background-color: lighten($dark-bg, 10%);
   }
 }
 
-#vchatter {
-  
+#ytc-filter {
+  .svg-icon {
+    fill: $primary;
+  }
+
+  .sm-btn {
+    padding: 0.2rem 0.5rem;
+  }
+
+  .hidden {
+    visibility: hidden;
+  }
+
   button {
     cursor: pointer;
     background-color: $light-bg;
@@ -31,7 +43,8 @@ html[dark] #vchatter {
     border: 2px solid $primary;
     outline: none;
   }
-  input, select {
+  input,
+  select {
     border-radius: $rounding;
     outline: none;
   }
@@ -40,6 +53,7 @@ html[dark] #vchatter {
     color: $dark-bg;
     background-color: $light-bg;
     font-size: 1.3rem;
+    padding: 1rem;
   }
   .vc-toolbar {
     display: flex;
@@ -47,16 +61,26 @@ html[dark] #vchatter {
     justify-content: space-between;
   }
 
-  .vc-title {
-    font-weight:  500;
-    font-size: 1.5rem;
+  .vc-valign {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    button {
+      margin-right: 0.2rem;
+    }
   }
-  
+
+  .vc-title {
+    font-weight: 500;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
   .vc-options {
-    padding: 2rem 1rem 0rem 1rem;
+    margin-bottom: 1rem;
   }
   .vc-options-item {
-    padding: 0.5rem
+    padding: 0.5rem;
   }
 
   .vc-content {
@@ -83,5 +107,21 @@ html[dark] #vchatter {
     .vc-message {
       margin-left: 1rem;
     }
+  }
+
+  .vc-notification {
+    position: absolute;
+    padding: 1rem 2rem;
+    background: darken($light-bg, 10%);
+    color: $dark-bg;
+    left: 50%;
+    width: 20rem;
+    margin-left: -10rem;
+    border-radius: 1rem;
+    border: 2px solid $primary;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 2000;
   }
 }

@@ -1,3 +1,12 @@
+# 1.2.0
+
+Due to an unfortunate coincidence, the extension is now named ytcFilter.
+
+New features:
+
+- Scroll to top/bottom buttons
+- Option to set a default profile which is automatically applied to new livechat
+
 # 1.1.2
 
 Code cleaning
@@ -5,20 +14,24 @@ Code cleaning
 # 1.1.1
 
 Bugfix:
-* Case sensitive didn't work orz
-* Filter removal didn't save to storage
+
+- Case sensitive didn't work orz
+- Filter removal didn't save to storage
 
 # 1.1.0
 
 New features:
-* Firefox support
-* Text filter support
-* Regex filter support
-* Case sensitive filtering option
-* Autoscroll option
+
+- Firefox support
+- Text filter support
+- Regex filter support
+- Case sensitive filtering option
+- Autoscroll option
 
 Known issues:
-* Duplication will happen if the extension is used both on the live stream and VOD
+
+- Duplication will happen if the extension is used both on the live stream and VOD
 
 # 1.0.0
+
 Initial release
