@@ -4,6 +4,8 @@ $grey-color: #7e7e7e;
 $primary: rgb(50, 146, 255);
 $rounding: 0.5rem;
 
+$moderator-color: #5e84f1;
+
 html[dark] #ytc-filter {
   button,
   .vc-toolbar {
@@ -85,7 +87,7 @@ html[dark] #ytc-filter {
 
   .vc-content {
     padding: 1rem;
-    max-height: 25rem;
+    //max-height: 25rem;
     overflow-y: scroll;
   }
   .vc-filter-list {
@@ -95,7 +97,6 @@ html[dark] #ytc-filter {
   }
   .vc-message-item {
     margin-top: 0.5rem;
-
     .vc-timestamp {
       font-size: 1rem;
       color: $grey-color;
@@ -103,6 +104,22 @@ html[dark] #ytc-filter {
     .vc-author {
       margin-left: 1rem;
       color: $grey-color;
+
+      .author-icon {
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      &.author {
+        color: $moderator-color;
+        .author-icon {
+          fill: $moderator-color;
+        }
+      }
+      &.owner {
+        color: #111111;
+        background-color: #ffd600;
+      }
     }
     .vc-message {
       margin-left: 1rem;
@@ -111,17 +128,53 @@ html[dark] #ytc-filter {
 
   .vc-notification {
     position: absolute;
-    padding: 1rem 2rem;
+    padding: 1rem 1rem;
     background: darken($light-bg, 10%);
     color: $dark-bg;
+    top: 3rem;
     left: 50%;
-    width: 20rem;
-    margin-left: -10rem;
+    width: 22rem;
+    margin-left: -11rem;
     border-radius: 1rem;
     border: 2px solid $primary;
     display: flex;
     justify-content: space-between;
-    align-items: center;
     z-index: 2000;
+    font-size: 1.25rem;
+    max-height: 25rem;
+
+    .notification-content {
+      padding: 0.5rem;
+      overflow-y: auto;
+      max-height: 23rem;
+      p {
+        margin-bottom: 0.5rem;
+      }
+      ul {
+        list-style: disc;
+        margin-left: 1rem;
+      }
+      h2 {
+        margin-top: 1rem;
+      }
+    }
+    .close {
+      height: 3rem;
+    }
+  }
+  .vc-resize {
+    text-align: center;
+    width: 100%;
+    cursor: n-resize;
+  }
+
+  .flex-align-center {
+    display: flex;
+    align-items: center;
+  }
+
+  .flex-align-base {
+    display: flex;
+    align-items: baseline;
   }
 }

@@ -1,5 +1,7 @@
 import ytcFilter from '@/components/ytc-filter'
 import Vue from 'vue'
+console.log('Loading ytc')
+
 const vchatter = new Vue({
   components: {
     ytcFilter,

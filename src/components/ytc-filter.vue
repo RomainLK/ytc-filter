@@ -1,8 +1,8 @@
 <template>
   <div id="ytc-filter">
     <div class="vc-notification" v-show="notificationMsg">
-      <div>{{ notificationMsg }}</div>
-      <button type="button" class="sm-btn" @click="notificationMsg = ''">
+      <div class="notification-content" v-html="notificationMsg"></div>
+      <button class="close sm-btn" type="button" @click="notificationMsg = ''">
         X
       </button>
     </div>
@@ -32,23 +32,26 @@
       </div>
     </div>
     <div v-show="displayYtc" class="vc-container">
+      <!--Filters-->
       <div v-show="displayFilters" class="vc-options">
         <form>
           <div class="vc-options-item">
             <label for="filter-type">Type:</label>
             <select id="filter-type" v-model="filterType">
-              <option value="author">Author is</option>
               <option value="msgIncludes">Text includes</option>
+              <option value="author">Author is</option>
+              <option value="isModerator">Is moderator</option>
+              <option value="isOwner">Is owner</option>
               <option value="regex">Regex</option>
             </select>
           </div>
           <div class="vc-options-item">
             <label for="filter-value">Value:</label>
-            <input id="filter-value" type="text" v-model="filterInput" />
+            <input id="filter-value" type="text" v-model="filterInput" :disabled="!filterHasValue" />
           </div>
-          <div class="vc-options-item">
+          <div class="vc-options-item flex-align-center">
             <label for="filter">Case sensitive:</label>
-            <input id="case-sensitive" type="checkbox" v-model="caseSensitive" :disabled="filterType === 'regex'" />
+            <input id="case-sensitive" type="checkbox" v-model="caseSensitive" :disabled="!filterHasCaseSensitive" />
             <button type="submit" @click.prevent="addFilter">Add</button>
           </div>
         </form>
@@ -60,18 +63,22 @@
               <span v-if="filter.author">Author: {{ filter.author }}</span>
               <span v-else-if="filter.msgIncludes">Text includes: {{ filter.msgIncludes }}</span>
               <span v-else-if="filter.regex">Regex: {{ filter.regex }}</span>
+              <span v-else-if="filter.isModerator">Is moderator</span>
+              <span v-else-if="filter.isOwner">Is owner</span>
               <button type="button" class="sm-btn" @click="removeFilter(filter)">X</button>
             </li>
           </ul>
         </div>
       </div>
+      <!--Options-->
       <div v-show="displayOptions" class="vc-options">
         <div class="vc-options-item">
           <div class="vc-title">Chat:</div>
-          <label for="autoscroll-opts">
+          <label for="autoscroll-opt" class="flex-align-center">
             Autoscroll:
-            <input id="autoscroll-opts" type="checkbox" v-model="options.autoScroll" />
+            <input id="autoscroll-opt" type="checkbox" v-model="options.autoScroll" />
           </label>
+          <label for="height-opt" class="flex-align-base"> Height: <input type="range" id="height-opt" min="100" max="400" v-model="options.height" step="1" /> </label>
         </div>
         <div class="vc-options-item">
           <button type="button" @click="clearMessages">Clear filtered chat</button>
@@ -80,12 +87,23 @@
           <div class="vc-title">Profile:</div>
           <button type="button" @click="saveProfile('default')">Save current as default</button>
         </div>
-        <div class="vc-options-item">In order for VChatter to work, your Livechat should be autoscrolling and timestamps should be displayed</div>
+        <div class="vc-options-item">
+          In order for ytcFilter to work, your Livechat should be autoscrolling and timestamps should be displayed <button type="button" @click="notifyChangelog">Changelog</button>
+        </div>
       </div>
-      <div class="vc-content" ref="content">
+      <!--Content-->
+      <div class="vc-content" :style="{ height: heightPx }" ref="content">
         <div class="vc-message-item" v-for="msg in messages" :key="msg.timestamp + msg.author + msg.message">
           <span class="vc-timestamp">{{ msg.timestamp }}</span>
-          <span class="vc-author">{{ msg.author }}</span>
+          <span class="vc-author" :class="{ author: msg.authorType === 'moderator', owner: msg.authorType === 'owner' }">
+            {{ msg.author
+            }}<svg v-if="msg.authorType === 'moderator'" class="author-icon" viewBox="0 0 16 16" preserveAspectRatio="xMidYMid meet" focusable="false" width="16" height="16">
+              <g>
+                <path
+                  d="M9.64589146,7.05569719 C9.83346524,6.562372 9.93617022,6.02722257 9.93617022,5.46808511 C9.93617022,3.00042984 7.93574038,1 5.46808511,1 C4.90894765,1 4.37379823,1.10270499 3.88047304,1.29027875 L6.95744681,4.36725249 L4.36725255,6.95744681 L1.29027875,3.88047305 C1.10270498,4.37379824 1,4.90894766 1,5.46808511 C1,7.93574038 3.00042984,9.93617022 5.46808511,9.93617022 C6.02722256,9.93617022 6.56237198,9.83346524 7.05569716,9.64589147 L12.4098057,15 L15,12.4098057 L9.64589146,7.05569719 Z"
+                ></path>
+              </g></svg
+          ></span>
           <span class="vc-message">{{ msg.message }}</span>
         </div>
       </div>
@@ -99,10 +117,14 @@ import cache from 'webext-storage-cache'
 import { sha1 } from 'crypto-hash'
 import RegexParser from 'regex-parser'
 import Vue from 'vue'
+import { gtr } from 'semver'
+import manifest from '@/manifest.json'
+import changelog from '@/../changelog.md'
 
 const MAX_AGE = { days: 9999 }
 const VIDEO_STORAGE_KEY = `vcVideo${getVideoId()}`
-const GLOBAL_STORAGE_KEY = `vcGlobal`
+const GLOBAL_STORAGE_KEY = 'vcGlobal'
+const VERSION_STORAGE_KEY = 'vcVersion'
 
 let deduplicationMap = {}
 
@@ -119,14 +141,17 @@ export default {
       filterInput: '',
       messages: [],
       filters: [],
-      filterType: 'author',
+      filterType: 'msgIncludes',
+      firstOpening: true,
       options: {
         autoScroll: true,
+        height: 300,
       },
       global: {
         profiles: {},
       },
       notificationMsg: '',
+      notificationTimeOut: null,
     }
   },
   async mounted() {
@@ -141,38 +166,80 @@ export default {
     if (this.filters.length === 0) {
       this.displayFilters = true
     }
+    console.log('update')
+    this.checkUpdate()
   },
   beforeDestroy() {
     this.observer.clear()
+  },
+  computed: {
+    filterHasValue() {
+      return ['author', 'msgIncludes', 'regex'].includes(this.filterType)
+    },
+    filterHasCaseSensitive() {
+      return ['author', 'msgIncludes'].includes(this.filterType)
+    },
+    heightPx() {
+      return this.options.height + 'px'
+    },
   },
   watch: {
     options: {
       handler: 'saveConfig',
       deep: true,
     },
+    displayYtc() {
+      if (this.options.autoScroll && this.firstOpening) {
+        this.goToBottom()
+        this.firstOpening = false
+      }
+    },
   },
   methods: {
-    addFilter() {
-      if (this.filterInput) {
-        this.filters.push({ [this.filterType]: this.filterInput, caseSensitive: this.caseSensitive })
-        this.filterInput = ''
-        this.saveConfig()
+    async checkUpdate(force = false) {
+      console.log('wtf')
+      let lastVersion = '0.0.0'
+      if (await cache.has(VERSION_STORAGE_KEY)) {
+        console.log('HELO')
+        lastVersion = await cache.has(VERSION_STORAGE_KEY)
       }
+      console.log(gtr)
+      console.log(lastVersion, manifest.version, gtr(manifest.version, lastVersion || '0.0.0'))
+      if (gtr(manifest.version, lastVersion)) {
+        this.notifyChangelog()
+        cache.set(VERSION_STORAGE_KEY, manifest.version, MAX_AGE)
+      }
+    },
+    notifyChangelog() {
+      this.notify(changelog, 0)
+    },
+    addFilter() {
+      if (this.filterHasValue && !this.filterInput) {
+        this.notify('This filter requires a value')
+        return
+      }
+      this.filters.push({ [this.filterType]: this.filterInput || true, caseSensitive: this.caseSensitive })
+      this.filterInput = ''
+      this.saveConfig()
     },
     onMessage(msg) {
       for (const filter of this.filters) {
-        if (filter.author) {
-          const caseSensitive = filter.caseSensitive && msg.author === filter.author
-          const caseInsensitive = !filter.caseSensitive && msg.author.toLowerCase() === filter.author.toLowerCase()
-          if (caseSensitive || caseInsensitive) {
-            this.addMessage(msg)
-          }
-        } else if (filter.msgIncludes) {
+        if (filter.msgIncludes) {
           const caseSensitive = filter.caseSensitive && msg.message.includes(filter.msgIncludes)
           const caseInsensitive = !filter.caseSensitive && msg.message.toLowerCase().includes(filter.msgIncludes.toLowerCase())
           if (caseSensitive || caseInsensitive) {
             this.addMessage(msg)
           }
+        } else if (filter.author) {
+          const caseSensitive = filter.caseSensitive && msg.author === filter.author
+          const caseInsensitive = !filter.caseSensitive && msg.author.toLowerCase() === filter.author.toLowerCase()
+          if (caseSensitive || caseInsensitive) {
+            this.addMessage(msg)
+          }
+        } else if (filter.isModerator && msg.authorType === 'moderator') {
+          this.addMessage(msg)
+        } else if (filter.isOwner && msg.authorType === 'owner') {
+          this.addMessage(msg)
         } else if (filter.regex) {
           let regex = regexCache.get(filter)
           if (!regex) {
@@ -192,12 +259,12 @@ export default {
       } else {
         return
       }
+      const isAtBottom = this.$refs.content.scrollTop + this.$refs.content.clientHeight >= this.$refs.content.scrollHeight - 50
+
       this.messages.push(msg)
 
-      if (this.options.autoScroll) {
-        await this.$nextTick()
-        this.goToBottom()
-        this.$refs.content.scrollTop = this.$refs.content.scrollHeight
+      if (this.options.autoScroll && isAtBottom) {
+        await this.goToBottom()
       }
       this.saveConfig()
     },
@@ -206,7 +273,8 @@ export default {
       this.$refs.content.scrollTop = 0
     },
 
-    goToBottom() {
+    async goToBottom() {
+      await this.$nextTick()
       this.$refs.content.scrollTop = this.$refs.content.scrollHeight
     },
 
@@ -258,7 +326,6 @@ export default {
         return false
       }
       const global = await this.loadGlobal()
-      console.log(global)
       try {
         const { profiles } = JSON.parse(global)
         if (profiles?.[name]) {
@@ -312,13 +379,22 @@ export default {
         this.filters = filters
       }
       if (options) {
-        this.options = options
+        Object.assign(this.options, options)
       }
     },
 
-    notify(msg) {
+    notify(msg, timeout = 10000) {
+      if (this.notificationTimeOut) {
+        clearTimeout(this.notificationTimeOut)
+        this.notificationTimeOut = ''
+      }
       this.notificationMsg = msg
-      setTimeout(() => (this.notificationMsg = ''), 10000)
+      if (timeout > 0) {
+        this.notificationTimeOut = setTimeout(() => {
+          this.notificationMsg = ''
+          this.notificationTimeOut = null
+        }, 10000)
+      }
     },
   },
 }

@@ -24,7 +24,7 @@ const parseCommonElements = async el => {
 
 const parseTextMessage = async el => {
   const params = await parseCommonElements(el)
-
+  const authorType = el.getAttribute('author-type')
   const html = el.querySelector('#message')?.innerHTML
   const timestamp = el.querySelector('#timestamp')?.innerHTML
 
@@ -33,6 +33,7 @@ const parseTextMessage = async el => {
     html,
     messageType: 'text-message',
     timestamp,
+    authorType,
   }
 }
 
