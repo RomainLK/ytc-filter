@@ -131,22 +131,22 @@ html[dark] #ytc-filter {
     padding: 1rem 1rem;
     background: darken($light-bg, 10%);
     color: $dark-bg;
-    top: 3rem;
+    top: 4rem;
     left: 50%;
-    width: 22rem;
-    margin-left: -11rem;
+    width: 24rem;
+    margin-left: -12rem;
     border-radius: 1rem;
     border: 2px solid $primary;
     display: flex;
     justify-content: space-between;
     z-index: 2000;
     font-size: 1.25rem;
-    max-height: 25rem;
+    max-height: 35rem;
 
     .notification-content {
       padding: 0.5rem;
       overflow-y: auto;
-      max-height: 23rem;
+      max-height: 33rem;
       p {
         margin-bottom: 0.5rem;
       }
@@ -162,6 +162,7 @@ html[dark] #ytc-filter {
       height: 3rem;
     }
   }
+
   .vc-resize {
     text-align: center;
     width: 100%;

@@ -1,6 +1,7 @@
 import ytcFilter from '@/components/ytc-filter'
 import Vue from 'vue'
-console.log('Loading ytc')
+
+console.log('Loading ytcFilter')
 
 const vchatter = new Vue({
   components: {
@@ -8,6 +9,7 @@ const vchatter = new Vue({
   },
   template: `<ytc-filter></ytc-filter>`,
 })
+
 const listener = async () => {
   const primaryContent = document.querySelector('#contents')
   const vueAnchor = document.createElement('div')

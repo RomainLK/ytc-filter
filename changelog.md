@@ -4,16 +4,19 @@
 
 Changes:
 
-- Autoscroll is triggered only if the captured chat is at the bottom
+- Auto scroll is triggered only if the captured chat is at the bottom
 - Redesign notification
 
 New features:
 
 - Filter by moderator
 - Filter by owner
-- Resizing option
-- Support for embedded chat outside of Youtube
-- Update notification
+- Resizing option with a height slider
+- Support for embedded chat outside of Youtube (i.e. Jetri)
+- Changelog notification
+- Remove default profile button
+- Apply default profile button
+- Auto open ytcFilter option. This settings is on a per video basis. Use the default profile to apply it to new videos.
 
 ## 1.2.0
 
@@ -26,13 +29,13 @@ New features:
 
 ## 1.1.2
 
-Code cleaning
+Code cleaning for Firefox approval process
 
 ## 1.1.1
 
 Bugfix:
 
-- Case sensitive didn't work orz
+- Case sensitive didn't work
 - Filter removal didn't save to storage
 
 ## 1.1.0
@@ -43,7 +46,7 @@ New features:
 - Text filter support
 - Regex filter support
 - Case sensitive filtering option
-- Autoscroll option
+- Auto scroll option
 
 Known issues:
 
@@ -52,3 +55,8 @@ Known issues:
 ## 1.0.0
 
 Initial release
+
+Features:
+
+- Filter by nickname
+- Persistance between reload

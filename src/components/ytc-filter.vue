@@ -74,18 +74,24 @@
       <div v-show="displayOptions" class="vc-options">
         <div class="vc-options-item">
           <div class="vc-title">Chat:</div>
-          <label for="autoscroll-opt" class="flex-align-center">
-            Autoscroll:
-            <input id="autoscroll-opt" type="checkbox" v-model="options.autoScroll" />
+          <label for="auto-open-opt" class="flex-align-center">
+            Auto open:
+            <input id="auto-open-opt" type="checkbox" v-model="options.autoOpen" />
           </label>
-          <label for="height-opt" class="flex-align-base"> Height: <input type="range" id="height-opt" min="100" max="400" v-model="options.height" step="1" /> </label>
+          <label for="auto-scroll-opt" class="flex-align-center">
+            Auto scroll:
+            <input id="auto-scroll-opt" type="checkbox" v-model="options.autoScroll" />
+          </label>
+          <label for="height-opt" class="flex-align-center"> Height: <input type="range" id="height-opt" min="50" max="400" v-model="options.height" step="1" /> </label>
         </div>
         <div class="vc-options-item">
           <button type="button" @click="clearMessages">Clear filtered chat</button>
         </div>
         <div class="vc-options-item">
-          <div class="vc-title">Profile:</div>
-          <button type="button" @click="saveProfile('default')">Save current as default</button>
+          <div class="vc-title">Default profile:</div>
+          <button type="button" @click="saveProfile('default')">Save</button>
+          <button type="button" @click="removeProfile('default')">Remove</button>
+          <button type="button" @click="restoreProfileClick('default')">Apply</button>
         </div>
         <div class="vc-options-item">
           In order for ytcFilter to work, your Livechat should be autoscrolling and timestamps should be displayed <button type="button" @click="notifyChangelog">Changelog</button>
@@ -144,8 +150,9 @@ export default {
       filterType: 'msgIncludes',
       firstOpening: true,
       options: {
+        autoOpen: false,
         autoScroll: true,
-        height: 300,
+        height: 100,
       },
       global: {
         profiles: {},
@@ -158,6 +165,7 @@ export default {
     this.observer = new ChatObserver()
     this.observer.observe()
     this.observer.listeners.push(this.onMessage.bind(this))
+    await this.loadGlobal()
     if (!(await this.loadConfig())) {
       if (await this.restoreProfile('default')) {
         this.notify('Default profile was applied')
@@ -166,7 +174,7 @@ export default {
     if (this.filters.length === 0) {
       this.displayFilters = true
     }
-    console.log('update')
+    this.displayYtc = this.options.autoOpen
     this.checkUpdate()
   },
   beforeDestroy() {
@@ -197,14 +205,10 @@ export default {
   },
   methods: {
     async checkUpdate(force = false) {
-      console.log('wtf')
       let lastVersion = '0.0.0'
       if (await cache.has(VERSION_STORAGE_KEY)) {
-        console.log('HELO')
         lastVersion = await cache.has(VERSION_STORAGE_KEY)
       }
-      console.log(gtr)
-      console.log(lastVersion, manifest.version, gtr(manifest.version, lastVersion || '0.0.0'))
       if (gtr(manifest.version, lastVersion)) {
         this.notifyChangelog()
         cache.set(VERSION_STORAGE_KEY, manifest.version, MAX_AGE)
@@ -307,13 +311,36 @@ export default {
       await this.saveGlobal()
       this.notify(`Profile "${name}" was saved`)
     },
-
-    async saveGlobal() {
-      cache.set(GLOBAL_STORAGE_KEY, JSON.stringify(this.global), MAX_AGE)
+    async removeProfile(name) {
+      if (!this.global.profiles[name]) {
+        this.notify(`Profile "${name}" doesn't exist`)
+        return
+      }
+      delete this.global.profiles[name]
+      this.notify(`Profile "${name}" was removed`)
+      await this.saveGlobal()
+    },
+    saveGlobal() {
+      return cache.set(GLOBAL_STORAGE_KEY, JSON.stringify(this.global), MAX_AGE)
     },
 
-    loadGlobal() {
-      return cache.get(GLOBAL_STORAGE_KEY)
+    async loadGlobal() {
+      const hasGlobal = await cache.has(GLOBAL_STORAGE_KEY)
+      if (!hasGlobal) {
+        return false
+      }
+      try {
+        this.global = JSON.parse(await cache.get(GLOBAL_STORAGE_KEY))
+      } catch (e) {
+        console.warn('restoreProfile - Failed to load global')
+        return false
+      }
+    },
+
+    async restoreProfileClick(name) {
+      if (!(await this.restoreProfile(name))) {
+        this.notify(`Profile "${name}" doesn't exist`)
+      }
     },
 
     async restoreProfile(name) {
@@ -321,13 +348,8 @@ export default {
         console.warn('restoreProfile - Missing profile name')
         return false
       }
-      const hasGlobal = await cache.has(GLOBAL_STORAGE_KEY)
-      if (!hasGlobal) {
-        return false
-      }
-      const global = await this.loadGlobal()
       try {
-        const { profiles } = JSON.parse(global)
+        const { profiles } = this.global
         if (profiles?.[name]) {
           this.setConfig(profiles[name])
           return true
@@ -341,18 +363,16 @@ export default {
     },
 
     async saveConfig() {
-      await Promise.all([
-        cache.set(
-          VIDEO_STORAGE_KEY,
-          JSON.stringify({
-            messages: this.messages,
-            filters: this.filters,
-            options: this.options,
-            deduplication: deduplicationMap,
-          }),
-          MAX_AGE
-        ),
-      ])
+      await cache.set(
+        VIDEO_STORAGE_KEY,
+        JSON.stringify({
+          messages: this.messages,
+          filters: this.filters,
+          options: this.options,
+          deduplication: deduplicationMap,
+        }),
+        MAX_AGE
+      )
     },
 
     async loadConfig() {
@@ -383,7 +403,7 @@ export default {
       }
     },
 
-    notify(msg, timeout = 10000) {
+    notify(msg, timeout = 5000) {
       if (this.notificationTimeOut) {
         clearTimeout(this.notificationTimeOut)
         this.notificationTimeOut = ''
@@ -393,7 +413,7 @@ export default {
         this.notificationTimeOut = setTimeout(() => {
           this.notificationMsg = ''
           this.notificationTimeOut = null
-        }, 10000)
+        }, timeout)
       }
     },
   },
