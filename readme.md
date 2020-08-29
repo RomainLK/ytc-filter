@@ -1,20 +1,12 @@
 # ytcFilter
 
-A web extension to help you when Youtube chat is too fast.
-
-Features:
-
-- Filters Youtube livechat by
-  - Nicknames
-  - Text including
-  - Regex
-- Persistence for a given video
+A web extension to help you when Youtube chat is too fast by filtering messages.
 
 # Installation
 
-[Chrome web store](https://chrome.google.com/webstore/detail/vchatter/mnldnbhgfocmkehnlkeanlhfmopepnko)
+[Chrome web store](https://chrome.google.com/webstore/detail/ytcfilter/mnldnbhgfocmkehnlkeanlhfmopepnko)
 
-Firefox WIP
+[Firefox](https://addons.mozilla.org/en-US/firefox/addon/ytcfilter/)
 
 Otherwise, release packages are available on Github
 
