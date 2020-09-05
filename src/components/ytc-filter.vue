@@ -110,7 +110,7 @@
                 ></path>
               </g></svg
           ></span>
-          <span class="vc-message">{{ msg.message }}</span>
+          <span class="vc-message" v-html="msg.html"></span>
         </div>
       </div>
     </div>
@@ -126,6 +126,7 @@ import Vue from 'vue'
 import { gtr } from 'semver'
 import manifest from '@/manifest.json'
 import changelog from '@/../changelog.md'
+import xss from 'xss'
 
 const MAX_AGE = { days: 9999 }
 const VIDEO_STORAGE_KEY = `vcVideo${getVideoId()}`
@@ -263,6 +264,7 @@ export default {
       } else {
         return
       }
+      msg.html = xss(msg.html)
       const isAtBottom = this.$refs.content.scrollTop + this.$refs.content.clientHeight >= this.$refs.content.scrollHeight - 50
 
       this.messages.push(msg)
