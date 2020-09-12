@@ -1,5 +1,15 @@
 # ytcFilter Changelog
 
+## 1.4.0
+
+Improvement:
+
+- Emoji are now displayed in the captured messages.
+
+Known issue:
+
+- If ytcFilter's window is too big, the "Top chat" dropdown of Youtube may not render properly. No fixes were found for now.
+
 ## 1.3.1
 
 Changes:
