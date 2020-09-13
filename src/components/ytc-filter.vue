@@ -94,13 +94,36 @@
           <button type="button" @click="restoreProfileClick('default')">Apply</button>
         </div>
         <div class="vc-options-item">
-          In order for ytcFilter to work, your Livechat should be autoscrolling and timestamps should be displayed <button type="button" @click="notifyChangelog">Changelog</button>
+          <button type="button" @click="notifyChangelog">Changelog</button> <a href="https://github.com/RomainLK/ytc-filter/wiki" target="_blank">Wiki</a>
         </div>
       </div>
       <!--Content-->
       <div class="vc-content" :style="{ height: heightPx }" ref="content">
-        <div class="vc-message-item" v-for="msg in messages" :key="msg.timestamp + msg.author + msg.message">
-          <span class="vc-timestamp">{{ msg.timestamp }}</span>
+        <div class="vc-message-item" v-for="(msg, index) in messages" :key="msg.id">
+          <span v-if="msg.timestamp && msgOptions !== index" class="vc-timestamp" @click="msgOptions = index">{{ msg.timestamp }}</span>
+          <span v-else class="vc-options">
+            <button type="button" class="sm-btn" title="Go to message" @click="scrollYoutubeChatToId(msg.id)">
+              <svg class="svg-icon" viewBox="0 0 20 20" width="13" height="13">
+                <path
+                  d="M18.125,15.804l-4.038-4.037c0.675-1.079,1.012-2.308,1.01-3.534C15.089,4.62,12.199,1.75,8.584,1.75C4.815,1.75,1.982,4.726,2,8.286c0.021,3.577,2.908,6.549,6.578,6.549c1.241,0,2.417-0.347,3.44-0.985l4.032,4.026c0.167,0.166,0.43,0.166,0.596,0l1.479-1.478C18.292,16.234,18.292,15.968,18.125,15.804 M8.578,13.99c-3.198,0-5.716-2.593-5.733-5.71c-0.017-3.084,2.438-5.686,5.74-5.686c3.197,0,5.625,2.493,5.64,5.624C14.242,11.548,11.621,13.99,8.578,13.99 M16.349,16.981l-3.637-3.635c0.131-0.11,0.721-0.695,0.876-0.884l3.642,3.639L16.349,16.981z"
+                ></path>
+              </svg>
+            </button>
+            <button type="button" class="sm-btn" title="Delete message" @click="deleteMessage(msg)">
+              <svg class="svg-icon" viewBox="0 0 20 20" width="13" height="13">
+                <path
+                  d="M17.114,3.923h-4.589V2.427c0-0.252-0.207-0.459-0.46-0.459H7.935c-0.252,0-0.459,0.207-0.459,0.459v1.496h-4.59c-0.252,0-0.459,0.205-0.459,0.459c0,0.252,0.207,0.459,0.459,0.459h1.51v12.732c0,0.252,0.207,0.459,0.459,0.459h10.29c0.254,0,0.459-0.207,0.459-0.459V4.841h1.511c0.252,0,0.459-0.207,0.459-0.459C17.573,4.127,17.366,3.923,17.114,3.923M8.394,2.886h3.214v0.918H8.394V2.886z M14.686,17.114H5.314V4.841h9.372V17.114z M12.525,7.306v7.344c0,0.252-0.207,0.459-0.46,0.459s-0.458-0.207-0.458-0.459V7.306c0-0.254,0.205-0.459,0.458-0.459S12.525,7.051,12.525,7.306M8.394,7.306v7.344c0,0.252-0.207,0.459-0.459,0.459s-0.459-0.207-0.459-0.459V7.306c0-0.254,0.207-0.459,0.459-0.459S8.394,7.051,8.394,7.306"
+                ></path>
+              </svg>
+            </button>
+            <button v-if="msg.timestamp" type="button" class="sm-btn" title="Hide message options" @click="resetMessageOptions">
+              <svg class="svg-icon" viewBox="0 0 20 20" width="13" height="13">
+                <path
+                  d="M10.185,1.417c-4.741,0-8.583,3.842-8.583,8.583c0,4.74,3.842,8.582,8.583,8.582S18.768,14.74,18.768,10C18.768,5.259,14.926,1.417,10.185,1.417 M10.185,17.68c-4.235,0-7.679-3.445-7.679-7.68c0-4.235,3.444-7.679,7.679-7.679S17.864,5.765,17.864,10C17.864,14.234,14.42,17.68,10.185,17.68 M10.824,10l2.842-2.844c0.178-0.176,0.178-0.46,0-0.637c-0.177-0.178-0.461-0.178-0.637,0l-2.844,2.841L7.341,6.52c-0.176-0.178-0.46-0.178-0.637,0c-0.178,0.176-0.178,0.461,0,0.637L9.546,10l-2.841,2.844c-0.178,0.176-0.178,0.461,0,0.637c0.178,0.178,0.459,0.178,0.637,0l2.844-2.841l2.844,2.841c0.178,0.178,0.459,0.178,0.637,0c0.178-0.176,0.178-0.461,0-0.637L10.824,10z"
+                ></path>
+              </svg>
+            </button>
+          </span>
           <span class="vc-author" :class="{ author: msg.authorType === 'moderator', owner: msg.authorType === 'owner' }">
             {{ msg.author
             }}<svg v-if="msg.authorType === 'moderator'" class="author-icon" viewBox="0 0 16 16" preserveAspectRatio="xMidYMid meet" focusable="false" width="16" height="16">
@@ -120,7 +143,6 @@
 import { ChatObserver } from '@/utils/chat-observer'
 import { getVideoId } from '@/utils/information-extractor'
 import cache from 'webext-storage-cache'
-import { sha1 } from 'crypto-hash'
 import RegexParser from 'regex-parser'
 import Vue from 'vue'
 import { gtr } from 'semver'
@@ -145,6 +167,7 @@ export default {
       displayFilters: false,
       displayOptions: false,
       caseSensitive: false,
+      msgOptions: null,
       filterInput: '',
       messages: [],
       filters: [],
@@ -208,7 +231,7 @@ export default {
     async checkUpdate(force = false) {
       let lastVersion = '0.0.0'
       if (await cache.has(VERSION_STORAGE_KEY)) {
-        lastVersion = await cache.has(VERSION_STORAGE_KEY)
+        lastVersion = await cache.get(VERSION_STORAGE_KEY)
       }
       if (gtr(manifest.version, lastVersion)) {
         this.notifyChangelog()
@@ -258,9 +281,8 @@ export default {
       }
     },
     async addMessage(msg) {
-      const hash = await sha1(msg.timestamp + msg.author + msg.message)
-      if (!deduplicationMap[hash]) {
-        deduplicationMap[hash] = true
+      if (!deduplicationMap[msg.id]) {
+        deduplicationMap[msg.id] = true
       } else {
         return
       }
@@ -417,6 +439,27 @@ export default {
           this.notificationTimeOut = null
         }, timeout)
       }
+    },
+
+    resetMessageOptions() {
+      this.msgOptions = null
+    },
+
+    deleteMessage(msg) {
+      const index = this.messages.indexOf(msg)
+      this.messages.splice(index, 1)
+      delete deduplicationMap[msg.id]
+      this.resetMessageOptions()
+      this.saveConfig()
+    },
+
+    scrollYoutubeChatToId(id) {
+      const ytMsg = document.getElementById(id)
+      if (!ytMsg) {
+        this.notify('The message is not currently available in Youtube chat.')
+        return
+      }
+      document.querySelector('#item-scroller').scrollTo(0, ytMsg.offsetTop)
     },
   },
 }

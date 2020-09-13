@@ -13,18 +13,18 @@ const getBackgroundColor = (el, opacity) => {
 }
 
 const parseCommonElements = async el => {
+  const id = el.id
   const author = el.querySelector('#author-name')?.textContent ?? undefined
   const authorType = el.getAttribute('author-type') ?? undefined
   const avatorImage = el.querySelector('#img')
   const avatarUrl = (avatorImage && (await getImageSourceAsync(avatorImage))) ?? undefined
   const message = el.querySelector('#message')?.textContent ?? undefined
 
-  return { message, author, authorType, avatarUrl }
+  return { id, message, author, authorType, avatarUrl }
 }
 
 const parseTextMessage = async el => {
   const params = await parseCommonElements(el)
-  const authorType = el.getAttribute('author-type')
   const html = el.querySelector('#message')?.innerHTML
   const timestamp = el.querySelector('#timestamp')?.innerHTML
 
@@ -33,7 +33,6 @@ const parseTextMessage = async el => {
     html,
     messageType: 'text-message',
     timestamp,
-    authorType,
   }
 }
 

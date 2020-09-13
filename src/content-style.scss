@@ -10,6 +10,10 @@ html[dark] #ytc-filter {
   button,
   .vc-toolbar {
     background-color: $dark-bg;
+    &:hover,
+    &:active {
+      background-color: lighten($dark-bg, 10%);
+    }
   }
 
   .vc-container {
@@ -44,6 +48,10 @@ html[dark] #ytc-filter {
     font-weight: 500;
     border: 2px solid $primary;
     outline: none;
+    &:hover,
+    &:active {
+      background-color: darken($light-bg, 10%);
+    }
   }
   input,
   select {
@@ -100,6 +108,7 @@ html[dark] #ytc-filter {
     .vc-timestamp {
       font-size: 1rem;
       color: $grey-color;
+      cursor: pointer;
     }
     .vc-author {
       margin-left: 1rem;
