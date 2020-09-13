@@ -1,19 +1,14 @@
 # ytcFilter
 
-Welcome to ytcFilter. This message will only appear the first time you install this extension, or update it. It can be displayed again by click on "ytcFilter" > "Show options" > "Changelog".
+Welcome to ytcFilter. This message will only appear the first time you install this extension, or update it. It can be displayed again by clicking on "ytcFilter" > "Show options" > "Changelog".
 
-For help, please check the [wiki](https://github.com/RomainLK/ytc-filter/wiki).
+For help, please check the <a href="https://github.com/RomainLK/ytc-filter/wiki" target="_blank">wiki</a>
 
-For bug reports or feature request, contact the developer on [Github](https://github.com/RomainLK/ytc-filter) or directly.
+For bug reports or feature request, contact the developer directly or on <a href="https://github.com/RomainLK/ytc-filter"  target="_blank">Github</a>.
 
 # Changelog
 
 ## 1.5.0
-
-Improvement:
-
-- Timestamps within Youtube chat are no longer needed for duplicate message management.
-- Better styling when hovering a button.
 
 New features:
 
@@ -21,6 +16,11 @@ New features:
   - Scroll to button: Scroll Youtube chat to display the message which was captured. Note that Youtube chat isn't infinite so the message may no longer be present.
   - Delete message: Remove message from captured messages
 - A link has been added to the Github wiki for help.
+
+Improvement:
+
+- Timestamps within Youtube chat are no longer needed for duplicate message management.
+- Better styling when hovering a button.
 
 Bugfixes:
 
