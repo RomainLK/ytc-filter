@@ -50,7 +50,7 @@
             <input id="filter-value" type="text" v-model="filterInput" :disabled="!filterHasValue" />
           </div>
           <div class="vc-options-item flex-align-center">
-            <label for="filter">Case sensitive:</label>
+            <label for="case-sensitive">Case sensitive:</label>
             <input id="case-sensitive" type="checkbox" v-model="caseSensitive" :disabled="!filterHasCaseSensitive" />
             <button type="submit" @click.prevent="addFilter">Add</button>
           </div>
