@@ -8,6 +8,12 @@ For bug reports or feature request, contact the developer directly or on <a href
 
 # Changelog
 
+## 1.6.0
+
+Improvements:
+
+- Support for Youtube studio
+
 ## 1.5.0
 
 New features:
@@ -17,7 +23,7 @@ New features:
   - Delete message: Remove message from captured messages
 - A link has been added to the Github wiki for help.
 
-Improvement:
+Improvements:
 
 - Timestamps within Youtube chat are no longer needed for duplicate message management.
 - Better styling when hovering a button.

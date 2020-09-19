@@ -5,6 +5,40 @@ $primary: rgb(50, 146, 255);
 $rounding: 0.5rem;
 
 $moderator-color: #5e84f1;
+#chat #ytc-filter {
+  .sm-btn {
+    padding: 0.1rem 0.3rem;
+  }
+
+  button {
+    padding: 0.3rem 0.7rem;
+  }
+
+  .vc-container {
+    font-size: 0.7rem;
+    padding: 0.8rem;
+  }
+
+  .vc-title {
+    font-size: 0.9rem;
+  }
+
+  .vc-notification {
+    font-size: 0.65rem;
+  }
+
+  .vc-content {
+    padding: 0.6rem;
+    //max-height: 25rem;
+    overflow-y: scroll;
+  }
+
+  .vc-message-item {
+    .vc-timestamp {
+      font-size: 0.7rem;
+    }
+  }
+}
 
 html[dark] #ytc-filter {
   button,
@@ -65,6 +99,7 @@ html[dark] #ytc-filter {
     font-size: 1.3rem;
     padding: 1rem;
   }
+
   .vc-toolbar {
     display: flex;
     background-color: $light-bg;

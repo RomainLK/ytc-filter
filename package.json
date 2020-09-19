@@ -23,6 +23,7 @@
     }
   },
   "dependencies": {
+    "arrive": "^2.4.1",
     "color": "3.1.2",
     "regex-parser": "2.2.11",
     "semver": "^7.3.2",

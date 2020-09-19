@@ -1,5 +1,6 @@
 import { querySelectorAsync } from '@/utils/dom-helper'
 import { parse } from '@/utils/message-parser'
+import 'arrive'
 
 export class ChatObserver {
   constructor() {
@@ -7,14 +8,13 @@ export class ChatObserver {
   }
 
   async observe() {
-    const items = await querySelectorAsync('#items.yt-live-chat-item-list-renderer')
-
-    if (!items) {
-      return
-    }
+    await new Promise(resolve => document.arrive('#items.yt-live-chat-item-list-renderer', resolve))
+    document.unbindArrive()
+    const items = document.querySelector('#items.yt-live-chat-item-list-renderer')
 
     this.observer = new MutationObserver(mutations => {
       mutations.forEach(mutation => {
+        console.log('mut', mutation)
         const nodes = Array.from(mutation.addedNodes)
         nodes.forEach(node => {
           if (node instanceof HTMLElement) {
@@ -25,17 +25,10 @@ export class ChatObserver {
     })
 
     this.observer.observe(items, { childList: true })
-
-    // this.cleanupTimer = setInterval(() => {
-    //   this.timelines = this.timelines.map((timelines) => {
-    //     return timelines.filter((timeline) => {
-    //       return timeline.didDisappear > Date.now()
-    //     })
-    //   })
-    // }, 1000)
   }
 
   async proceed(element) {
+    console.log('proceed', element)
     const message = await parse(element)
     if (!message) {
       return
