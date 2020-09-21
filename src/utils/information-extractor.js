@@ -5,3 +5,28 @@ export const getVideoId = () => {
   const searchParams = new URLSearchParams(window.location.search)
   return searchParams.get('v') || new URLSearchParams(window.parent.top.location.search).get('v')
 }
+
+export const getChannelId = () => {
+  if (document.location.origin === 'https://studio.youtube.com') {
+    return 'Studio'
+  } else if (document.referrer.startsWith('https://www.youtube.com')) {
+    return window.parent.top.document
+      .querySelector('ytd-channel-name .yt-simple-endpoint')
+      .href.split('/')
+      .pop()
+  } else {
+    // Context other than Youtube
+    return null
+  }
+}
+
+export const getChannelName = () => {
+  if (document.location.origin === 'https://studio.youtube.com') {
+    return 'Studio'
+  } else if (document.referrer.startsWith('https://www.youtube.com')) {
+    return window.parent.top.document.querySelector('ytd-channel-name .yt-simple-endpoint').text
+  } else {
+    // Context other than Youtube
+    return null
+  }
+}

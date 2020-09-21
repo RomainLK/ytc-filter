@@ -25,6 +25,9 @@
   "dependencies": {
     "arrive": "^2.4.1",
     "color": "3.1.2",
+    "copy-to-clipboard": "^3.3.1",
+    "dom-to-image-improved": "^2.8.0",
+    "file-saver": "^2.0.2",
     "regex-parser": "2.2.11",
     "semver": "^7.3.2",
     "vue": "2.6.11",

@@ -1,4 +1,3 @@
-import { querySelectorAsync } from '@/utils/dom-helper'
 import { parse } from '@/utils/message-parser'
 import 'arrive'
 
@@ -8,13 +7,13 @@ export class ChatObserver {
   }
 
   async observe() {
-    await new Promise(resolve => document.arrive('#items.yt-live-chat-item-list-renderer', resolve))
-    document.unbindArrive()
+    if (!document.querySelector('#items.yt-live-chat-item-list-renderer')) {
+      await new Promise(resolve => document.arrive('#items.yt-live-chat-item-list-renderer', resolve))
+      document.unbindArrive()
+    }
     const items = document.querySelector('#items.yt-live-chat-item-list-renderer')
-
     this.observer = new MutationObserver(mutations => {
       mutations.forEach(mutation => {
-        console.log('mut', mutation)
         const nodes = Array.from(mutation.addedNodes)
         nodes.forEach(node => {
           if (node instanceof HTMLElement) {
@@ -28,7 +27,6 @@ export class ChatObserver {
   }
 
   async proceed(element) {
-    console.log('proceed', element)
     const message = await parse(element)
     if (!message) {
       return
@@ -40,6 +38,6 @@ export class ChatObserver {
   }
 
   clear() {
-    this.observer?.disconnect()
+    this.observer.disconnect()
   }
 }

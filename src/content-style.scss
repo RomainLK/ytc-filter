@@ -61,12 +61,35 @@ html[dark] #ytc-filter {
 }
 
 #ytc-filter {
+  .w-100 {
+    width: 100%;
+  }
+
+  a:active,
+  a:visited {
+    color: $primary;
+  }
+  a:hover {
+    color: darken($primary, 10%);
+  }
+
   .svg-icon {
     fill: $primary;
   }
 
   .sm-btn {
     padding: 0.2rem 0.5rem;
+  }
+
+  .active {
+    color: $light-bg;
+    background-color: $primary;
+    .svg-icon {
+      fill: $light-bg;
+    }
+    &:hover {
+      background-color: darken($primary, 10%);
+    }
   }
 
   .hidden {
@@ -225,5 +248,8 @@ html[dark] #ytc-filter {
   .flex-align-base {
     display: flex;
     align-items: baseline;
+  }
+  .justify-end {
+    justify-content: flex-end;
   }
 }

@@ -22,12 +22,38 @@
             ></path>
           </svg>
         </button>
-        <button type="button" @click="displayFilters = !displayFilters">{{ displayFilters ? 'Hide filters' : 'Show filters' }}</button>
+        <button type="button" class="sm-btn" @click="exportMessagesToPng">
+          <svg class="svg-icon" viewBox="0 0 20 20" width="18" height="18">
+            <path
+              d="M10,6.536c-2.263,0-4.099,1.836-4.099,4.098S7.737,14.732,10,14.732s4.099-1.836,4.099-4.098S12.263,6.536,10,6.536M10,13.871c-1.784,0-3.235-1.453-3.235-3.237S8.216,7.399,10,7.399c1.784,0,3.235,1.452,3.235,3.235S11.784,13.871,10,13.871M17.118,5.672l-3.237,0.014L12.52,3.697c-0.082-0.105-0.209-0.168-0.343-0.168H7.824c-0.134,0-0.261,0.062-0.343,0.168L6.12,5.686H2.882c-0.951,0-1.726,0.748-1.726,1.699v7.362c0,0.951,0.774,1.725,1.726,1.725h14.236c0.951,0,1.726-0.773,1.726-1.725V7.195C18.844,6.244,18.069,5.672,17.118,5.672 M17.98,14.746c0,0.477-0.386,0.861-0.862,0.861H2.882c-0.477,0-0.863-0.385-0.863-0.861V7.384c0-0.477,0.386-0.85,0.863-0.85l3.451,0.014c0.134,0,0.261-0.062,0.343-0.168l1.361-1.989h3.926l1.361,1.989c0.082,0.105,0.209,0.168,0.343,0.168l3.451-0.014c0.477,0,0.862,0.184,0.862,0.661V14.746z"
+            ></path>
+          </svg>
+        </button>
       </div>
-      <div :class="{ hidden: !displayYtc }">
-        <button type="button" @click="displayOptions = !displayOptions">{{ displayOptions ? 'Hide options' : 'Show options' }}</button>
+      <div v-if="displayYtc" class="vc-toolbar vc-valign button">
+        <button type="button" :class="{ active: displayFilters }" @click="displayFilters = !displayFilters">{{ displayFilters ? 'Hide filters' : 'Show filters' }}</button>
       </div>
-      <div>
+      <!-- <div :class="{ hidden: !displayYtc }" class="justify-end">
+
+      </div> -->
+      <div class="vc-toolbar vc-valign button">
+        <button
+          v-if="displayYtc"
+          type="button"
+          class="sm-btn"
+          :class="{ active: displayOptions }"
+          @click="displayOptions = !displayOptions"
+          :title="displayOptions ? 'Hide optiosn' : 'Show options'"
+        >
+          <svg class="svg-icon" viewBox="0 0 20 20" width="18" height="18">
+            <path
+              d="M10.032,8.367c-1.112,0-2.016,0.905-2.016,2.018c0,1.111,0.904,2.014,2.016,2.014c1.111,0,2.014-0.902,2.014-2.014C12.046,9.271,11.143,8.367,10.032,8.367z M10.032,11.336c-0.525,0-0.953-0.427-0.953-0.951c0-0.526,0.427-0.955,0.953-0.955c0.524,0,0.951,0.429,0.951,0.955C10.982,10.909,10.556,11.336,10.032,11.336z"
+            ></path>
+            <path
+              d="M17.279,8.257h-0.785c-0.107-0.322-0.237-0.635-0.391-0.938l0.555-0.556c0.208-0.208,0.208-0.544,0-0.751l-2.254-2.257c-0.199-0.2-0.552-0.2-0.752,0l-0.556,0.557c-0.304-0.153-0.617-0.284-0.939-0.392V3.135c0-0.294-0.236-0.532-0.531-0.532H8.435c-0.293,0-0.531,0.237-0.531,0.532v0.784C7.582,4.027,7.269,4.158,6.966,4.311L6.409,3.754c-0.1-0.1-0.234-0.155-0.376-0.155c-0.141,0-0.275,0.055-0.375,0.155L3.403,6.011c-0.208,0.207-0.208,0.543,0,0.751l0.556,0.556C3.804,7.622,3.673,7.935,3.567,8.257H2.782c-0.294,0-0.531,0.238-0.531,0.531v3.19c0,0.295,0.237,0.531,0.531,0.531h0.787c0.105,0.318,0.236,0.631,0.391,0.938l-0.556,0.559c-0.208,0.207-0.208,0.545,0,0.752l2.254,2.254c0.208,0.207,0.544,0.207,0.751,0l0.558-0.559c0.303,0.154,0.616,0.285,0.938,0.391v0.787c0,0.293,0.238,0.531,0.531,0.531h3.191c0.295,0,0.531-0.238,0.531-0.531v-0.787c0.322-0.105,0.636-0.236,0.938-0.391l0.56,0.559c0.208,0.205,0.546,0.207,0.752,0l2.252-2.254c0.208-0.207,0.208-0.545,0.002-0.752l-0.559-0.559c0.153-0.303,0.285-0.615,0.389-0.938h0.789c0.295,0,0.532-0.236,0.532-0.531v-3.19C17.812,8.495,17.574,8.257,17.279,8.257z M16.747,11.447h-0.653c-0.241,0-0.453,0.164-0.514,0.398c-0.129,0.496-0.329,0.977-0.594,1.426c-0.121,0.209-0.089,0.473,0.083,0.645l0.463,0.465l-1.502,1.504l-0.465-0.463c-0.174-0.174-0.438-0.207-0.646-0.082c-0.447,0.262-0.927,0.463-1.427,0.594c-0.234,0.061-0.397,0.271-0.397,0.514V17.1H8.967v-0.652c0-0.242-0.164-0.453-0.397-0.514c-0.5-0.131-0.98-0.332-1.428-0.594c-0.207-0.123-0.472-0.09-0.646,0.082l-0.463,0.463L4.53,14.381l0.461-0.463c0.169-0.172,0.204-0.434,0.083-0.643c-0.266-0.461-0.467-0.939-0.596-1.43c-0.06-0.234-0.272-0.398-0.514-0.398H3.313V9.319h0.652c0.241,0,0.454-0.162,0.514-0.397c0.131-0.498,0.33-0.979,0.595-1.43c0.122-0.208,0.088-0.473-0.083-0.645L4.53,6.386l1.503-1.504l0.46,0.462c0.173,0.172,0.437,0.204,0.646,0.083c0.45-0.265,0.931-0.464,1.433-0.597c0.233-0.062,0.396-0.274,0.396-0.514V3.667h2.128v0.649c0,0.24,0.161,0.452,0.396,0.514c0.502,0.133,0.982,0.333,1.433,0.597c0.211,0.12,0.475,0.089,0.646-0.083l0.459-0.462l1.504,1.504l-0.463,0.463c-0.17,0.171-0.202,0.438-0.081,0.646c0.263,0.448,0.463,0.928,0.594,1.427c0.061,0.235,0.272,0.397,0.514,0.397h0.651V11.447z"
+            ></path>
+          </svg>
+        </button>
         <button type="button" @click="displayYtc = !displayYtc">{{ displayYtc ? 'X' : 'ytcFilter' }}</button>
       </div>
     </div>
@@ -56,7 +82,31 @@
           </div>
         </form>
         <div class="vc-options-item">
-          <div class="vc-title">Current filter:</div>
+          <div class="vc-title">
+            Current filter:
+            <button type="button" class="sm-btn" title="Export current filters" @click="exportFilters">
+              <svg class="svg-icon" viewBox="0 0 20 20" width="13" height="13">
+                <path
+                  d="M8.416,3.943l1.12-1.12v9.031c0,0.257,0.208,0.464,0.464,0.464c0.256,0,0.464-0.207,0.464-0.464V2.823l1.12,1.12c0.182,0.182,0.476,0.182,0.656,0c0.182-0.181,0.182-0.475,0-0.656l-1.744-1.745c-0.018-0.081-0.048-0.16-0.112-0.224C10.279,1.214,10.137,1.177,10,1.194c-0.137-0.017-0.279,0.02-0.384,0.125C9.551,1.384,9.518,1.465,9.499,1.548L7.76,3.288c-0.182,0.181-0.182,0.475,0,0.656C7.941,4.125,8.234,4.125,8.416,3.943z M15.569,6.286h-2.32v0.928h2.32c0.512,0,0.928,0.416,0.928,0.928v8.817c0,0.513-0.416,0.929-0.928,0.929H4.432c-0.513,0-0.928-0.416-0.928-0.929V8.142c0-0.513,0.416-0.928,0.928-0.928h2.32V6.286h-2.32c-1.025,0-1.856,0.831-1.856,1.856v8.817c0,1.025,0.832,1.856,1.856,1.856h11.138c1.024,0,1.855-0.831,1.855-1.856V8.142C17.425,7.117,16.594,6.286,15.569,6.286z"
+                ></path>
+              </svg>
+            </button>
+            <button type="button" class="sm-btn" title="Import filters" :class="{ active: displayExport }" @click="displayExport = !displayExport">
+              <svg class="svg-icon" viewBox="0 0 20 20" width="13" height="13">
+                <path
+                  d="M15.608,6.262h-2.338v0.935h2.338c0.516,0,0.934,0.418,0.934,0.935v8.879c0,0.517-0.418,0.935-0.934,0.935H4.392c-0.516,0-0.935-0.418-0.935-0.935V8.131c0-0.516,0.419-0.935,0.935-0.935h2.336V6.262H4.392c-1.032,0-1.869,0.837-1.869,1.869v8.879c0,1.031,0.837,1.869,1.869,1.869h11.216c1.031,0,1.869-0.838,1.869-1.869V8.131C17.478,7.099,16.64,6.262,15.608,6.262z M9.513,11.973c0.017,0.082,0.047,0.162,0.109,0.226c0.104,0.106,0.243,0.143,0.378,0.126c0.135,0.017,0.274-0.02,0.377-0.126c0.064-0.065,0.097-0.147,0.115-0.231l1.708-1.751c0.178-0.183,0.178-0.479,0-0.662c-0.178-0.182-0.467-0.182-0.645,0l-1.101,1.129V1.588c0-0.258-0.204-0.467-0.456-0.467c-0.252,0-0.456,0.209-0.456,0.467v9.094L8.443,9.553c-0.178-0.182-0.467-0.182-0.645,0c-0.178,0.184-0.178,0.479,0,0.662L9.513,11.973z"
+                ></path>
+              </svg>
+            </button>
+          </div>
+          <div v-if="displayExport">
+            <form>
+              <textarea placeholder="Paste filters list here" v-model="importFilterTextArea" />
+              <div>
+                <button type="submit" @click.prevent="importFilters">Import</button>
+              </div>
+            </form>
+          </div>
           <ul class="vc-filter-list">
             <li class="vc-filter-item" v-for="(filter, index) in filters" :key="'f' + index">
               <span v-if="!filter.regex && filter.caseSensitive">(Case sensitive)</span>
@@ -88,23 +138,60 @@
             Auto scroll:
             <input id="auto-scroll-opt" type="checkbox" v-model="options.autoScroll" />
           </label>
-          <label for="height-opt" class="flex-align-center"> Height: <input type="range" id="height-opt" min="50" max="400" v-model="options.height" step="1" /> </label>
+          <label for="height-opt" class="flex-align-center">
+            Height: <input type="range" id="height-opt" class="width" min="50" :max="maxHeight" :disabled="this.options.autoMaxHeight" v-model="options.height" step="1" /> Auto max
+            height:<input id="max-height-opt" type="checkbox" v-model="options.autoMaxHeight" />
+          </label>
+          <span>{{ heightPx }}</span>
         </div>
         <div class="vc-options-item">
           <button type="button" @click="clearMessages">Clear filtered chat</button>
         </div>
         <div class="vc-options-item">
-          <div class="vc-title">Default profile:</div>
-          <button type="button" @click="saveProfile('default')">Save</button>
-          <button type="button" @click="removeProfile('default')">Remove</button>
-          <button type="button" @click="restoreProfileClick('default')">Apply</button>
+          <div class="vc-title">Profile:</div>
+          <select v-model="editingProfileKey">
+            <option :value="null" disabled selected hidden>Choose profile...</option>
+            <option v-for="(profile, key) in global.profiles" :key="key" :value="key">
+              {{ profile.name || key }}
+              {{ global.defaultPerChannel && global.defaultPerChannel[CHANNEL_ID] && key === global.defaultPerChannel[CHANNEL_ID].profileKey ? '(Channel)' : '' }}
+              {{ key === global.globalDefault ? '(Default)' : '' }}
+            </option>
+          </select>
+          <button type="button" class="sm-btn" @click="createNewProfile">+</button>
+          <div v-if="editingProfileKey != null">
+            <div class="vc-options-item">
+              <label for="profile-name">Name:</label>
+              <input id="profile-name" type="text" v-model="global.profiles[editingProfileKey].name" />
+            </div>
+            <div>
+              <button type="button" @click="saveProfile()">Save</button>
+              <button type="button" @click="applyProfile()">Apply</button>
+              <button type="button" @click="removeProfile()">Delete</button>
+            </div>
+            <div class="vc-title">
+              Profile's default:
+            </div>
+            <ul>
+              <li v-if="editingProfileKey === global.globalDefault">Global default</li>
+              <li v-for="defaultInfo in profileDefaultChannel" :key="defaultInfo.channelId">
+                <a :href="'https://www.youtube.com/channel/' + defaultInfo.channelId" target="_blank">
+                  {{ defaultInfo.channelName }}
+                </a>
+              </li>
+            </ul>
+
+            <div>
+              <button type="button" @click="setAsGlobalDefault()">Set as global default</button>
+              <button type="button" @click="setAsChannelDefault()">Set as channel default</button>
+            </div>
+          </div>
         </div>
         <div class="vc-options-item">
           <button type="button" @click="notifyChangelog">Changelog</button> <a href="https://github.com/RomainLK/ytc-filter/wiki" target="_blank">Wiki</a>
         </div>
       </div>
       <!--Content-->
-      <div class="vc-content" :style="{ height: heightPx }" ref="content">
+      <div id="ytc-messages" class="vc-content" :style="{ height: heightPx }" ref="content">
         <div class="vc-message-item" v-for="(msg, index) in messages" :key="msg.id">
           <span v-if="msg.timestamp && msgOptions !== index" class="vc-timestamp" @click="msgOptions = index">{{ msg.timestamp }}</span>
           <span v-else class="vc-options">
@@ -147,7 +234,7 @@
 </template>
 <script>
 import { ChatObserver } from '@/utils/chat-observer'
-import { getVideoId } from '@/utils/information-extractor'
+import { getVideoId, getChannelId, getChannelName } from '@/utils/information-extractor'
 import cache from 'webext-storage-cache'
 import RegexParser from 'regex-parser'
 import Vue from 'vue'
@@ -155,11 +242,15 @@ import { gtr } from 'semver'
 import manifest from '@/manifest.json'
 import changelog from '@/../changelog.md'
 import xss from 'xss'
+import copy from 'copy-to-clipboard'
+import domtoimage from 'dom-to-image-improved'
+import { saveAs } from 'file-saver'
 
 const MAX_AGE = { days: 9999 }
 const VIDEO_STORAGE_KEY = `vcVideo${getVideoId()}`
 const GLOBAL_STORAGE_KEY = 'vcGlobal'
 const VERSION_STORAGE_KEY = 'vcVersion'
+const CHANNEL_ID = getChannelId()
 
 let deduplicationMap = {}
 
@@ -172,6 +263,7 @@ export default {
       displayYtc: false,
       displayFilters: false,
       displayOptions: false,
+      displayExport: false,
       caseSensitive: false,
       msgOptions: null,
       filterInput: '',
@@ -183,22 +275,37 @@ export default {
         autoOpen: false,
         autoScroll: true,
         height: 100,
+        autoMaxHeight: false,
       },
       global: {
         profiles: {},
+        defaultPerChannel: {},
+        globalDefault: null,
       },
       notificationMsg: '',
       notificationTimeOut: null,
+      importFilterTextArea: '',
+      editingProfileKey: null,
+      maxHeight: 900,
+      CHANNEL_ID,
     }
   },
   async mounted() {
+    this.maxHeight = document.getElementById('content-pages').getBoundingClientRect().height - 50
     this.observer = new ChatObserver()
     this.observer.observe()
     this.observer.listeners.push(this.onMessage.bind(this))
     await this.loadGlobal()
     if (!(await this.loadConfig())) {
-      if (await this.restoreProfile('default')) {
-        this.notify('Default profile was applied')
+      const channelDefault = this.global.defaultPerChannel[CHANNEL_ID]
+      if (channelDefault) {
+        await this.applyProfile(channelDefault.profileKey)
+        const profileName = this.global.profiles[channelDefault.profileKey].name
+        this.notify(`Default channel profile "${profileName}" was applied.`)
+      } else if (this.global.globalDefault) {
+        await this.applyProfile(this.global.globalDefault)
+        const profileName = this.global.profiles[this.global.globalDefault].name
+        this.notify(`Default global profile "${profileName}" was applied.`)
       }
     }
     if (this.filters.length === 0) {
@@ -217,8 +324,20 @@ export default {
     filterHasCaseSensitive() {
       return ['author', 'msgIncludes'].includes(this.filterType)
     },
+    finalHeight() {
+      if (this.options.autoMaxHeight) {
+        return this.maxHeight
+      }
+      return this.options.height
+    },
     heightPx() {
-      return this.options.height + 'px'
+      return this.finalHeight + 'px'
+    },
+    profileDefaultChannel() {
+      if (this.editingProfileKey) {
+        return Object.values(this.global.defaultPerChannel).filter(info => info.profileKey === this.editingProfileKey)
+      }
+      return []
     },
   },
   watch: {
@@ -325,29 +444,59 @@ export default {
       deduplicationMap = {}
       this.saveConfig()
     },
+    exportMessagesToPng() {
+      const messageNode = document.getElementById('ytc-messages')
+      domtoimage
+        .toBlob(messageNode, {
+          width: messageNode.scrollWidth,
+          height: messageNode.scrollHeight,
+          canvas: {
+            // Canvas for cropping screenshot
+            sx: 0,
+            sy: 0,
+            dy: -messageNode.scrollTop,
+            dx: 0,
+            sh: messageNode.scrollHeight,
+            sw: messageNode.scrollWidth,
+            dh: messageNode.scrollHeight,
+            dw: messageNode.scrollWidth,
+            height: this.finalHeight,
+          },
+        })
+        .then(function(blob) {
+          saveAs(blob, 'ytcMessages.png')
+        })
+    },
 
-    async saveProfile(name) {
+    async saveProfile() {
+      const name = this.global.profiles[this.editingProfileKey].name
       if (!name) {
         console.warn('saveProfile - Missing profile name')
         return
       }
       const profile = Vue.observable({
+        name,
         filters: [...this.filters],
         options: {
           ...this.options,
         },
       })
-      this.$set(this.global.profiles, name, profile)
+      this.$set(this.global.profiles, this.editingProfileKey, profile)
       await this.saveGlobal()
       this.notify(`Profile "${name}" was saved`)
     },
-    async removeProfile(name) {
-      if (!this.global.profiles[name]) {
-        this.notify(`Profile "${name}" doesn't exist`)
-        return
+    async removeProfile() {
+      const profile = this.global.profiles[this.editingProfileKey]
+      delete this.global.profiles[this.editingProfileKey]
+      this.notify(`Profile "${profile.name}" was removed`)
+      if (this.global.globalDefault === this.editingProfileKey) {
+        this.global.globalDefault = null
       }
-      delete this.global.profiles[name]
-      this.notify(`Profile "${name}" was removed`)
+      const channelDefaults = Object.values(this.defaultPerChannel).filter(i => i.profileKey === this.editingProfileKey)
+      for (const channelDefault of channelDefaults) {
+        delete this.defaultPerChannel[channelDefault]
+      }
+      this.editingProfileKey = null
       await this.saveGlobal()
     },
     saveGlobal() {
@@ -360,36 +509,50 @@ export default {
         return false
       }
       try {
-        this.global = JSON.parse(await cache.get(GLOBAL_STORAGE_KEY))
+        this.global = {
+          profiles: {},
+          defaultPerChannel: {},
+          globalDefault: null,
+          ...JSON.parse(await cache.get(GLOBAL_STORAGE_KEY)),
+        }
       } catch (e) {
-        console.warn('restoreProfile - Failed to load global')
+        console.warn('applyProfile - Failed to load global')
         return false
       }
     },
 
-    async restoreProfileClick(name) {
-      if (!(await this.restoreProfile(name))) {
-        this.notify(`Profile "${name}" doesn't exist`)
-      }
-    },
-
-    async restoreProfile(name) {
-      if (!name) {
-        console.warn('restoreProfile - Missing profile name')
-        return false
-      }
+    async applyProfile(key) {
+      key = key ?? this.editingProfileKey
       try {
         const { profiles } = this.global
-        if (profiles?.[name]) {
-          this.setConfig(profiles[name])
+        if (profiles?.[key]) {
+          this.setConfig(profiles[key])
           return true
         } else {
           return false
         }
       } catch (e) {
-        console.warn('restoreProfile - Failed to load global')
+        console.warn('applyProfile - Failed to apply profile')
+        console.error(e)
         return false
       }
+    },
+
+    setAsGlobalDefault() {
+      this.global.globalDefault = this.editingProfileKey
+      this.saveGlobal()
+    },
+
+    setAsChannelDefault() {
+      const info = Vue.observable({
+        profileKey: this.editingProfileKey,
+        channelName: getChannelName(),
+        channelId: CHANNEL_ID,
+      })
+      if (!CHANNEL_ID) {
+        this.notify('Channel default only works on Youtube.com')
+      }
+      this.$set(this.global.defaultPerChannel, CHANNEL_ID, info)
     },
 
     async saveConfig() {
@@ -466,6 +629,34 @@ export default {
         return
       }
       document.querySelector('#item-scroller').scrollTo(0, ytMsg.offsetTop)
+    },
+
+    exportFilters() {
+      if (copy(JSON.stringify(this.filters))) {
+        this.notify('Filters were copied to your clipboard')
+      } else {
+        this.notify('Impossible to copy the filters to your clipboard. This may be an issue with you browser.')
+      }
+    },
+
+    importFilters() {
+      try {
+        const parsed = JSON.parse(this.importFilterTextArea)
+        this.filters = parsed
+        this.importFilterTextArea = ''
+        this.displayExport = false
+      } catch (e) {
+        this.notify('Error when importing filters. Please check you export.')
+        console.log(e)
+      }
+    },
+
+    createNewProfile() {
+      const key = Math.random()
+        .toString(36)
+        .substr(2, 9)
+      this.$set(this.global.profiles, key, { name: '', filters: [], options: [] })
+      this.editingProfileKey = key
     },
   },
 }

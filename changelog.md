@@ -8,13 +8,26 @@ For bug reports or feature request, contact the developer directly or on <a href
 
 # Changelog
 
-## 1.6.0
+## 1.6.0 Gibara
+
+New features:
+
+- Import/export filters
+- Multiple profile support
+  - Default per channel. Youtube only.
 
 Improvements:
 
-- Support for Youtube studio
+- Support for Youtube studio interface. As a channel, it's referenced as "studio"
+- CSS for links
+- Added some code name for each minor version
+- Increase heigh limit. It may excee
 
-## 1.5.0
+Known issue:
+
+- Default per channel does not work on embedded chat because we lack a channel ID for now.
+
+## 1.5.0 Fubuki
 
 New features:
 
@@ -33,17 +46,17 @@ Bugfixes:
 - Limit size of emoji in captured messages
 - Display the changelog properly on new version
 
-## 1.4.0
+## 1.4.0 Elu
 
-Improvement:
+Improvements:
 
 - Emoji are now displayed in the captured messages.
 
-Known issue:
+Known issues:
 
 - If ytcFilter's window is too big, the "Top chat" dropdown of Youtube may not render properly. No fixes were found for now.
 
-## 1.3.1
+## 1.3.1 Debiru
 
 Changes:
 
@@ -61,7 +74,7 @@ New features:
 - Apply default profile button
 - Auto open ytcFilter option. This settings is on a per video basis. Use the default profile to apply it to new videos.
 
-## 1.2.0
+## 1.2.0 Coco
 
 Due to an unfortunate coincidence, the extension is now named ytcFilter.
 
@@ -81,7 +94,7 @@ Bugfix:
 - Case sensitive didn't work
 - Filter removal didn't save to storage
 
-## 1.1.0
+## 1.1.0 Botan
 
 New features:
 
@@ -95,7 +108,7 @@ Known issues:
 
 - Duplication will happen if the extension is used both on the live stream and VOD
 
-## 1.0.0
+## 1.0.0 Aqua
 
 Initial release
 
