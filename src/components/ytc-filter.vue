@@ -466,7 +466,7 @@ export default {
         })
         .then(blob => {
           console.log(this.finalHeight + 50)
-          saveAs(blob, `ytcMessages-${VIDEO_ID}.png`)
+          saveAs(blob, `ytcFilter-${VIDEO_ID}.png`)
         })
     },
 
