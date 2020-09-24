@@ -168,6 +168,9 @@ html[dark] #ytc-filter {
     max-height: 10rem;
     overflow-y: scroll;
     list-style-type: none;
+    .vc-filter-item {
+      margin-bottom: 0.5rem;
+    }
   }
   .vc-message-item {
     margin-top: 0.5rem;

@@ -171,9 +171,9 @@
             <div class="vc-title">
               Profile's default:
             </div>
-            <ul>
-              <li v-if="editingProfileKey === global.globalDefault">Global default</li>
-              <li v-for="defaultInfo in profileDefaultChannel" :key="defaultInfo.channelId">
+            <ul class="vc-filter-list">
+              <li class="vc-filter-item" v-if="editingProfileKey === global.globalDefault">Global default</li>
+              <li class="vc-filter-item" v-for="defaultInfo in profileDefaultChannel" :key="defaultInfo.channelId">
                 <a :href="'https://www.youtube.com/channel/' + defaultInfo.channelId" target="_blank">
                   {{ defaultInfo.channelName }}
                 </a>
@@ -555,6 +555,7 @@ export default {
         this.notify('Channel default only works on Youtube.com')
       }
       this.$set(this.global.defaultPerChannel, CHANNEL_ID, info)
+      this.saveGlobal()
     },
 
     async saveConfig() {
