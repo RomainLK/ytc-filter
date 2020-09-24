@@ -2,7 +2,7 @@
 
 Welcome to ytcFilter. This message will only appear the first time you install this extension, or update it. It can be displayed again by clicking on "ytcFilter" > "Show options" > "Changelog".
 
-For help, please check the <a href="https://github.com/RomainLK/ytc-filter/wiki" target="_blank">wiki</a>
+For help, or example of regular expression, please check the <a href="https://github.com/RomainLK/ytc-filter/wiki" target="_blank">wiki</a>.
 
 For bug reports or feature request, contact the developer directly or on <a href="https://github.com/RomainLK/ytc-filter"  target="_blank">Github</a>.
 
@@ -12,16 +12,18 @@ For bug reports or feature request, contact the developer directly or on <a href
 
 New features:
 
-- Import/export filters
+- Import/export filters with copy/paste
 - Multiple profile support
   - Default per channel. Youtube only.
+- Auto max height option
+- Button to screenshot captured message
 
 Improvements:
 
 - Support for Youtube studio interface. As a channel, it's referenced as "studio"
 - CSS for links
 - Added some code name for each minor version
-- Increase heigh limit. It may excee
+- Max height is limited by the available space of the chat
 
 Known issue:
 

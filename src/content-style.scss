@@ -41,8 +41,10 @@ $moderator-color: #5e84f1;
 }
 
 html[dark] #ytc-filter {
-  button,
   .vc-toolbar {
+    background-color: $dark-bg;
+  }
+  button {
     background-color: $dark-bg;
     &:hover,
     &:active {
@@ -58,9 +60,15 @@ html[dark] #ytc-filter {
     color: $light-bg;
     background-color: lighten($dark-bg, 10%);
   }
+  #ytc-messages {
+    background-color: #151515;
+  }
 }
 
 #ytc-filter {
+  #ytc-messages {
+    background-color: white;
+  }
   .w-100 {
     width: 100%;
   }
