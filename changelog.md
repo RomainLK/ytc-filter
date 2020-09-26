@@ -14,16 +14,17 @@ New features:
 
 - Import/export filters with copy/paste
 - Multiple profile support
-  - Default per channel. Youtube only.
+  - Default profile per channel. Youtube only.
 - Auto max height option
-- Button to screenshot captured message
+- Button to screenshot captured messages
 
 Improvements:
 
 - Support for Youtube studio interface. As a channel, it's referenced as "studio"
 - CSS for links
-- Added some code name for each minor version
 - Max height is limited by the available space of the chat
+- Added tooltips to explains the various buttons
+- Added some code name for each minor version
 
 Known issue:
 

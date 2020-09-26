@@ -54,7 +54,7 @@
             ></path>
           </svg>
         </button>
-        <button type="button" @click="displayYtc = !displayYtc">{{ displayYtc ? 'X' : 'ytcFilter' }}</button>
+        <button type="button" @click="displayYtc = !displayYtc" :title="displayYtc ? 'Close ytcFilter' : 'Show ytcFilter'">{{ displayYtc ? 'X' : 'ytcFilter' }}</button>
       </div>
     </div>
     <div v-show="displayYtc" class="vc-container">
@@ -78,7 +78,7 @@
           <div class="vc-options-item flex-align-center">
             <label for="case-sensitive">Case sensitive:</label>
             <input id="case-sensitive" type="checkbox" v-model="caseSensitive" :disabled="!filterHasCaseSensitive" />
-            <button type="submit" @click.prevent="addFilter">Add</button>
+            <button type="submit" @click.prevent="addFilter" title="Add filter">Add</button>
           </div>
         </form>
         <div class="vc-options-item">
@@ -101,7 +101,7 @@
           </div>
           <div v-if="displayExport">
             <form>
-              <textarea placeholder="Paste filters list here" v-model="importFilterTextArea" />
+              <textarea placeholder="Paste filters here" v-model="importFilterTextArea" />
               <div>
                 <button type="submit" @click.prevent="importFilters">Import</button>
               </div>
@@ -115,7 +115,7 @@
               <span v-else-if="filter.regex">Regex: {{ filter.regex }}</span>
               <span v-else-if="filter.isModerator">Is moderator</span>
               <span v-else-if="filter.isOwner">Is owner</span>
-              <button type="button" class="sm-btn" @click="removeFilter(filter)">
+              <button type="button" class="sm-btn" @click="removeFilter(filter)" title="Remove filter">
                 <svg class="svg-icon" viewBox="0 0 20 20" width="13" height="13">
                   <path
                     d="M17.114,3.923h-4.589V2.427c0-0.252-0.207-0.459-0.46-0.459H7.935c-0.252,0-0.459,0.207-0.459,0.459v1.496h-4.59c-0.252,0-0.459,0.205-0.459,0.459c0,0.252,0.207,0.459,0.459,0.459h1.51v12.732c0,0.252,0.207,0.459,0.459,0.459h10.29c0.254,0,0.459-0.207,0.459-0.459V4.841h1.511c0.252,0,0.459-0.207,0.459-0.459C17.573,4.127,17.366,3.923,17.114,3.923M8.394,2.886h3.214v0.918H8.394V2.886z M14.686,17.114H5.314V4.841h9.372V17.114z M12.525,7.306v7.344c0,0.252-0.207,0.459-0.46,0.459s-0.458-0.207-0.458-0.459V7.306c0-0.254,0.205-0.459,0.458-0.459S12.525,7.051,12.525,7.306M8.394,7.306v7.344c0,0.252-0.207,0.459-0.459,0.459s-0.459-0.207-0.459-0.459V7.306c0-0.254,0.207-0.459,0.459-0.459S8.394,7.051,8.394,7.306"
@@ -130,11 +130,11 @@
       <div v-show="displayOptions" class="vc-options">
         <div class="vc-options-item">
           <div class="vc-title">Chat:</div>
-          <label for="auto-open-opt" class="flex-align-center">
+          <label for="auto-open-opt" class="flex-align-center pointer" title="Automatically open ytcFilter on this stream">
             Auto open:
             <input id="auto-open-opt" type="checkbox" v-model="options.autoOpen" />
           </label>
-          <label for="auto-scroll-opt" class="flex-align-center">
+          <label for="auto-scroll-opt" class="flex-align-center pointer" title="Automatically scroll chat when it's at the bottom">
             Auto scroll:
             <input id="auto-scroll-opt" type="checkbox" v-model="options.autoScroll" />
           </label>
@@ -145,7 +145,7 @@
           <span>{{ heightPx }}</span>
         </div>
         <div class="vc-options-item">
-          <button type="button" @click="clearMessages">Clear filtered chat</button>
+          <button type="button" @click="clearMessages" title="Remove all captured messages">Clear chat</button>
         </div>
         <div class="vc-options-item">
           <div class="vc-title">Profile:</div>
@@ -157,16 +157,16 @@
               {{ key === global.globalDefault ? '(Default)' : '' }}
             </option>
           </select>
-          <button type="button" class="sm-btn" @click="createNewProfile">+</button>
+          <button type="button" class="sm-btn" @click="createNewProfile" title="Create new profile">+</button>
           <div v-if="editingProfileKey != null">
             <div class="vc-options-item">
               <label for="profile-name">Name:</label>
               <input id="profile-name" type="text" v-model="global.profiles[editingProfileKey].name" />
             </div>
-            <div>
-              <button type="button" @click="saveProfile()">Save</button>
-              <button type="button" @click="applyProfile()">Apply</button>
-              <button type="button" @click="removeProfile()">Delete</button>
+            <div class="vc-options-item">
+              <button type="button" @click="saveProfile()" title="Save current filter, options and name on this profile">Save</button>
+              <button type="button" @click="applyProfileClick()" title="Apply the filters and options on this video. It will replace existing options">Apply</button>
+              <button type="button" @click="removeProfile()" title="Delete the selected profile">Delete</button>
             </div>
             <div class="vc-title">
               Profile's default:
@@ -174,19 +174,29 @@
             <ul class="vc-filter-list">
               <li class="vc-filter-item" v-if="editingProfileKey === global.globalDefault">Global default</li>
               <li class="vc-filter-item" v-for="defaultInfo in profileDefaultChannel" :key="defaultInfo.channelId">
-                <a :href="'https://www.youtube.com/channel/' + defaultInfo.channelId" target="_blank">
+                <a v-if="defaultInfo.channelId !== 'Studio'" :href="'https://www.youtube.com/channel/' + defaultInfo.channelId" target="_blank">
                   {{ defaultInfo.channelName }}
                 </a>
+                <span v-else>
+                  {{ defaultInfo.channelName }}
+                </span>
               </li>
             </ul>
 
             <div>
-              <button type="button" @click="setAsGlobalDefault()">Set as global default</button>
-              <button type="button" @click="setAsChannelDefault()">Set as channel default</button>
+              <button type="button" @click="setAsGlobalDefault()" title="The selected profile will be automatically applied to all new stream if no channel default were set">
+                Set as global default
+              </button>
+              <button type="button" @click="setAsChannelDefault()" title="The selected profile will be automatically applied to all new stream from this channel">
+                Set as channel default
+              </button>
             </div>
           </div>
         </div>
         <div class="vc-options-item">
+          <div class="vc-title">
+            About:
+          </div>
           <button type="button" @click="notifyChangelog">Changelog</button> <a href="https://github.com/RomainLK/ytc-filter/wiki" target="_blank">Wiki</a>
         </div>
       </div>
@@ -488,17 +498,20 @@ export default {
       this.notify(`Profile "${name}" was saved`)
     },
     async removeProfile() {
-      const profile = this.global.profiles[this.editingProfileKey]
-      delete this.global.profiles[this.editingProfileKey]
-      this.notify(`Profile "${profile.name}" was removed`)
-      if (this.global.globalDefault === this.editingProfileKey) {
+      const key = this.editingProfileKey
+      this.editingProfileKey = null
+
+      const profile = this.global.profiles[key]
+      this.$delete(this.global.profiles, key)
+      if (this.global.globalDefault === key) {
         this.global.globalDefault = null
       }
-      const channelDefaults = Object.values(this.defaultPerChannel).filter(i => i.profileKey === this.editingProfileKey)
+      const channelDefaults = Object.values(this.defaultPerChannel).filter(i => i.profileKey === key)
       for (const channelDefault of channelDefaults) {
         delete this.defaultPerChannel[channelDefault]
       }
-      this.editingProfileKey = null
+
+      this.notify(`Profile "${profile.name}" was removed`)
       await this.saveGlobal()
     },
     saveGlobal() {
@@ -537,6 +550,13 @@ export default {
         console.warn('applyProfile - Failed to apply profile')
         console.error(e)
         return false
+      }
+    },
+
+    async applyProfileClick() {
+      if (await this.applyProfile()) {
+        const profile = this.global.profiles[this.editingProfileKey]
+        this.notify(`The profile "${profile.name}" was applied to the stream`)
       }
     },
 
