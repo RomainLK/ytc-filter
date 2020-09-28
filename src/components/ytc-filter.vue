@@ -154,7 +154,7 @@
             <option v-for="(profile, key) in global.profiles" :key="key" :value="key">
               {{ profile.name || key }}
               {{ global.defaultPerChannel && global.defaultPerChannel[CHANNEL_ID] && key === global.defaultPerChannel[CHANNEL_ID].profileKey ? '(Channel)' : '' }}
-              {{ key === global.globalDefault ? '(Default)' : '' }}
+              {{ key === global.globalDefault ? '(Global)' : '' }}
             </option>
           </select>
           <button type="button" class="sm-btn" @click="createNewProfile" title="Create new profile">+</button>
@@ -258,7 +258,8 @@ import { saveAs } from 'file-saver'
 
 const CHANNEL_ID = getChannelId()
 const VIDEO_ID = getVideoId()
-const MAX_AGE = { days: 9999 }
+const MAX_AGE = { days: 14 }
+const MAX_GLOBAL_AGE = { days: 9999 }
 const VIDEO_STORAGE_KEY = `vcVideo${VIDEO_ID}`
 const GLOBAL_STORAGE_KEY = 'vcGlobal'
 const VERSION_STORAGE_KEY = 'vcVersion'
@@ -307,6 +308,7 @@ export default {
     this.observer.observe()
     this.observer.listeners.push(this.onMessage.bind(this))
     await this.loadGlobal()
+    await this.checkUpdate()
     if (!(await this.loadConfig())) {
       const channelDefault = this.global.defaultPerChannel[CHANNEL_ID]
       if (channelDefault) {
@@ -323,7 +325,6 @@ export default {
       this.displayFilters = true
     }
     this.displayYtc = this.options.autoOpen
-    this.checkUpdate()
   },
   beforeDestroy() {
     this.observer.clear()
@@ -369,9 +370,16 @@ export default {
       if (await cache.has(VERSION_STORAGE_KEY)) {
         lastVersion = await cache.get(VERSION_STORAGE_KEY)
       }
+      console.log('V', manifest.version, lastVersion)
       if (gtr(manifest.version, lastVersion)) {
+        //Migration from 1.5.0 to 1.6.1 for default profile
+        if (this.global.profiles.default && this.global.profiles.default.name == null && this.global.globalDefault == null) {
+          this.global.profiles.default.name = 'Default'
+          this.global.globalDefault = 'default'
+          this.saveGlobal()
+        }
         this.notifyChangelog()
-        cache.set(VERSION_STORAGE_KEY, manifest.version, MAX_AGE)
+        cache.set(VERSION_STORAGE_KEY, manifest.version, MAX_GLOBAL_AGE)
       }
     },
     notifyChangelog() {
@@ -515,7 +523,7 @@ export default {
       await this.saveGlobal()
     },
     saveGlobal() {
-      return cache.set(GLOBAL_STORAGE_KEY, JSON.stringify(this.global), MAX_AGE)
+      return cache.set(GLOBAL_STORAGE_KEY, JSON.stringify(this.global), MAX_GLOBAL_AGE)
     },
 
     async loadGlobal() {
