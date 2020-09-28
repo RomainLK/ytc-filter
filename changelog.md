@@ -8,6 +8,14 @@ For bug reports or feature request, contact the developer directly or on <a href
 
 # Changelog
 
+## 1.6.1
+
+Bugfixes:
+
+- Official support for popout chat. It was never tested with that before.
+- Due to a browser limitation, limit storage length to 14 days for captured messages and filter list for a video. This is a temporary measure until some longer storage solution is defined or storage management.
+- Add an automatic process to migrate old "default profile" to the new profile system.
+
 ## 1.6.0 Gibara
 
 New features:
