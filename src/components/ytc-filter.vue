@@ -572,7 +572,7 @@ export default {
         channelId: CHANNEL_ID,
       })
       if (!CHANNEL_ID) {
-        this.notify('Channel default only works on Youtube.com')
+        this.notify('Channel default only works on Youtube.com embedded chat')
       }
       this.$set(this.global.defaultPerChannel, CHANNEL_ID, info)
       this.saveGlobal()

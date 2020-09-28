@@ -9,13 +9,13 @@ export const getVideoId = () => {
 export const getChannelId = () => {
   if (document.location.origin === 'https://studio.youtube.com') {
     return 'Studio'
-  } else if (document.referrer.startsWith('https://www.youtube.com')) {
+  } else if (document.referrer.startsWith('https://www.youtube.com') && window.parent !== window) {
     return window.parent.top.document
       .querySelector('ytd-channel-name .yt-simple-endpoint')
       .href.split('/')
       .pop()
   } else {
-    // Context other than Youtube
+    // Context other than Youtube's chat
     return null
   }
 }
@@ -23,7 +23,7 @@ export const getChannelId = () => {
 export const getChannelName = () => {
   if (document.location.origin === 'https://studio.youtube.com') {
     return 'Studio'
-  } else if (document.referrer.startsWith('https://www.youtube.com')) {
+  } else if (document.referrer.startsWith('https://www.youtube.com') && window.parent !== window) {
     return window.parent.top.document.querySelector('ytd-channel-name .yt-simple-endpoint').text
   } else {
     // Context other than Youtube
