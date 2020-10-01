@@ -10,7 +10,7 @@ A web extension to help you when Youtube chat is too fast by filtering messages.
 
 Otherwise, release packages are available on Github
 
-#Help
+# Help
 
 Check the Github's [wiki](https://github.com/RomainLK/ytc-filter/wiki)
 
