@@ -164,6 +164,12 @@ html[dark] #ytc-filter {
     //max-height: 25rem;
     overflow-y: scroll;
   }
+
+  .vc-purchase-amount {
+    border-radius: $rounding;
+    padding: 0.3rem;
+  }
+
   .vc-filter-list {
     max-height: 10rem;
     overflow-y: scroll;

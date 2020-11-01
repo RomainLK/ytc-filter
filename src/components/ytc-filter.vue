@@ -68,6 +68,7 @@
               <option value="author">Author is</option>
               <option value="isModerator">Is moderator</option>
               <option value="isOwner">Is owner</option>
+              <option value="isSuperChat">Is Super Chat</option>
               <option value="regex">Regex</option>
             </select>
           </div>
@@ -115,6 +116,7 @@
               <span v-else-if="filter.regex">Regex: {{ filter.regex }}</span>
               <span v-else-if="filter.isModerator">Is moderator</span>
               <span v-else-if="filter.isOwner">Is owner</span>
+              <span v-else-if="filter.isSuperChat">Is Super Chat</span>
               <button type="button" class="sm-btn" @click="removeFilter(filter)" title="Remove filter">
                 <svg class="svg-icon" viewBox="0 0 20 20" width="13" height="13">
                   <path
@@ -236,6 +238,7 @@
                 ></path>
               </g></svg
           ></span>
+          <span class="vc-purchase-amount" :style="{ 'background-color': msg.backgroundColor ? msg.backgroundColor : none }"> {{ msg.purchaseAmount }} </span>
           <span class="vc-message" v-html="msg.html"></span>
         </div>
       </div>
@@ -411,6 +414,8 @@ export default {
         } else if (filter.isModerator && msg.authorType === 'moderator') {
           this.addMessage(msg)
         } else if (filter.isOwner && msg.authorType === 'owner') {
+          this.addMessage(msg)
+        } else if (filter.isSuperChat && msg.messageType === 'paid-message') {
           this.addMessage(msg)
         } else if (filter.regex) {
           let regex = regexCache.get(filter)
