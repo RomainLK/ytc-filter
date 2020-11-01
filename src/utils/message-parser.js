@@ -43,6 +43,7 @@ const parsePaidMessage = async el => {
   const purchaseAmount = el.querySelector('#purchase-amount')?.textContent ?? undefined
   const card = el.querySelector('#card > #header')
   const backgroundColor = (card && getBackgroundColor(card, 0.8)) ?? undefined
+  const timestamp = el.querySelector('#timestamp')?.innerHTML
 
   return {
     ...params,
@@ -50,6 +51,7 @@ const parsePaidMessage = async el => {
     backgroundColor,
     purchaseAmount,
     messageType: 'paid-message',
+    timestamp,
   }
 }
 
