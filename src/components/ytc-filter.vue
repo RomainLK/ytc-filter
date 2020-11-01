@@ -33,9 +33,6 @@
       <div v-if="displayYtc" class="vc-toolbar vc-valign button">
         <button type="button" :class="{ active: displayFilters }" @click="displayFilters = !displayFilters">{{ displayFilters ? 'Hide filters' : 'Show filters' }}</button>
       </div>
-      <!-- <div :class="{ hidden: !displayYtc }" class="justify-end">
-
-      </div> -->
       <div class="vc-toolbar vc-valign button">
         <button
           v-if="displayYtc"
@@ -101,6 +98,7 @@
               </svg>
             </button>
           </div>
+
           <div v-if="displayExport">
             <form>
               <textarea placeholder="Paste filters here" v-model="importFilterTextArea" />
@@ -128,6 +126,7 @@
               </button>
             </li>
           </ul>
+          <div>Session stats (filtered/total): {{ stats.filteredNb }}/{{ stats.msgNb }}</div>
         </div>
       </div>
       <!--Options-->
@@ -242,15 +241,17 @@
             </svg>
             <img v-if="msg.badgeUrl" :src="msg.badgeUrl" />
           </span>
-          <span class="vc-purchase-amount" :style="{ 'background-color': msg.backgroundColor ? msg.backgroundColor : none }"> {{ msg.purchaseAmount }} </span>
+          <span class="vc-purchase-amount" :style="{ 'background-color': msg.backgroundColor ? msg.backgroundColor : 'none' }"> {{ msg.purchaseAmount }} </span>
           <span class="vc-message" v-html="msg.html"></span>
         </div>
       </div>
+      <div v-if="showMoreCommentsDisplayed" class="vc-text-center">No new messages can be filtered when the chat isn't autoscrolling</div>
     </div>
   </div>
 </template>
 <script>
 import { ChatObserver } from '@/utils/chat-observer'
+import { MoreCommentsObserver } from '@/utils/more-comments-observer'
 import { getVideoId, getChannelId, getChannelName } from '@/utils/information-extractor'
 import cache from 'webext-storage-cache'
 import RegexParser from 'regex-parser'
@@ -290,6 +291,11 @@ export default {
       filters: [],
       filterType: 'msgIncludes',
       firstOpening: true,
+      showMoreCommentsDisplayed: false,
+      stats: {
+        msgNb: 0,
+        filteredNb: 0,
+      },
       options: {
         autoOpen: false,
         autoScroll: true,
@@ -314,6 +320,10 @@ export default {
     this.observer = new ChatObserver()
     this.observer.observe()
     this.observer.listeners.push(this.onMessage.bind(this))
+    this.moreCommentsObserver = new MoreCommentsObserver()
+    this.moreCommentsObserver.listeners.push(e => {
+      this.showMoreCommentsDisplayed = !e.attributes.disabled
+    })
     await this.loadGlobal()
     await this.checkUpdate()
     if (!(await this.loadConfig())) {
@@ -402,6 +412,7 @@ export default {
       this.saveConfig()
     },
     onMessage(msg) {
+      this.stats.msgNb++
       for (const filter of this.filters) {
         if (filter.msgIncludes) {
           const caseSensitive = filter.caseSensitive && msg.message.includes(filter.msgIncludes)
@@ -441,7 +452,8 @@ export default {
       } else {
         return
       }
-      msg.html = xss(msg.html)
+      this.stats.filteredNb++
+      msg.html = xss(msg.html, { stripIgnoreTag: true })
       const isAtBottom = this.$refs.content.scrollTop + this.$refs.content.clientHeight >= this.$refs.content.scrollHeight - 50
 
       this.messages.push(msg)
