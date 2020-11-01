@@ -19,8 +19,8 @@ const parseCommonElements = async el => {
   const avatorImage = el.querySelector('#img')
   const avatarUrl = (avatorImage && (await getImageSourceAsync(avatorImage))) ?? undefined
   const message = el.querySelector('#message')?.textContent ?? undefined
-
-  return { id, message, author, authorType, avatarUrl }
+  const badgeUrl = el.querySelector('img.yt-live-chat-author-badge-renderer')?.src
+  return { id, message, author, authorType, avatarUrl, badgeUrl }
 }
 
 const parseTextMessage = async el => {
@@ -43,6 +43,7 @@ const parsePaidMessage = async el => {
   const purchaseAmount = el.querySelector('#purchase-amount')?.textContent ?? undefined
   const card = el.querySelector('#card > #header')
   const backgroundColor = (card && getBackgroundColor(card, 0.8)) ?? undefined
+  const timestamp = el.querySelector('#timestamp')?.innerHTML
 
   return {
     ...params,
@@ -50,6 +51,7 @@ const parsePaidMessage = async el => {
     backgroundColor,
     purchaseAmount,
     messageType: 'paid-message',
+    timestamp,
   }
 }
 

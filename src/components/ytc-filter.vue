@@ -33,9 +33,6 @@
       <div v-if="displayYtc" class="vc-toolbar vc-valign button">
         <button type="button" :class="{ active: displayFilters }" @click="displayFilters = !displayFilters">{{ displayFilters ? 'Hide filters' : 'Show filters' }}</button>
       </div>
-      <!-- <div :class="{ hidden: !displayYtc }" class="justify-end">
-
-      </div> -->
       <div class="vc-toolbar vc-valign button">
         <button
           v-if="displayYtc"
@@ -66,8 +63,10 @@
             <select id="filter-type" v-model="filterType">
               <option value="msgIncludes">Text includes</option>
               <option value="author">Author is</option>
+              <option value="isMember">Is member</option>
               <option value="isModerator">Is moderator</option>
               <option value="isOwner">Is owner</option>
+              <option value="isSuperChat">Is Super Chat</option>
               <option value="regex">Regex</option>
             </select>
           </div>
@@ -99,6 +98,7 @@
               </svg>
             </button>
           </div>
+
           <div v-if="displayExport">
             <form>
               <textarea placeholder="Paste filters here" v-model="importFilterTextArea" />
@@ -113,8 +113,10 @@
               <span v-if="filter.author">Author: {{ filter.author }}</span>
               <span v-else-if="filter.msgIncludes">Text includes: {{ filter.msgIncludes }}</span>
               <span v-else-if="filter.regex">Regex: {{ filter.regex }}</span>
+              <span v-else-if="filter.isMember">Is member</span>
               <span v-else-if="filter.isModerator">Is moderator</span>
               <span v-else-if="filter.isOwner">Is owner</span>
+              <span v-else-if="filter.isSuperChat">Is Super Chat</span>
               <button type="button" class="sm-btn" @click="removeFilter(filter)" title="Remove filter">
                 <svg class="svg-icon" viewBox="0 0 20 20" width="13" height="13">
                   <path
@@ -124,6 +126,7 @@
               </button>
             </li>
           </ul>
+          <div>Session stats (filtered/total): {{ stats.filteredNb }}/{{ stats.msgNb }}</div>
         </div>
       </div>
       <!--Options-->
@@ -234,16 +237,21 @@
                 <path
                   d="M9.64589146,7.05569719 C9.83346524,6.562372 9.93617022,6.02722257 9.93617022,5.46808511 C9.93617022,3.00042984 7.93574038,1 5.46808511,1 C4.90894765,1 4.37379823,1.10270499 3.88047304,1.29027875 L6.95744681,4.36725249 L4.36725255,6.95744681 L1.29027875,3.88047305 C1.10270498,4.37379824 1,4.90894766 1,5.46808511 C1,7.93574038 3.00042984,9.93617022 5.46808511,9.93617022 C6.02722256,9.93617022 6.56237198,9.83346524 7.05569716,9.64589147 L12.4098057,15 L15,12.4098057 L9.64589146,7.05569719 Z"
                 ></path>
-              </g></svg
-          ></span>
+              </g>
+            </svg>
+            <img v-if="msg.badgeUrl" :src="msg.badgeUrl" />
+          </span>
+          <span class="vc-purchase-amount" :style="{ 'background-color': msg.backgroundColor ? msg.backgroundColor : 'none' }"> {{ msg.purchaseAmount }} </span>
           <span class="vc-message" v-html="msg.html"></span>
         </div>
       </div>
+      <div v-if="showMoreCommentsDisplayed" class="vc-text-center">No new messages can be filtered when the chat isn't autoscrolling</div>
     </div>
   </div>
 </template>
 <script>
 import { ChatObserver } from '@/utils/chat-observer'
+import { MoreCommentsObserver } from '@/utils/more-comments-observer'
 import { getVideoId, getChannelId, getChannelName } from '@/utils/information-extractor'
 import cache from 'webext-storage-cache'
 import RegexParser from 'regex-parser'
@@ -283,6 +291,11 @@ export default {
       filters: [],
       filterType: 'msgIncludes',
       firstOpening: true,
+      showMoreCommentsDisplayed: false,
+      stats: {
+        msgNb: 0,
+        filteredNb: 0,
+      },
       options: {
         autoOpen: false,
         autoScroll: true,
@@ -307,6 +320,10 @@ export default {
     this.observer = new ChatObserver()
     this.observer.observe()
     this.observer.listeners.push(this.onMessage.bind(this))
+    this.moreCommentsObserver = new MoreCommentsObserver()
+    this.moreCommentsObserver.listeners.push(e => {
+      this.showMoreCommentsDisplayed = !e.attributes.disabled
+    })
     await this.loadGlobal()
     await this.checkUpdate()
     if (!(await this.loadConfig())) {
@@ -395,6 +412,7 @@ export default {
       this.saveConfig()
     },
     onMessage(msg) {
+      this.stats.msgNb++
       for (const filter of this.filters) {
         if (filter.msgIncludes) {
           const caseSensitive = filter.caseSensitive && msg.message.includes(filter.msgIncludes)
@@ -408,9 +426,13 @@ export default {
           if (caseSensitive || caseInsensitive) {
             this.addMessage(msg)
           }
+        } else if (filter.isMember && msg.authorType === 'member') {
+          this.addMessage(msg)
         } else if (filter.isModerator && msg.authorType === 'moderator') {
           this.addMessage(msg)
         } else if (filter.isOwner && msg.authorType === 'owner') {
+          this.addMessage(msg)
+        } else if (filter.isSuperChat && msg.messageType === 'paid-message') {
           this.addMessage(msg)
         } else if (filter.regex) {
           let regex = regexCache.get(filter)
@@ -430,7 +452,8 @@ export default {
       } else {
         return
       }
-      msg.html = xss(msg.html)
+      this.stats.filteredNb++
+      msg.html = xss(msg.html, { stripIgnoreTag: true })
       const isAtBottom = this.$refs.content.scrollTop + this.$refs.content.clientHeight >= this.$refs.content.scrollHeight - 50
 
       this.messages.push(msg)
