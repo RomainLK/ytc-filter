@@ -1,12 +1,25 @@
-# ytcFilter
+# ytcFilter 1.7.0
+
+Please check the <a href="https://github.com/RomainLK/ytc-filter/wiki" target="_blank">wiki</a> for guide and help.
 
 Welcome to ytcFilter. This message will only appear the first time you install this extension, or update it. It can be displayed again by clicking on "ytcFilter" > "Show options" > "Changelog".
-
-For help, or example of regular expression, please check the <a href="https://github.com/RomainLK/ytc-filter/wiki" target="_blank">wiki</a>.
 
 For bug reports or feature request, contact the developer directly or on <a href="https://github.com/RomainLK/ytc-filter"  target="_blank">Github</a>.
 
 # Changelog
+
+## 1.7.0 Himawari
+
+New features:
+
+- Membership filter with rendering
+- Super chat filter with rendering
+- Session stats
+- Message to remind that autoscrolling is needed in order for ytcFilter to work
+
+Bugfixes:
+
+- Removed extraneous tags like tooltips which could be displayed due to sanitazing
 
 ## 1.6.1
 
