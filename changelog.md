@@ -8,6 +8,18 @@ For bug reports or feature request, contact the developer directly or on <a href
 
 # Changelog
 
+## 1.8.0 Ina
+
+If you are reading up to here; thanks for using ytcFilter. The version 2.0.0 of ytcFilter will be a huge undertaking as numerous deep changes are planned to handle requested features, block spam, and better user experience. I hope I will be able to deliver it. For now enjoy 1.8.0.
+
+New features:
+
+- Verified user filter with rendering
+
+Improvements:
+
+- Rewording and a little change for filter configuration for easi
+
 ## 1.7.0 Himawari
 
 New features:
