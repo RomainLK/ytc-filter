@@ -59,26 +59,27 @@
       <div v-show="displayFilters" class="vc-options">
         <form>
           <div class="vc-options-item">
-            <label for="filter-type">Type:</label>
+            <label for="filter-type">Filter type:</label>
             <select id="filter-type" v-model="filterType">
-              <option value="msgIncludes">Text includes</option>
-              <option value="author">Author is</option>
-              <option value="isMember">Is member</option>
-              <option value="isModerator">Is moderator</option>
-              <option value="isOwner">Is owner</option>
-              <option value="isSuperChat">Is Super Chat</option>
+              <option value="msgIncludes">Message includes</option>
+              <option value="author">Author name is</option>
+              <option value="isMember">Author is member</option>
+              <option value="isModerator">Author is moderator</option>
+              <option value="isOwner">Author is owner</option>
+              <option value="isVerified">Author is verified</option>
+              <option value="isSuperChat">Message is Super Chat</option>
               <option value="regex">Regex</option>
             </select>
           </div>
-          <div class="vc-options-item">
-            <label for="filter-value">Value:</label>
-            <input id="filter-value" type="text" v-model="filterInput" :disabled="!filterHasValue" />
+          <div class="vc-options-item" v-show="filterHasValue">
+            <label for="filter-value">{{ valueLabel }}</label>
+            <input id="filter-value" type="text" v-model="filterInput" />
           </div>
-          <div class="vc-options-item flex-align-center">
-            <label for="case-sensitive">Case sensitive:</label>
-            <input id="case-sensitive" type="checkbox" v-model="caseSensitive" :disabled="!filterHasCaseSensitive" />
-            <button type="submit" @click.prevent="addFilter" title="Add filter">Add</button>
+          <div class="vc-options-item flex-align-center" v-show="filterHasCaseSensitive">
+            <label for="case-sensitive">Filter is case sensitive:</label>
+            <input id="case-sensitive" type="checkbox" v-model="caseSensitive" />
           </div>
+          <button type="submit" @click.prevent="addFilter" title="Add filter">Add filter</button>
         </form>
         <div class="vc-options-item">
           <div class="vc-title">
@@ -113,10 +114,11 @@
               <span v-if="filter.author">Author: {{ filter.author }}</span>
               <span v-else-if="filter.msgIncludes">Text includes: {{ filter.msgIncludes }}</span>
               <span v-else-if="filter.regex">Regex: {{ filter.regex }}</span>
-              <span v-else-if="filter.isMember">Is member</span>
-              <span v-else-if="filter.isModerator">Is moderator</span>
-              <span v-else-if="filter.isOwner">Is owner</span>
-              <span v-else-if="filter.isSuperChat">Is Super Chat</span>
+              <span v-else-if="filter.isMember">Author has membership</span>
+              <span v-else-if="filter.isModerator">Author is moderator</span>
+              <span v-else-if="filter.isOwner">Author is owner</span>
+              <span v-else-if="filter.isSuperChat">Message is Super Chat</span>
+              <span v-else-if="filter.isVerified">Author is verified</span>
               <button type="button" class="sm-btn" @click="removeFilter(filter)" title="Remove filter">
                 <svg class="svg-icon" viewBox="0 0 20 20" width="13" height="13">
                   <path
@@ -240,6 +242,11 @@
               </g>
             </svg>
             <img v-if="msg.badgeUrl" :src="msg.badgeUrl" />
+            <div class="vc-author-verified" v-if="msg.verified">
+              <svg viewBox="0 0 16 16" focusable="false" width="18" height="18">
+                <g transform="scale(0.66)"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"></path></g>
+              </svg>
+            </div>
           </span>
           <span class="vc-purchase-amount" :style="{ 'background-color': msg.backgroundColor ? msg.backgroundColor : 'none' }"> {{ msg.purchaseAmount }} </span>
           <span class="vc-message" v-html="msg.html"></span>
@@ -347,6 +354,16 @@ export default {
     this.observer.clear()
   },
   computed: {
+    valueLabel() {
+      switch (this.filterType) {
+        case 'msgIncludes':
+          return 'Message includes:'
+        case 'author':
+          return 'Author is:'
+        default:
+          return 'Filter value:'
+      }
+    },
     filterHasValue() {
       return ['author', 'msgIncludes', 'regex'].includes(this.filterType)
     },
@@ -433,6 +450,8 @@ export default {
         } else if (filter.isOwner && msg.authorType === 'owner') {
           this.addMessage(msg)
         } else if (filter.isSuperChat && msg.messageType === 'paid-message') {
+          this.addMessage(msg)
+        } else if (filter.isVerified && msg.verified) {
           this.addMessage(msg)
         } else if (filter.regex) {
           let regex = regexCache.get(filter)
