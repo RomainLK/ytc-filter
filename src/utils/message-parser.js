@@ -20,7 +20,8 @@ const parseCommonElements = async el => {
   const avatarUrl = (avatorImage && (await getImageSourceAsync(avatorImage))) ?? undefined
   const message = el.querySelector('#message')?.textContent ?? undefined
   const badgeUrl = el.querySelector('img.yt-live-chat-author-badge-renderer')?.src
-  return { id, message, author, authorType, avatarUrl, badgeUrl }
+  const verified = Boolean(el.querySelector('yt-live-chat-author-badge-renderer[type="verified"]'))
+  return { id, message, author, authorType, avatarUrl, badgeUrl, verified }
 }
 
 const parseTextMessage = async el => {

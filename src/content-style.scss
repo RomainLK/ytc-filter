@@ -63,6 +63,15 @@ html[dark] #ytc-filter {
   #ytc-messages {
     background-color: #151515;
   }
+
+  .vc-message-item {
+    .vc-author-verified {
+      background-color: #888;
+      svg {
+        fill: white;
+      }
+    }
+  }
 }
 
 #ytc-filter {
@@ -209,6 +218,16 @@ html[dark] #ytc-filter {
         background-color: #ffd600;
       }
     }
+
+    .vc-author-verified {
+      border-radius: $rounding;
+      display: inline-block;
+      background-color: #c9c9c9;
+      svg {
+        fill: #353535;
+      }
+    }
+
     .vc-message {
       margin-left: 1rem;
       img {
@@ -272,5 +291,8 @@ html[dark] #ytc-filter {
   }
   .justify-end {
     justify-content: flex-end;
+  }
+  .vc-text-center {
+    text-align: center;
   }
 }
