@@ -1,23 +1,12 @@
-import ytcFilter from '@/components/ytc-filter'
-import Vue from 'vue'
 import 'arrive'
-
-console.log('Loading ytcFilter')
-
-const vchatter = new Vue({
-  components: {
-    ytcFilter,
-  },
-  template: `<ytc-filter></ytc-filter>`,
-})
+import { mount } from '@/utils/mount'
+console.log('[ytcFilter] Content loaded')
 
 const isStudio = document.location.origin === 'https://studio.youtube.com'
-const listener = async () => {
-  const primaryContent = document.querySelector(isStudio ? '#chat.ytls-live-dashboard-page-renderer' : '#contents')
-  const vueAnchor = document.createElement('div')
-  primaryContent.prepend(vueAnchor)
 
-  vchatter.$mount(vueAnchor)
+const listener = async () => {
+  console.log('[ytcFilter] DOM loaded.')
+  mount('Mount from DOM loaded')
   if (isStudio) {
     document.removeEventListener('DOMContentLoaded', listener)
   } else {
@@ -30,3 +19,4 @@ if (isStudio) {
 } else {
   document.addEventListener('DOMContentLoaded', listener)
 }
+console.log('[ytcFilter] Content ended')

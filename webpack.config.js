@@ -13,6 +13,7 @@ const config = {
   entry: {
     background: './background.js',
     content: './content.js',
+    loading: './loading.js',
     'content-style': './content-style.scss',
     'popup/popup': './popup/popup.js',
     'options/options': './options/options.js',

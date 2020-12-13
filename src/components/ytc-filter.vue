@@ -270,6 +270,7 @@ import xss from 'xss'
 import copy from 'copy-to-clipboard'
 import domtoimage from 'dom-to-image-improved'
 import { saveAs } from 'file-saver'
+import { mount } from '@/utils/mount'
 
 const CHANNEL_ID = getChannelId()
 const VIDEO_ID = getVideoId()
@@ -323,6 +324,12 @@ export default {
     }
   },
   async mounted() {
+    console.log('[ytcFilter] Mounting ytcFilter component')
+    const loadButton = document.querySelector('#remount-ytc')
+    if (loadButton) {
+      document.removeEventListener('DOMContentLoaded', mount)
+      document.querySelector('.ytc-loading').remove()
+    }
     this.maxHeight = document.getElementById('content-pages').getBoundingClientRect().height - 50
     this.observer = new ChatObserver()
     this.observer.observe()
@@ -349,6 +356,7 @@ export default {
       this.displayFilters = true
     }
     this.displayYtc = this.options.autoOpen
+    console.log('[ytcFilter] ytcFilter mount ended')
   },
   beforeDestroy() {
     this.observer.clear()
@@ -404,7 +412,6 @@ export default {
       if (await cache.has(VERSION_STORAGE_KEY)) {
         lastVersion = await cache.get(VERSION_STORAGE_KEY)
       }
-      console.log('V', manifest.version, lastVersion)
       if (gtr(manifest.version, lastVersion)) {
         //Migration from 1.5.0 to 1.6.1 for default profile
         if (this.global.profiles.default && this.global.profiles.default.name == null && this.global.globalDefault == null) {
@@ -525,7 +532,6 @@ export default {
           },
         })
         .then(blob => {
-          console.log(this.finalHeight + 50)
           saveAs(blob, `ytcFilter-${VIDEO_ID}.png`)
         })
     },
@@ -657,6 +663,8 @@ export default {
     },
 
     setConfig({ messages, filters, deduplication, options } = {}) {
+      console.log(JSON.stringify(messages))
+
       if (messages && deduplication) {
         this.messages = messages
         deduplicationMap = deduplication
@@ -720,7 +728,6 @@ export default {
         this.displayExport = false
       } catch (e) {
         this.notify('Error when importing filters. Please check you export.')
-        console.log(e)
       }
     },
 
