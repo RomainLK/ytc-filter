@@ -274,7 +274,7 @@ import { mount } from '@/utils/mount'
 
 const CHANNEL_ID = getChannelId()
 const VIDEO_ID = getVideoId()
-const MAX_AGE = { days: 14 }
+const MAX_AGE = { days: 7 }
 const MAX_GLOBAL_AGE = { days: 9999 }
 const VIDEO_STORAGE_KEY = `vcVideo${VIDEO_ID}`
 const GLOBAL_STORAGE_KEY = 'vcGlobal'
