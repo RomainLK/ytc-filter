@@ -7,29 +7,6 @@
       </button>
     </div>
     <div class="vc-toolbar">
-      <!--div :class="{ hidden: !displayYtc }" class="vc-valign">
-        <button type="button" class="sm-btn" title="Go to bottom" @click="goToBottom">
-          <svg class="svg-icon" viewBox="0 0 20 20" width="18" height="18">
-            <path
-              d="M13.962,8.885l-3.736,3.739c-0.086,0.086-0.201,0.13-0.314,0.13S9.686,12.71,9.6,12.624l-3.562-3.56C5.863,8.892,5.863,8.611,6.036,8.438c0.175-0.173,0.454-0.173,0.626,0l3.25,3.247l3.426-3.424c0.173-0.172,0.451-0.172,0.624,0C14.137,8.434,14.137,8.712,13.962,8.885 M18.406,10c0,4.644-3.763,8.406-8.406,8.406S1.594,14.644,1.594,10S5.356,1.594,10,1.594S18.406,5.356,18.406,10 M17.521,10c0-4.148-3.373-7.521-7.521-7.521c-4.148,0-7.521,3.374-7.521,7.521c0,4.147,3.374,7.521,7.521,7.521C14.148,17.521,17.521,14.147,17.521,10"
-            ></path>
-          </svg>
-        </button>
-        <button type="button" class="sm-btn" title="Go to top" @click="goToTop">
-          <svg class="svg-icon" viewBox="0 0 20 20" width="18" height="18">
-            <path
-              d="M13.889,11.611c-0.17,0.17-0.443,0.17-0.612,0l-3.189-3.187l-3.363,3.36c-0.171,0.171-0.441,0.171-0.612,0c-0.172-0.169-0.172-0.443,0-0.611l3.667-3.669c0.17-0.17,0.445-0.172,0.614,0l3.496,3.493C14.058,11.167,14.061,11.443,13.889,11.611 M18.25,10c0,4.558-3.693,8.25-8.25,8.25c-4.557,0-8.25-3.692-8.25-8.25c0-4.557,3.693-8.25,8.25-8.25C14.557,1.75,18.25,5.443,18.25,10 M17.383,10c0-4.07-3.312-7.382-7.383-7.382S2.618,5.93,2.618,10S5.93,17.381,10,17.381S17.383,14.07,17.383,10"
-            ></path>
-          </svg>
-        </button>
-        <button type="button" class="sm-btn" @click="exportMessagesToPng" title="Screenshot current messages">
-          <svg class="svg-icon" viewBox="0 0 20 20" width="18" height="18">
-            <path
-              d="M10,6.536c-2.263,0-4.099,1.836-4.099,4.098S7.737,14.732,10,14.732s4.099-1.836,4.099-4.098S12.263,6.536,10,6.536M10,13.871c-1.784,0-3.235-1.453-3.235-3.237S8.216,7.399,10,7.399c1.784,0,3.235,1.452,3.235,3.235S11.784,13.871,10,13.871M17.118,5.672l-3.237,0.014L12.52,3.697c-0.082-0.105-0.209-0.168-0.343-0.168H7.824c-0.134,0-0.261,0.062-0.343,0.168L6.12,5.686H2.882c-0.951,0-1.726,0.748-1.726,1.699v7.362c0,0.951,0.774,1.725,1.726,1.725h14.236c0.951,0,1.726-0.773,1.726-1.725V7.195C18.844,6.244,18.069,5.672,17.118,5.672 M17.98,14.746c0,0.477-0.386,0.861-0.862,0.861H2.882c-0.477,0-0.863-0.385-0.863-0.861V7.384c0-0.477,0.386-0.85,0.863-0.85l3.451,0.014c0.134,0,0.261-0.062,0.343-0.168l1.361-1.989h3.926l1.361,1.989c0.082,0.105,0.209,0.168,0.343,0.168l3.451-0.014c0.477,0,0.862,0.184,0.862,0.661V14.746z"
-            ></path>
-          </svg>
-        </button>
-      </div-->
       <div>
         <button type="button" @click="ytcPopout()">
           V2 Beta
@@ -118,14 +95,6 @@
             <li class="vc-filter-item" v-for="(filter, index) in filters" :key="'f' + index">
               <span v-if="!filter.regex && filter.caseSensitive">(Case sensitive)</span>
               <span>{{ getFilterLabel(filter) }}</span>
-              <!--span v-if="filter.author">Author: {{ filter.author }}</span>
-              <span v-else-if="filter.msgIncludes">Text includes: {{ filter.msgIncludes }}</span>
-              <span v-else-if="filter.regex">Regex: {{ filter.regex }}</span>
-              <span v-else-if="filter.isMember">Author has membership</span>
-              <span v-else-if="filter.isModerator">Author is moderator</span>
-              <span v-else-if="filter.isOwner">Author is owner</span>
-              <span v-else-if="filter.isSuperChat">Message is Super Chat</span>
-              <span v-else-if="filter.isVerified">Author is verified</span-->
               <button type="button" class="sm-btn" @click="removeFilter(filter)" title="Remove filter">
                 <svg class="svg-icon" viewBox="0 0 20 20" width="13" height="13">
                   <path
@@ -223,8 +192,6 @@
 import { ChatObserver } from '@/utils/chat-observer'
 import { MoreCommentsObserver } from '@/utils/more-comments-observer'
 import { getVideoId, getChannelId, getChannelName, getVideoName } from '@/utils/information-extractor'
-import cache from 'webext-storage-cache'
-import RegexParser from 'regex-parser'
 import Vue from 'vue'
 import { gtr } from 'semver'
 import manifest from '@/manifest.json'
@@ -237,12 +204,6 @@ import { eventBus } from '@/utils/event-bus'
 import { applyFilter } from '@/utils/apply-filter'
 
 const CHANNEL_ID = getChannelId()
-//const VIDEO_ID = getVideoId()
-// const MAX_AGE = { days: 7 }
-// const MAX_GLOBAL_AGE = { days: 9999 }
-// const VIDEO_STORAGE_KEY = `vcVideo${VIDEO_ID}`
-// const GLOBAL_STORAGE_KEY = 'vcGlobal'
-//const VERSION_STORAGE_KEY = 'vcVersion'
 
 let deduplicationMap = {}
 
@@ -335,19 +296,6 @@ export default {
         console.log('[ytcFilter] store ready')
       }
     }
-    /*if (chrome) {
-      chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-        console.log('[ytcFilter] Received message', request)
-        if (request) {
-          switch (request.action) {
-            case 'reload':
-              this.loadConfig()
-              this.loadGlobal()
-          }
-        }
-      })
-    } else {
-    }*/
 
     this.$store.subscribe((mutation, state) => {
       console.log('[ytcFilter] reload')
@@ -411,70 +359,61 @@ export default {
     async checkUpdate(force = false) {
       //return
 
-      let lastVersion = this.$store.state.global.version || '0.0.0'
-      //todo remove
-      for (const [key, profile] of Object.entries(this.global.profiles)) {
-        Vue.set(profile, 'key', key)
-      }
-
-      this.$store.commit('setGlobal', { ...this.global, version: manifest.version })
-
-      const handleStorage = storage => {
-        for (const [key, value] of Object.entries(storage)) {
-          if (key.startsWith('cache:vcVideo')) {
-            const id = key.slice(13)
-            const parsed = JSON.parse(value.data)
-            parsed.videoId = id
-            parsed.feeds = {
-              default: {
-                messages: parsed.messages,
-                deduplication: parsed.deduplication,
-                filters: parsed.filters.map(f => {
-                  const newFilter = {}
-                  for (const [key, value] of Object.entries(f)) {
-                    if (key === 'caseSensitive') {
-                      newFilter.caseSensitive = value
-                    } else {
-                      newFilter.type = key
-                      newFilter.value = value
-                    }
-                  }
-                }),
-              },
-            }
-            delete parsed.messages
-            delete parsed.deduplication
-            delete parsed.filters
-            this.$store.commit('addVideoSettings', parsed)
-          }
-        }
-      }
-      if (chrome) {
-        await new Promise(resolve => {
-          chrome.storage.local.get(s => {
-            handleStorage(s)
-            resolve()
-          })
-        })
-      } else {
-      }
-      //  if (await cache.has(VERSION_STORAGE_KEY)) {
-      //  lastVersion = await cache.get(VERSION_STORAGE_KEY)
-      //}
+      const lastVersion = this.$store.state.global.version || '0.0.0'
 
       if (gtr(manifest.version, lastVersion)) {
         //Migration from 1.5.0 to 1.6.1 for default profile
         if (this.global.profiles.default && this.global.profiles.default.name == null && this.global.globalDefault == null) {
           this.global.profiles.default.name = 'Default'
           this.global.globalDefault = 'default'
-          this.saveGlobal()
         }
         if (this.$store.global.version == null) {
           //Migration to 2.0.0
+          for (const [key, profile] of Object.entries(this.global.profiles)) {
+            Vue.set(profile, 'key', key)
+          }
+
           this.$store.commit('setGlobal', { ...this.global, version: manifest.version })
+
+          const handleStorage = storage => {
+            for (const [key, value] of Object.entries(storage)) {
+              if (key.startsWith('cache:vcVideo')) {
+                const id = key.slice(13)
+                const parsed = JSON.parse(value.data)
+                parsed.videoId = id
+                parsed.feeds = {
+                  default: {
+                    messages: parsed.messages,
+                    deduplication: parsed.deduplication,
+                    filters: parsed.filters.map(f => {
+                      const newFilter = {}
+                      for (const [key, value] of Object.entries(f)) {
+                        if (key === 'caseSensitive') {
+                          newFilter.caseSensitive = value
+                        } else {
+                          newFilter.type = key
+                          newFilter.value = value
+                        }
+                      }
+                    }),
+                  },
+                }
+                delete parsed.messages
+                delete parsed.deduplication
+                delete parsed.filters
+                this.$store.commit('addVideoSettings', parsed)
+              }
+            }
+          }
+
+          await new Promise(resolve => {
+            chrome.storage.local.get(s => {
+              handleStorage(s)
+              resolve()
+            })
+          })
         }
         this.notifyChangelog()
-        //cache.set(VERSION_STORAGE_KEY, manifest.version, MAX_GLOBAL_AGE)
       }
     },
     notifyChangelog() {
@@ -515,38 +454,6 @@ export default {
         if (applyFilter(filter, msg)) {
           this.addMessage(msg)
         }
-        // if (filter.msgIncludes) {
-        //   const caseSensitive = filter.caseSensitive && msg.message.includes(filter.msgIncludes)
-        //   const caseInsensitive = !filter.caseSensitive && msg.message.toLowerCase().includes(filter.msgIncludes.toLowerCase())
-        //   if (caseSensitive || caseInsensitive) {
-        //     this.addMessage(msg)
-        //   }
-        // } else if (filter.author) {
-        //   const caseSensitive = filter.caseSensitive && msg.author === filter.author
-        //   const caseInsensitive = !filter.caseSensitive && msg.author.toLowerCase() === filter.author.toLowerCase()
-        //   if (caseSensitive || caseInsensitive) {
-        //     this.addMessage(msg)
-        //   }
-        // } else if (filter.isMember && msg.authorType === 'member') {
-        //   this.addMessage(msg)
-        // } else if (filter.isModerator && msg.authorType === 'moderator') {
-        //   this.addMessage(msg)
-        // } else if (filter.isOwner && msg.authorType === 'owner') {
-        //   this.addMessage(msg)
-        // } else if (filter.isSuperChat && msg.messageType === 'paid-message') {
-        //   this.addMessage(msg)
-        // } else if (filter.isVerified && msg.verified) {
-        //   this.addMessage(msg)
-        // } else if (filter.regex) {
-        //   let regex = regexCache.get(filter)
-        //   if (!regex) {
-        //     regex = RegexParser(filter.regex)
-        //     regexCache.set(filter, regex)
-        //   }
-        //   if (regex.test(msg.message)) {
-        //     this.addMessage(msg)
-        //   }
-        // }
       }
     },
     async addMessage(msg) {
@@ -561,11 +468,6 @@ export default {
       this.messages.push(msg)
 
       this.saveConfig()
-    },
-
-    async goToBottom() {
-      await this.$nextTick()
-      //this.$refs.content.scrollTop = this.$refs.content.scrollHeight
     },
 
     removeFilter(filter) {
@@ -622,17 +524,9 @@ export default {
     },
 
     async loadGlobal() {
-      // const hasGlobal = await cache.has(GLOBAL_STORAGE_KEY)
-      // if (!hasGlobal) {
-      //   return false
-      // }
       try {
         this.global = {
           ...this.$store.getters.global,
-          /*profiles: {},
-          defaultPerChannel: {},
-          globalDefault: null,
-          ...JSON.parse(await cache.get(GLOBAL_STORAGE_KEY)),*/
         }
         console.log('[ytcFilter]  Load global', this.global)
       } catch (e) {
@@ -685,16 +579,6 @@ export default {
     },
 
     saveConfig() {
-      /*await cache.set(
-        VIDEO_STORAGE_KEY,
-        JSON.stringify({
-          messages: this.messages,
-          filters: this.filters,
-          options: this.options,
-          deduplication: deduplicationMap,
-        }),
-        MAX_AGE
-      )*/
       this.$store.commit('addVideoSettings', {
         id: getVideoId(),
         name: getVideoName(),
@@ -762,14 +646,6 @@ export default {
     resetMessageOptions() {
       this.msgOptions = null
     },
-
-    // deleteMessage(msg) {
-    //   const index = this.messages.indexOf(msg)
-    //   this.messages.splice(index, 1)
-    //   delete deduplicationMap[msg.id]
-    //   this.resetMessageOptions()
-    //   this.saveConfig()
-    // },
 
     scrollYoutubeChatToId(id) {},
 

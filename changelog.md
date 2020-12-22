@@ -16,6 +16,10 @@ New features
 
 - New interface in popout window
 - Default profiles for translation, languages, and staff
+  - English tagged messages
+  - Messages with Japanese characters
+  - Messages with alphanumeric characters
+  - Messages from staff
 - Display archive and storage size usage
 - Clear archive button in case storage is full
 - Add a loading message in case ytcFilter doesn't load properly with a manual boot button

@@ -151,14 +151,14 @@ export default {
     },
     addDefaultProfile() {
       const profiles = [
-        { name: 'Staff filters', key: 'staff', filters: [{ type: 'isModerator' }, { type: 'isOwner' }] },
+        { name: 'Messages from Staff', key: 'staff', filters: [{ type: 'isModerator' }, { type: 'isOwner' }] },
         {
           name: 'English tagged messages',
           key: 'englishtag',
           filters: [{ type: 'regex', value: '/^[[(]?(?:eng?|t(?:rans)|英訳)(?:\/(?:eng?|t(?:rans)|英訳))?[\]): -]/i' }],
         },
-        { name: 'Message with alphanumeric', key: 'alphanumeric', filters: [{ type: 'regex', value: '/[a-z0-9]/i' }] },
-        { name: 'Message with japanese characters', key: 'japanese', filters: [{ type: 'regex', value: '/[一-龠]|[ぁ-ゔ]|[ァ-ヴー]|[ａ-ｚＡ-Ｚ０-９]|[々〆〤]/u' }] },
+        { name: 'Messages with alphanumeric', key: 'alphanumeric', filters: [{ type: 'regex', value: '/[a-z0-9]/i' }] },
+        { name: '日本語/Messages with japanese characters', key: 'japanese', filters: [{ type: 'regex', value: '/[一-龠]|[ぁ-ゔ]|[ァ-ヴー]|[ａ-ｚＡ-Ｚ０-９]|[々〆〤]/u' }] },
       ]
       for (const profile of profiles) {
         this.$store.commit('addProfile', profile)

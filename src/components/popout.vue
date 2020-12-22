@@ -85,7 +85,7 @@ export default {
       if (chrome) {
         return chrome.storage.local.QUOTA_BYTES
       } else {
-        return browser.storage.local.QUOTA_BYTES
+        return ''
       }
     },
     channelId() {
@@ -125,6 +125,7 @@ export default {
       if (chrome) {
         chrome.storage.local.getBytesInUse(b => (this.usedBytes = b))
       } else {
+        this.usedBytes = 'Unsupported with Firefox'
       }
     },
     getUrlParams(paramName) {
