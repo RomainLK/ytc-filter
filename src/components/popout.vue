@@ -3,7 +3,7 @@
     <div class="container-fluid">
       <div class="row mt-3">
         <div id="ytc-filter" class="col message-column">
-          <h5>{{ displayedVideoName }}</h5>
+          <h5 class="message-column-title">{{ displayedVideoName }}</h5>
           <message-list :video-id="displayedVideoId" :is-popout="true" />
         </div>
         <div class="col py-2 pr-5 settings-column">
@@ -15,12 +15,12 @@
             </b-tab>
             <b-tab title="Archive">
               <ul class="list-unstyled">
-                <li v-for="channel in $store.getters.channelArchive" :key="channel.id">
+                <li v-for="channel in $store.getters.channelArchive" :key="channel.id" class="mb-4">
                   <a :href="'https://www.youtube.com/channel/' + channel.id" target="_blank">{{ channel.name }}</a>
-                  <ul>
-                    <li v-for="video in channel.videos" :key="video.id">
+                  <ul class="mt-1">
+                    <li v-for="video in channel.videos" :key="video.id" class="mb-2">
+                      <button class="btn btn-sm btn-secondary mr-2" @click="selectedArchiveId = video.id">Load archive</button>
                       <a :href="'https://www.youtube.com/watch?v=' + video.id" target="_blank">{{ video.name || video.id }}</a>
-                      <button class="btn btn-sm btn-secondary" @click="selectedArchiveId = video.id">Load archive</button>
                     </li>
                   </ul>
                 </li>
@@ -35,7 +35,7 @@
                 For support, bug report, or feedback, you can use these channels to contact the developer:
               </p>
               <ul>
-                <li><a href="https://discord.gg/P6DUeuhSjU">Discord</a></li>
+                <li><a href="https://discord.gg/P6DUeuhSjU" target="_blank">Discord</a></li>
                 <li><a href="https://github.com/RomainLK/ytc-filter" target="_blank">Github</a></li>
               </ul>
               <p>
@@ -45,9 +45,17 @@
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">Factory settings</h4>
-                  <button class="btn btn-warning" @click="$store.commit('resetHelpAlert')">
+                  <button class="btn btn-success" @click="onResetHintMessages">
                     Reset hint messages
                   </button>
+                  <button class="btn btn-warning" @click="onLoadDefaultProfiles">
+                    Load default profiles
+                  </button>
+
+                  <button class="btn btn-danger" @click="onFactoryReset">
+                    Full reset
+                  </button>
+                  <p>After a full reset, you will need to refresh every instance of ytcFilter by either reloading the pages or restarting your browser</p>
                 </div>
               </div>
             </b-tab>
@@ -122,7 +130,7 @@ export default {
   },
   methods: {
     getUsedBytes() {
-      if (chrome) {
+      if (chrome.storage.local.getBytesInUse) {
         chrome.storage.local.getBytesInUse(b => (this.usedBytes = b))
       } else {
         this.usedBytes = 'Unsupported with Firefox'
@@ -142,6 +150,26 @@ export default {
     },
     onOptionsChange(options) {
       this.$store.commit('setVideoOptions', { videoId: this.videoId, options })
+    },
+    async onLoadDefaultProfiles() {
+      const ok = await this.$bvModal.msgBoxConfirm('Any modifications to default profiles you have made will be overriden. Continue?', { title: 'Warning' })
+      if (ok) {
+        this.$store.commit('loadDefaultProfile')
+        this.$bvToast.toast(`Default profiles were loaded`, { title: 'Success' })
+      }
+    },
+    onResetHintMessages() {
+      this.$store.commit('resetHelpAlert')
+    },
+    async onFactoryReset() {
+      const ok = await this.$bvModal.msgBoxConfirm('All your configuration will be deleted. After the reset, you will need to reload every pages with ytcFilter loaded.', {
+        title: 'Warning',
+        okVariant: 'danger',
+      })
+      if (ok) {
+        this.$store.commit('factoryReset')
+        this.$bvToast.toast(`Factory reset done. Please close this window.`, { title: 'Success' })
+      }
     },
   },
 }

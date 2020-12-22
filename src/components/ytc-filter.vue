@@ -9,7 +9,7 @@
     <div class="vc-toolbar">
       <div>
         <button type="button" @click="ytcPopout()">
-          V2 Beta
+          Popout
         </button>
       </div>
       <div v-if="displayYtc" class="vc-toolbar vc-valign button">
@@ -252,7 +252,7 @@ export default {
     }
   },
   async mounted() {
-    console.log('[ytcFilter] Mounting ytcFilter component')
+    console.log('[ytcFilter] Mounted hook start')
     const loadButton = document.querySelector('#remount-ytc')
     if (loadButton) {
       document.removeEventListener('DOMContentLoaded', ytcMount)
@@ -266,7 +266,9 @@ export default {
     this.moreCommentsObserver.listeners.push(e => {
       this.showMoreCommentsDisplayed = !e.attributes.disabled
     })
+    console.log('[ytcFilter] Load global')
     await this.loadGlobal()
+    console.log('[ytcFilter] Global loaded')
     await this.checkUpdate()
     if (!(await this.loadConfig())) {
       this.saveConfig()
@@ -289,11 +291,11 @@ export default {
 
     const isReady = () => {
       if (this.$store.state?.global?.version == null) {
-        console.log('[ytcFilter] store not ready')
+        console.log('[ytcFilter] Store not ready')
         setTimeout(isReady, 1000)
       } else {
         this.ready = true
-        console.log('[ytcFilter] store ready')
+        console.log('[ytcFilter] Store ready')
       }
     }
 
@@ -305,7 +307,7 @@ export default {
 
     isReady()
 
-    console.log('[ytcFilter] ytcFilter mount ended')
+    console.log('[ytcFilter] Mounted hook end')
   },
   beforeDestroy() {
     this.observer.clear()
@@ -367,7 +369,7 @@ export default {
           this.global.profiles.default.name = 'Default'
           this.global.globalDefault = 'default'
         }
-        if (this.$store.global.version == null) {
+        if (this.$store.state.global.version == null) {
           //Migration to 2.0.0
           for (const [key, profile] of Object.entries(this.global.profiles)) {
             Vue.set(profile, 'key', key)
@@ -528,7 +530,6 @@ export default {
         this.global = {
           ...this.$store.getters.global,
         }
-        console.log('[ytcFilter]  Load global', this.global)
       } catch (e) {
         console.warn('applyProfile - Failed to load global')
         return false
@@ -598,7 +599,7 @@ export default {
 
     async loadConfig() {
       const hasConfig = this.$store.state.videoSettings[getVideoId()]
-      console.log('[ytcFilter] Has config:', hasConfig)
+
       if (!hasConfig) {
         return false
       }
@@ -607,7 +608,7 @@ export default {
           ...this.$store.state.videoSettings[getVideoId()].feeds.default,
           options: this.$store.state.videoSettings[getVideoId()].options,
         }
-        console.log('[ytcFilter] Load config')
+
         this.setConfig(config)
       } catch (e) {
         console.warn('loadConfig - Failed to load config', e)

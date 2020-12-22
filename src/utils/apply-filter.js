@@ -2,6 +2,9 @@ import RegexParser from 'regex-parser'
 const regexCache = new WeakMap()
 
 export const applyFilter = (filter, msg) => {
+  if (!filter) {
+    return false
+  }
   let caseSensitive
   let caseInsensitive
   let regex
@@ -38,7 +41,7 @@ export const applyFilter = (filter, msg) => {
       try {
         regex = regexCache.get(filter)
         if (!regex) {
-          regex = RegexParser(filter.regex)
+          regex = RegexParser(filter.value)
           regexCache.set(filter, regex)
         }
         return regex.test(msg.message)

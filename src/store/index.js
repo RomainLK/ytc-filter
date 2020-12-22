@@ -4,6 +4,19 @@ import VuexWebExtensions from 'vuex-webextensions'
 
 Vue.use(Vuex)
 
+const defaultProfiles = {
+  staff: { name: 'Messages from staff', key: 'staff', filters: [{ type: 'isModerator' }, { type: 'isOwner' }] },
+  englishtag: {
+    name: 'English tagged messages',
+    key: 'englishtag',
+    // eslint-disable-next-line
+    filters: [{ type: 'regex', value: '/^[[(]?(?:eng?|t(?:rans)|英訳)(?:/(?:eng?|t(?:rans)|英訳))?[]): -]/i' }],
+    //Regex in case formatting bork it  /^[[(]?(?:eng?|t(?:rans)|英訳)(?:\/(?:eng?|t(?:rans)|英訳))?[\]): -]/i
+  },
+  alphanumeric: { name: 'Messages with alphanumeric', key: 'alphanumeric', filters: [{ type: 'regex', value: '/[a-z0-9]/i' }] },
+  japanese: { name: '日本語/Messages with japanese characters', key: 'japanese', filters: [{ type: 'regex', value: '/[一-龠]|[ぁ-ゔ]|[ァ-ヴー]|[ａ-ｚＡ-Ｚ０-９]|[々〆〤]/u' }] },
+}
+
 export default new Vuex.Store({
   state: {
     videoSettings: {},
@@ -29,7 +42,6 @@ export default new Vuex.Store({
       const archive = { _missing: { id: '_missing', name: 'No channel name', videos: [] } }
       for (const videoSettings of Object.values(state.videoSettings)) {
         if (videoSettings.feeds.default.messages.length > 0) {
-          console.log(videoSettings.channelId)
           if (videoSettings.channelId) {
             if (archive[videoSettings.channelId] == null) {
               archive[videoSettings.channelId] = { id: videoSettings.channelId, name: videoSettings.channelName, videos: [] }
@@ -45,11 +57,27 @@ export default new Vuex.Store({
     },
   },
   mutations: {
+    factoryReset(state) {
+      state.videoSettings = {}
+      state.global = {
+        version: null,
+        profiles: {},
+        defaultPerChannel: {},
+        globalDefault: null,
+      }
+      state.helpAlert = {
+        filterHelp: true,
+        profileHelp: true,
+      }
+    },
     setGlobal(state, value) {
       state.global = value
     },
     addProfile(state, profile) {
       state.global.profiles = { ...state.global.profiles, [profile.key]: profile }
+    },
+    loadDefaultProfile(state) {
+      state.global.profiles = { ...state.global.profiles, ...defaultProfiles }
     },
     addVideoSettings(state, videoSettings) {
       state.videoSettings = { ...state.videoSettings, [videoSettings.id]: Vue.observable(videoSettings) }

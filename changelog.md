@@ -1,6 +1,6 @@
 # ytcFilter 2.0.0
 
-A <a href="https://discord.gg/P6DUeuhSjU">Discord</a> server has been added for support, bug reports, and feedback, or if you want to help with ytcFilter v2.
+A <a href="https://discord.gg/P6DUeuhSjU" target="_blank">Discord</a> server has been added for support, bug reports, and feedback, or if you want to help with ytcFilter v2.
 
 This message will only appear the first time you install this extension, or update it. It can be displayed again by clicking on "ytcFilter" > "Show options" > "Changelog".
 

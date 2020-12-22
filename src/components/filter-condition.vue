@@ -2,7 +2,7 @@
   <div class="form-inline">
     <label class="mr-2">Filter type:</label>
     <select class="form-control mr-2" v-model="filter.type" @change="onChange">
-      <option value=""> </option
+      <option :value="null" disabled>Select</option
       ><option value="msgIncludes">Message includes</option>
       <option value="author">Author name is</option>
       <option value="isMember">Author is member</option>

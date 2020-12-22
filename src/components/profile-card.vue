@@ -8,7 +8,7 @@
       </help-alert>
       <div class="form-inline">
         <select v-model="selectedProfile" class="form-control">
-          <option :value="null">Select a profile</option>
+          <option :value="null" disabled>Select a profile</option>
           <option v-for="(profile, key) of profiles" :key="key" :value="profile">
             {{ profile.name }} {{ key === $store.state.global.globalDefault ? '(Global)' : '' }} {{ isDefaultForCurrentChannel(profile) ? '(Channel)' : '' }}
           </option>
@@ -22,20 +22,25 @@
         <button class="btn btn-danger" :disabled="!hasSelected" @click="deleteProfile">Delete</button>
       </div>
       <div class="my-2">
+        <help-alert alert-key="profileDefaultHelp">
+          Default profile will automatically apply a profile to a new video. If set, ytcFilter will try to apply the channel profiles, otherwise the global profile.
+        </help-alert>
         <button class="btn btn-secondary" :disabled="!hasSelected" @click="setAsChannelDefault">Set as channel default</button>
         <button class="btn btn-secondary" :disabled="!hasSelected" @click="setAsGlobalDefault">Set as global default</button>
       </div>
     </div>
-    <div v-show="profileDefaultChannel.length > 0">
+    <div v-show="profileDefaultChannel.length > 0" class="px-4">
       <p>This profile is used by default on the following channels:</p>
-      <li class="unstyled-list" v-for="defaultInfo in profileDefaultChannel" :key="defaultInfo.channelId">
-        <a v-if="defaultInfo.channelId !== 'Studio'" :href="'https://www.youtube.com/channel/' + defaultInfo.channelId" target="_blank">
-          {{ defaultInfo.channelName }}
-        </a>
-        <span v-else>
-          {{ defaultInfo.channelName }}
-        </span>
-      </li>
+      <ul class="unstyled-list">
+        <li v-for="defaultInfo in profileDefaultChannel" :key="defaultInfo.channelId">
+          <a v-if="defaultInfo.channelId !== 'Studio'" :href="'https://www.youtube.com/channel/' + defaultInfo.channelId" target="_blank">
+            {{ defaultInfo.channelName }}
+          </a>
+          <span v-else>
+            {{ defaultInfo.channelName }}
+          </span>
+        </li>
+      </ul>
     </div>
 
     <b-modal v-model="showSaveModal" title="Save" ok-title="Save" @ok="onSaveProfile">
@@ -115,7 +120,7 @@ export default {
     },
     profileDefaultChannel() {
       if (this.selectedProfile) {
-        return Object.values(this.$store.global.defaultPerChannel).filter(info => info.profileKey === this.profile.key)
+        return Object.values(this.$store.getters.global.defaultPerChannel).filter(info => info.profileKey === this.selectedProfile.key)
       }
       return []
     },
@@ -130,11 +135,11 @@ export default {
     },
     applyProfile() {
       this.$store.commit('applyProfile', { videoId: this.videoId, feedName: this.feedName, profileKey: this.selectedProfile.key })
-      this.$bvToast.toast(`"Profile ${this.selectedProfile.name}" was applied`, { title: 'Success' })
+      this.$bvToast.toast(`Profile "${this.selectedProfile.name}" was applied`, { title: 'Success' })
     },
     setAsGlobalDefault() {
       this.$store.commit('setGlobalDefault', this.selectedProfile.key)
-      this.$bvToast.toast(`"Profile ${this.selectedProfile.name}" was set as global default`, { title: 'Success' })
+      this.$bvToast.toast(`Profile "${this.selectedProfile.name}" was set as global default`, { title: 'Success' })
     },
     setAsChannelDefault() {
       this.$store.commit('setChannelDefault', {
@@ -142,28 +147,20 @@ export default {
         profileKey: this.selectedProfile.key,
         channelName: this.currentVideoSettings.channelName,
       })
-      this.$bvToast.toast(`"Profile ${this.selectedProfile.name}" was set as channel default`, { title: 'Success' })
+      this.$bvToast.toast(`Profile "${this.selectedProfile.name}" was set as channel default`, { title: 'Success' })
     },
-    deleteProfile() {
-      this.$store.commit('deleteProfile', this.selectedProfile.key)
-      this.selectedProfile = null
-      this.$bvToast.toast(`"Profile ${this.selectedProfile.name}" was deleted`, { title: 'Success' })
+    async deleteProfile() {
+      const ok = await this.$bvModal.msgBoxConfirm(`Are you sure you want to delete the profile "${this.selectedProfile.name}"`, { title: 'Warning', okVariant: 'danger' })
+      if (ok) {
+        this.$store.commit('deleteProfile', this.selectedProfile.key)
+        this.selectedProfile = null
+        this.$bvToast.toast(`Profile "${this.selectedProfile.name}" was deleted`, { title: 'Success' })
+      }
     },
     addDefaultProfile() {
-      const profiles = [
-        { name: 'Messages from Staff', key: 'staff', filters: [{ type: 'isModerator' }, { type: 'isOwner' }] },
-        {
-          name: 'English tagged messages',
-          key: 'englishtag',
-          filters: [{ type: 'regex', value: '/^[[(]?(?:eng?|t(?:rans)|英訳)(?:\/(?:eng?|t(?:rans)|英訳))?[\]): -]/i' }],
-        },
-        { name: 'Messages with alphanumeric', key: 'alphanumeric', filters: [{ type: 'regex', value: '/[a-z0-9]/i' }] },
-        { name: '日本語/Messages with japanese characters', key: 'japanese', filters: [{ type: 'regex', value: '/[一-龠]|[ぁ-ゔ]|[ァ-ヴー]|[ａ-ｚＡ-Ｚ０-９]|[々〆〤]/u' }] },
-      ]
-      for (const profile of profiles) {
-        this.$store.commit('addProfile', profile)
-      }
+      this.$store.commit('loadDefaultProfile')
       this.$store.commit('setHelpAlert', { key: 'profileHelp', value: false })
+      this.$bvToast.toast(`Default profiles were loaded`, { title: 'Success' })
     },
     openSaveModal() {
       this.saveMode = this.selectedProfile ? 'update' : 'create'

@@ -7,6 +7,13 @@
 
 .message-column {
   max-width: 30rem;
+  display: flex;
+  flex-direction: column;
+  .message-column-title {
+    max-height: 3rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .settings-column {

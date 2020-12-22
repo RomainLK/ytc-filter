@@ -4,8 +4,7 @@
       <h5 class="card-title">Filters</h5>
       <help-alert alert-key="filterHelp">
         Here you can configure filters which will capture messages from Youtube Livechat, based on a condition. A filter has a type, and some of them may also accept a value.
-        Filters are updated in real time. There is no need to save. Note that filters are saved per video. If you wish to have them automatically applied for a channel or globally,
-        create and use a profile.
+        Filters are updated in real time. There is no need to save. Note that filters are saved per video. Create or update a profile above if you want to reuse your filter list.
       </help-alert>
       <button class="btn btn-primary mb-3" @click="addFilter">
         Add filter
