@@ -1,0 +1,27 @@
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap-vue/src/index.scss';
+
+#ytc-messages {
+  height: 100vh;
+}
+
+.message-column {
+  max-width: 30rem;
+}
+
+.settings-column {
+  height: calc(100vh - 1rem);
+  overflow-y: auto;
+}
+#message-list {
+  //max-width: 30rem;
+
+  .toolbar {
+  }
+  .vc-content {
+    padding: 1rem;
+    //max-height: 25rem;
+    overflow-y: scroll;
+    height: calc(100vh - 7.8rem);
+  }
+}

@@ -310,3 +310,9 @@ html[dark] #ytc-filter {
     color: darken($color: $primary, $amount: 20%);
   }
 }
+
+.ytc-popout {
+  yt-live-chat-app {
+    max-width: 30rem;
+  }
+}

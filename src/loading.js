@@ -1,4 +1,4 @@
-import { mount } from '@/utils/mount'
+import { ytcMount } from '@/utils/mount'
 
 if (document.querySelector('#ytc-filter') == null) {
   console.log('[ytcFilter] Loading message insertion')
@@ -9,6 +9,6 @@ if (document.querySelector('#ytc-filter') == null) {
   // loadingDiv.appendChild(loadingMessage)
   document.body.insertBefore(loadingDiv, document.body.firstChild)
   const loadButton = document.querySelector('#remount-ytc')
-  loadButton.addEventListener('click', mount)
+  loadButton.addEventListener('click', ytcMount)
   console.log('[ytcFilter] Loading message inserted')
 }
