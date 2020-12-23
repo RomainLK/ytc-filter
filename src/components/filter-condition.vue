@@ -16,7 +16,7 @@
     <label class="mr-2" v-show="filterHasCaseSensitive">Case sensitive:</label>
     <input class="mr-2" type="checkbox" v-show="filterHasCaseSensitive" v-model="filter.caseSensitive" @change="onChange" />
     <div class="float-right">
-      <button class="btn btn-danger" @click="$emit('delete', filter)">X</button>
+      <button class="btn btn-secondary" @click="$emit('delete', filter)">X</button>
     </div>
   </div>
 </template>

@@ -22,6 +22,7 @@
           ></path>
         </svg>
       </button>
+      <slot></slot>
     </div>
     <div id="ytc-messages" class="vc-content" :style="{ height: height }" ref="content">
       <div class="vc-message-item" v-for="(msg, index) in messages" :key="msg.id">

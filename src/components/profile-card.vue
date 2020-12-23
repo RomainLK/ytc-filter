@@ -25,7 +25,7 @@
         <help-alert alert-key="profileDefaultHelp">
           Default profile will automatically apply a profile to a new video. If set, ytcFilter will try to apply the channel profiles, otherwise the global profile.
         </help-alert>
-        <button class="btn btn-secondary" :disabled="!hasSelected" @click="setAsChannelDefault">Set as channel default</button>
+        <button class="btn btn-secondary" :disabled="!hasSelected || channelId == null" @click="setAsChannelDefault">Set as channel default</button>
         <button class="btn btn-secondary" :disabled="!hasSelected" @click="setAsGlobalDefault">Set as global default</button>
       </div>
     </div>
@@ -39,6 +39,9 @@
           <span v-else>
             {{ defaultInfo.channelName }}
           </span>
+          <button class="btn btn-secondary btn-sm" @click="$store.commit('unsetChannelDefault', defaultInfo.channelId)">
+            X
+          </button>
         </li>
       </ul>
     </div>
@@ -124,14 +127,16 @@ export default {
       }
       return []
     },
+    channelId() {
+      return this.currentVideoSettings?.channelId
+    },
   },
   methods: {
     isDefaultForCurrentChannel(profile) {
-      const channelId = this.currentVideoSettings.channelId
       if (!profile) {
         return null
       }
-      return profile.key === this.$store.getters.global.defaultPerChannel[channelId]?.profileKey
+      return profile.key === this.$store.getters.global.defaultPerChannel[this.channelId]?.profileKey
     },
     applyProfile() {
       this.$store.commit('applyProfile', { videoId: this.videoId, feedName: this.feedName, profileKey: this.selectedProfile.key })
