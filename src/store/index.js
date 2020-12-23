@@ -10,8 +10,9 @@ const defaultProfiles = {
     name: 'English tagged messages',
     key: 'englishtag',
     // eslint-disable-next-line
-    filters: [{ type: 'regex', value: '/^[[(]?(?:eng?|t(?:rans)|英訳)(?:\/(?:eng?|t(?:rans)|英訳))?[\]): -]/i' }],
+    filters: [{ type: 'regex', value: `/^[[(]?(?:eng?|t(?:(rans|l))?|英訳)(?:\/(?:eng?|t(?:(rans|l))?|英訳))?[\\]): -]/i` }],
     //In case formatting bork it       /^[[(]?(?:eng?|t(?:rans)|英訳)(?:\/(?:eng?|t(?:rans)|英訳))?[\]): -]/i
+    // /^[[(]?(?:eng?|t(?:(rans|l))?|英訳)(?:\/(?:eng?|t(?:(rans|l))?|英訳))?[\]): -]/i
   },
   alphanumeric: { name: 'Messages with alphanumeric', key: 'alphanumeric', filters: [{ type: 'regex', value: '/[a-z0-9]/i' }] },
   japanese: { name: '日本語/Messages with japanese characters', key: 'japanese', filters: [{ type: 'regex', value: '/[一-龠]|[ぁ-ゔ]|[ァ-ヴー]|[ａ-ｚＡ-Ｚ０-９]|[々〆〤]/u' }] },
@@ -21,6 +22,7 @@ export default new Vuex.Store({
   state: {
     videoSettings: {},
     global: {
+      darkMode: false,
       version: null,
       profiles: {},
       defaultPerChannel: {},
@@ -63,6 +65,7 @@ export default new Vuex.Store({
     factoryReset(state) {
       state.videoSettings = {}
       state.global = {
+        darkMode: false,
         version: null,
         profiles: {},
         defaultPerChannel: {},
@@ -81,6 +84,9 @@ export default new Vuex.Store({
       if (width) {
         state.global.popoutWidth = width
       }
+    },
+    toggleDarkMode(state) {
+      state.global.darkMode = !state.global.darkMode
     },
     setGlobal(state, value) {
       state.global = value
@@ -132,13 +138,14 @@ export default new Vuex.Store({
     },
     deleteProfile(state, profileKey) {
       const newGlobal = { ...state.global }
-      delete newGlobal[profileKey]
+      delete newGlobal.profiles[profileKey]
+
       if (newGlobal.globalDefault === profileKey) {
         newGlobal.globalDefault = null
       }
       const channelDefaults = Object.values(newGlobal.defaultPerChannel).filter(i => i.profileKey === profileKey)
       for (const channelDefault of channelDefaults) {
-        delete newGlobal[channelDefault]
+        Vue.delete(newGlobal.defaultPerChannel, channelDefault)
       }
       state.global = newGlobal
     },

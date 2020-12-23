@@ -1,6 +1,8 @@
 @import '~bootstrap/scss/bootstrap.scss';
 @import '~bootstrap-vue/src/index.scss';
 
+$dark-bg: #181818;
+
 #ytc-messages {
   height: 100vh;
 }
@@ -33,5 +35,42 @@
     //max-height: 25rem;
     overflow-y: scroll;
     height: calc(100vh - 8.5rem);
+  }
+}
+
+.dark-mode {
+  background-color: $gray-900;
+  color: $white;
+
+  #ytc-filter button {
+    background-color: $dark-bg;
+    &:hover,
+    &:active {
+      background-color: lighten($dark-bg, 10%);
+    }
+  }
+
+  .nav-tabs .nav-link {
+    color: $white;
+    &.active {
+      background-color: $gray-800;
+    }
+  }
+
+  .card, .modal-content {
+    background-color: $gray-800;
+  }
+
+  #ytc-filter #ytc-messages {
+    background-color: $gray-900;
+  }
+
+  .vc-message-item {
+    .vc-author-verified {
+      background-color: #888;
+      svg {
+        fill: white;
+      }
+    }
   }
 }

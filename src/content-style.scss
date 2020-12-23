@@ -40,7 +40,7 @@ $moderator-color: #5e84f1;
   }
 }
 
-html[dark] #ytc-filter {
+html[dark] #ytc-filter, .dark-mode #ytc-filter {
   .vc-toolbar {
     background-color: $dark-bg;
   }

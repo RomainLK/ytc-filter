@@ -5,7 +5,8 @@
         <div id="ytc-filter" class="col message-column" :class="{ 'limited-width': displaySettings }">
           <h5 class="message-column-title">{{ displayedVideoName }}</h5>
           <message-list :video-id="displayedVideoId" :is-popout="true">
-            <b-button :pressed.sync="displaySettings" variant="primary" class="float-right" size="sm">Settings</b-button>
+            <b-button :pressed.sync="displaySettings" variant="primary" class="float-right " size="sm">Settings</b-button>
+            <button class="btn btn-primary float-right btn-sm mr-2" @click="$store.commit('toggleDarkMode')">Theme switch</button>
           </message-list>
         </div>
         <div class="col py-2 pr-5 settings-column" v-show="displaySettings">
@@ -139,6 +140,9 @@ export default {
     currentFilters() {
       return this.currentVideoSettings?.feeds?.default?.filters
     },
+    darkMode() {
+      return this.$store.getters.global.darkMode
+    },
   },
   watch: {
     'currentFilters.length': function(value) {
@@ -146,6 +150,7 @@ export default {
         this.displaySettings = true
       }
     },
+
     displaySettings(value) {
       if (value) {
         if (window.innerWidth < 1200) {
@@ -157,6 +162,13 @@ export default {
         }
       } else {
         this.updateWindow({ width: this.$store.state.global.popoutWidth })
+      }
+    },
+    darkMode(value) {
+      if (value) {
+        document.body.classList.add('dark-mode')
+      } else {
+        document.body.classList.remove('dark-mode')
       }
     },
   },

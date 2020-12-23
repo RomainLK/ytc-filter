@@ -1,5 +1,5 @@
 import RegexParser from 'regex-parser'
-const regexCache = new WeakMap()
+const regexCache = new Map()
 
 export const applyFilter = (filter, msg) => {
   if (!filter) {
@@ -10,7 +10,7 @@ export const applyFilter = (filter, msg) => {
   let regex
   switch (filter.type) {
     case 'author':
-      if (filter.value === '') {
+      if (filter.value === '' || filter.value == null) {
         return false
       }
       caseSensitive = filter.caseSensitive && msg.author === filter.author
@@ -18,7 +18,7 @@ export const applyFilter = (filter, msg) => {
       return caseSensitive || caseInsensitive
 
     case 'msgIncludes':
-      if (filter.value === '') {
+      if (filter.value === '' || filter.value == null) {
         return false
       }
       caseSensitive = filter.caseSensitive && msg.message.includes(filter.msgIncludes)
@@ -39,10 +39,10 @@ export const applyFilter = (filter, msg) => {
       return msg.messageType === 'paid-message'
     case 'regex':
       try {
-        regex = regexCache.get(filter)
+        regex = regexCache.get(filter.value)
         if (!regex) {
           regex = RegexParser(filter.value)
-          regexCache.set(filter, regex)
+          regexCache.set(filter.value, regex)
         }
         return regex.test(msg.message)
       } catch (e) {

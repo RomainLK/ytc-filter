@@ -202,6 +202,7 @@ import { ytcMount } from '@/utils/mount'
 import messageList from '@/components/message-list'
 import { eventBus } from '@/utils/event-bus'
 import { applyFilter } from '@/utils/apply-filter'
+import { filterMigrate } from '@/utils/migrate'
 
 const CHANNEL_ID = getChannelId()
 
@@ -387,17 +388,7 @@ export default {
                   default: {
                     messages: parsed.messages,
                     deduplication: parsed.deduplication,
-                    filters: parsed.filters.map(f => {
-                      const newFilter = {}
-                      for (const [key, value] of Object.entries(f)) {
-                        if (key === 'caseSensitive') {
-                          newFilter.caseSensitive = value
-                        } else {
-                          newFilter.type = key
-                          newFilter.value = value
-                        }
-                      }
-                    }),
+                    filters: parsed.filters.map(filterMigrate),
                   },
                 }
                 delete parsed.messages
@@ -661,9 +652,11 @@ export default {
     importFilters() {
       try {
         const parsed = JSON.parse(this.importFilterTextArea)
-        this.filters = parsed
+        console.log(parsed.map(filter1To2))
+        this.filters = parsed.map(filter1To2)
         this.importFilterTextArea = ''
         this.displayExport = false
+        this.saveConfig()
       } catch (e) {
         this.notify('Error when importing filters. Please check you export.')
       }
