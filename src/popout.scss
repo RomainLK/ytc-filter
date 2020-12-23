@@ -6,7 +6,9 @@
 }
 
 .message-column {
-  max-width: 30rem;
+  &.limited-width {
+    max-width: 25rem;
+  }
   display: flex;
   flex-direction: column;
   .message-column-title {
@@ -24,11 +26,12 @@
   //max-width: 30rem;
 
   .toolbar {
+    margin-bottom: 0.5rem;
   }
   .vc-content {
     padding: 1rem;
     //max-height: 25rem;
     overflow-y: scroll;
-    height: calc(100vh - 7.8rem);
+    height: calc(100vh - 8.5rem);
   }
 }

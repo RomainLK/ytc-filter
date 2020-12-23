@@ -26,7 +26,7 @@ export default {
       if (this.$store.state.helpAlert[this.alertKey] != null) {
         return this.$store.state.helpAlert[this.alertKey]
       }
-      return true
+      return false
     },
   },
   methods: {

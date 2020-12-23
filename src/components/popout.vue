@@ -2,13 +2,18 @@
   <div>
     <div class="container-fluid">
       <div class="row mt-3">
-        <div id="ytc-filter" class="col message-column">
+        <div id="ytc-filter" class="col message-column" :class="{ 'limited-width': displaySettings }">
           <h5 class="message-column-title">{{ displayedVideoName }}</h5>
-          <message-list :video-id="displayedVideoId" :is-popout="true" />
+          <message-list :video-id="displayedVideoId" :is-popout="true">
+            <b-button :pressed.sync="displaySettings" variant="primary" class="float-right" size="sm">Settings</b-button>
+          </message-list>
         </div>
-        <div class="col py-2 pr-5 settings-column">
+        <div class="col py-2 pr-5 settings-column" v-show="displaySettings">
           <b-tabs content-class="mt-3">
             <b-tab title="Current video" active @click="selectedArchiveId = null">
+              <b-alert variant="warning" :show="channelId == null">
+                ytcFilter is running in degraded mode because it couldn't get channel and video information. This is normal if you are using ytcFilter outside of Youtube.com
+              </b-alert>
               <profile-card class="mb-3" :video-id="videoId" />
               <filter-card class="mb-3" :filters="currentFilters" @change="onFiltersChange" />
               <embedded-options-card :options="currentVideoSettings.options" @change="onOptionsChange" />
@@ -80,13 +85,20 @@ export default {
   },
   data() {
     return {
+      displaySettings: false,
       usedBytes: null,
       selectedArchiveId: null,
     }
   },
-  mounted() {
+  async mounted() {
     console.log('[ytcFilter] popout mounting. channelId:', this.channelId, ' videoId:', this.videoId, ' channelName:', this.channelName)
     this.getUsedBytes()
+    window.addEventListener('resize', () => {
+      this.$store.commit('setPopoutSize', {
+        height: window.innerHeight,
+        width: window.innerWidth,
+      })
+    })
   },
   computed: {
     quotaByte() {
@@ -97,13 +109,13 @@ export default {
       }
     },
     channelId() {
-      return this.getUrlParams('cid')
+      return this.getUrlParams('cid') === 'null' ? null : this.getUrlParams('cid')
     },
     videoId() {
       return this.getUrlParams('vid')
     },
     videoName() {
-      return decodeURIComponent(this.getUrlParams('vname'))
+      return decodeURIComponent(this.getUrlParams('vname')) === 'null' ? 'Video name unavailable' : decodeURIComponent(this.getUrlParams('vname'))
     },
     displayedVideoId() {
       return this.selectedArchiveId || this.videoId
@@ -128,7 +140,33 @@ export default {
       return this.currentVideoSettings?.feeds?.default?.filters
     },
   },
+  watch: {
+    'currentFilters.length': function(value) {
+      if (value === 0) {
+        this.displaySettings = true
+      }
+    },
+    displaySettings(value) {
+      if (value) {
+        if (window.innerWidth < 1200) {
+          const oldWidth = window.innerWidth
+          console.log('test')
+          this.updateWindow({ width: 1200 }, () => {
+            setTimeout(() => this.$store.commit('setPopoutSize', { width: oldWidth }), 200)
+          })
+        }
+      } else {
+        this.updateWindow({ width: this.$store.state.global.popoutWidth })
+      }
+    },
+  },
   methods: {
+    updateWindow(options, cb = () => {}) {
+      chrome.windows.getCurrent(w => {
+        console.log(w, options, cb)
+        chrome.windows.update(w.id, options, cb)
+      })
+    },
     getUsedBytes() {
       if (chrome.storage.local.getBytesInUse) {
         chrome.storage.local.getBytesInUse(b => (this.usedBytes = b))

@@ -11,7 +11,7 @@ const defaultProfiles = {
     key: 'englishtag',
     // eslint-disable-next-line
     filters: [{ type: 'regex', value: '/^[[(]?(?:eng?|t(?:rans)|英訳)(?:/(?:eng?|t(?:rans)|英訳))?[]): -]/i' }],
-    //Regex in case formatting bork it  /^[[(]?(?:eng?|t(?:rans)|英訳)(?:\/(?:eng?|t(?:rans)|英訳))?[\]): -]/i
+    //In case formatting bork it       /^[[(]?(?:eng?|t(?:rans)|英訳)(?:\/(?:eng?|t(?:rans)|英訳))?[\]): -]/i
   },
   alphanumeric: { name: 'Messages with alphanumeric', key: 'alphanumeric', filters: [{ type: 'regex', value: '/[a-z0-9]/i' }] },
   japanese: { name: '日本語/Messages with japanese characters', key: 'japanese', filters: [{ type: 'regex', value: '/[一-龠]|[ぁ-ゔ]|[ァ-ヴー]|[ａ-ｚＡ-Ｚ０-９]|[々〆〤]/u' }] },
@@ -25,10 +25,13 @@ export default new Vuex.Store({
       profiles: {},
       defaultPerChannel: {},
       globalDefault: null,
+      popoutHeight: null,
+      popoutWidth: null,
     },
     helpAlert: {
       filterHelp: true,
       profileHelp: true,
+      profileDefaultHelp: true,
     },
   },
   getters: {
@@ -68,6 +71,15 @@ export default new Vuex.Store({
       state.helpAlert = {
         filterHelp: true,
         profileHelp: true,
+        profileDefaultHelp: true,
+      }
+    },
+    setPopoutSize(state, { height, width }) {
+      if (height) {
+        state.global.popoutHeight = height
+      }
+      if (width) {
+        state.global.popoutWidth = width
       }
     },
     setGlobal(state, value) {
@@ -112,6 +124,11 @@ export default new Vuex.Store({
     },
     setChannelDefault(state, { channelId, profileKey, channelName }) {
       state.global.defaultPerChannel = { ...state.global.defaultPerChannel, [channelId]: { profileKey, channelId, channelName } }
+    },
+    unsetChannelDefault(state, channelId) {
+      const temp = { ...state.global.defaultPerChannel }
+      delete temp[channelId]
+      state.global.defaultPerChannel = temp
     },
     deleteProfile(state, profileKey) {
       const newGlobal = { ...state.global }

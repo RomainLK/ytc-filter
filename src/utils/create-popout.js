@@ -1,8 +1,11 @@
 export const createYtcPopout = info => {
+  console.log(info)
   chrome.windows.create(
     {
       url: `${chrome.runtime.getURL('popout.html')}?vid=${info.videoId}&vname=${encodeURIComponent(info.videoName)}&cid=${info.channelId}&cname=${info.channelName}`,
       type: 'popup',
+      height: info.height,
+      width: info.width,
     },
     function(window) {}
   )

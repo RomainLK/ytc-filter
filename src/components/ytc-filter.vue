@@ -684,6 +684,8 @@ export default {
           channelId: getChannelId(),
           channelName: getChannelName(),
           videoName: getVideoName(),
+          width: this.$store.state.global.popoutWidth,
+          height: this.$store.state.global.popoutHeight,
         },
       })
     },
