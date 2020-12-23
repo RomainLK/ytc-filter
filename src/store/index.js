@@ -10,7 +10,7 @@ const defaultProfiles = {
     name: 'English tagged messages',
     key: 'englishtag',
     // eslint-disable-next-line
-    filters: [{ type: 'regex', value: '/^[[(]?(?:eng?|t(?:rans)|英訳)(?:/(?:eng?|t(?:rans)|英訳))?[]): -]/i' }],
+    filters: [{ type: 'regex', value: '/^[[(]?(?:eng?|t(?:rans)|英訳)(?:\/(?:eng?|t(?:rans)|英訳))?[\]): -]/i' }],
     //In case formatting bork it       /^[[(]?(?:eng?|t(?:rans)|英訳)(?:\/(?:eng?|t(?:rans)|英訳))?[\]): -]/i
   },
   alphanumeric: { name: 'Messages with alphanumeric', key: 'alphanumeric', filters: [{ type: 'regex', value: '/[a-z0-9]/i' }] },
