@@ -1,5 +1,5 @@
 export const createYtcPopout = info => {
-  console.log(info)
+  console.log('[ytcFilter] Create ytc popout', info)
   chrome.windows.create(
     {
       url: `${chrome.runtime.getURL('popout.html')}?vid=${info.videoId}&vname=${encodeURIComponent(info.videoName)}&cid=${info.channelId}&cname=${info.channelName}`,

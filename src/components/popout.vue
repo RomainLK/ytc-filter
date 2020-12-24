@@ -6,7 +6,7 @@
           <h5 class="message-column-title">{{ displayedVideoName }}</h5>
           <message-list :video-id="displayedVideoId" :is-popout="true">
             <b-button :pressed.sync="displaySettings" variant="primary" class="float-right " size="sm">Settings</b-button>
-            <button class="btn btn-primary float-right btn-sm mr-2" @click="$store.commit('toggleDarkMode')">Theme switch</button>
+            <button class="btn btn-primary float-right btn-sm mr-2" @click="$store.commit('toggleDarkMode')">{{ darkMode ? 'Dark' : 'Light'}}</button>
           </message-list>
         </div>
         <div class="col py-2 pr-5 settings-column" v-show="displaySettings">
@@ -155,7 +155,6 @@ export default {
       if (value) {
         if (window.innerWidth < 1200) {
           const oldWidth = window.innerWidth
-          console.log('test')
           this.updateWindow({ width: 1200 }, () => {
             setTimeout(() => this.$store.commit('setPopoutSize', { width: oldWidth }), 200)
           })

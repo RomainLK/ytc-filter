@@ -13,7 +13,7 @@ export const getChannelId = () => {
     return 'Studio'
   } else if (isYoutubeIframe()) {
     return window.parent.top.document
-      .querySelector('ytd-channel-name .yt-simple-endpoint')
+      .querySelector('ytd-video-owner-renderer ytd-channel-name .yt-simple-endpoint')
       .href.split('/')
       .pop()
   } else {
@@ -35,7 +35,7 @@ export const getChannelName = () => {
   if (document.location.origin === 'https://studio.youtube.com') {
     return 'Studio'
   } else if (isYoutubeIframe()) {
-    return window.parent.top.document.querySelector('ytd-channel-name .yt-simple-endpoint').text
+    return window.parent.top.document.querySelector('ytd-video-owner-renderer ytd-channel-name .yt-simple-endpoint').text
   } else {
     // Context other than Youtube
     return null

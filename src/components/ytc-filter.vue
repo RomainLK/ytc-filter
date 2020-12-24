@@ -183,7 +183,6 @@
       </div>
       <!--Content-->
       <message-list :video-id="videoId" :height="heightPx" @notify="notify" />
-
       <div v-if="showMoreCommentsDisplayed" class="vc-text-center">No new messages can be filtered when the chat isn't autoscrolling</div>
     </div>
   </div>
@@ -599,7 +598,6 @@ export default {
           ...this.$store.state.videoSettings[getVideoId()].feeds.default,
           options: this.$store.state.videoSettings[getVideoId()].options,
         }
-
         this.setConfig(config)
       } catch (e) {
         console.warn('loadConfig - Failed to load config', e)
@@ -652,12 +650,13 @@ export default {
     importFilters() {
       try {
         const parsed = JSON.parse(this.importFilterTextArea)
-        console.log(parsed.map(filter1To2))
-        this.filters = parsed.map(filter1To2)
+        
+        this.filters = parsed.map(filterMigrate)
         this.importFilterTextArea = ''
         this.displayExport = false
         this.saveConfig()
       } catch (e) {
+        console.log('[ytcFilter] Import failed', e)
         this.notify('Error when importing filters. Please check you export.')
       }
     },

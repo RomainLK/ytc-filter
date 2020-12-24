@@ -61,6 +61,9 @@ export default new Vuex.Store({
       return Object.values(archive).filter(c => c.videos.length > 0)
     },
   },
+  /**
+   * Be careful with the data sent, as the reference will change when synchronising between different context.
+   */
   mutations: {
     factoryReset(state) {
       state.videoSettings = {}
@@ -107,12 +110,21 @@ export default new Vuex.Store({
       const feed = state.videoSettings[videoId].feeds[feedName]
       feed.filters = [].concat(filters)
     },
-    removeMessage(state, { videoId, feedName, message }) {
+    removeMessage(state, { videoId, feedName, messageIndex }) {
       const feed = state.videoSettings[videoId].feeds[feedName]
-      const index = feed.messages.indexOf(message)
-      feed.messages.splice(index, 1)
-      feed.messages = [...feed.messages]
+      const message = feed.messages[messageIndex]
+      feed.messages.splice(messageIndex, 1)
+      //feed.messages = Vue.observable([...feed.messages])
+      //Vue.delete(feed.messages, index)
       Vue.delete(feed.deduplication, message.id)
+      //state.videoSettings = { ...state.videoSettings }
+    },
+    clearMessages(state, { videoId, feedName }) {
+      const feed = state.videoSettings[videoId].feeds[feedName]
+      while (feed.messages.length > 0) {
+        feed.messages.pop()
+      }
+      feed.deduplication = {}
       state.videoSettings = { ...state.videoSettings }
     },
     applyProfile(state, { videoId, feedName, profileKey }) {
@@ -123,6 +135,14 @@ export default new Vuex.Store({
       }
     },
     clearVideoSettings(state) {
+      for (const videoSettings of Object.values(state.videoSettings)) {
+        for (const feed of Object.values(videoSettings.feeds)) {
+          while (feed.messages.length > 0) {
+            feed.messages.pop()
+          }
+          feed.deduplication = {}
+        }
+      }
       state.videoSettings = {}
     },
     setGlobalDefault(state, profileKey) {
@@ -161,6 +181,7 @@ export default new Vuex.Store({
   plugins: [
     VuexWebExtensions({
       persistentStates: ['videoSettings', 'global', 'helpAlert'],
+      //loggerLevel: 'debug',
     }),
   ],
 })

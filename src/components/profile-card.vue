@@ -147,6 +147,7 @@ export default {
       this.$bvToast.toast(`Profile "${this.selectedProfile.name}" was set as global default`, { title: 'Success' })
     },
     setAsChannelDefault() {
+      console.log('[ytcFilter] Set as channel default', this.videoId, this.currentVideoSettings.channelId, this.currentVideoSettings.channelName )
       this.$store.commit('setChannelDefault', {
         channelId: this.currentVideoSettings.channelId,
         profileKey: this.selectedProfile.key,
