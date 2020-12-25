@@ -27,8 +27,14 @@ export default new Vuex.Store({
       profiles: {},
       defaultPerChannel: {},
       globalDefault: null,
-      popoutHeight: null,
-      popoutWidth: null,
+      fullPopout: {
+        height: null,
+        width: null,
+      },
+      compactPopout: {
+        height: null,
+        width: null,
+      },
     },
     helpAlert: {
       filterHelp: true,
@@ -42,6 +48,12 @@ export default new Vuex.Store({
     },
     profiles(state) {
       return state.global.profiles
+    },
+    compactPopoutSize(state) {
+      return { width: state.global.compactPopout.width, height: state.global.compactPopout.height }
+    },
+    fullPopoutSize(state) {
+      return { width: state.global.fullPopout.width, height: state.global.fullPopout.height }
     },
     channelArchive(state) {
       const archive = { _missing: { id: '_missing', name: 'No channel name', videos: [] } }
@@ -73,6 +85,14 @@ export default new Vuex.Store({
         profiles: {},
         defaultPerChannel: {},
         globalDefault: null,
+        fullPopout: {
+          height: null,
+          width: null,
+        },
+        compactPopout: {
+          height: null,
+          width: null,
+        },
       }
       state.helpAlert = {
         filterHelp: true,
@@ -80,12 +100,20 @@ export default new Vuex.Store({
         profileDefaultHelp: true,
       }
     },
-    setPopoutSize(state, { height, width }) {
+    setFullPopoutSize(state, { height, width }) {
       if (height) {
-        state.global.popoutHeight = height
+        state.global.fullPopout.height = height
       }
       if (width) {
-        state.global.popoutWidth = width
+        state.global.fullPopout.width = width
+      }
+    },
+    setCompactPopoutSize(state, { height, width }) {
+      if (height) {
+        state.global.compactPopout.height = height
+      }
+      if (width) {
+        state.global.compactPopout.width = width
       }
     },
     toggleDarkMode(state) {

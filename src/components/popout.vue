@@ -5,8 +5,8 @@
         <div id="ytc-filter" class="col message-column" :class="{ 'limited-width': displaySettings }">
           <h5 class="message-column-title">{{ displayedVideoName }}</h5>
           <message-list :video-id="displayedVideoId" :is-popout="true">
-            <b-button :pressed.sync="displaySettings" variant="primary" class="float-right " size="sm">Settings</b-button>
-            <button class="btn btn-primary float-right btn-sm mr-2" @click="$store.commit('toggleDarkMode')">{{ darkMode ? 'Dark' : 'Light'}}</button>
+            <b-button :pressed.sync="displaySettings" variant="primary" class="float-right " size="sm"> {{ displaySettings ? 'Hide' : 'Show' }} settings</b-button>
+            <button class="btn btn-primary float-right btn-sm mr-2" @click="$store.commit('toggleDarkMode')">{{ darkMode ? 'Dark' : 'Light' }}</button>
           </message-list>
         </div>
         <div class="col py-2 pr-5 settings-column" v-show="displaySettings">
@@ -95,10 +95,17 @@ export default {
     console.log('[ytcFilter] popout mounting. channelId:', this.channelId, ' videoId:', this.videoId, ' channelName:', this.channelName)
     this.getUsedBytes()
     window.addEventListener('resize', () => {
-      this.$store.commit('setPopoutSize', {
-        height: window.innerHeight,
-        width: window.innerWidth,
-      })
+      if (this.displaySettings) {
+        this.$store.commit('setFullPopoutSize', {
+          height: window.innerHeight,
+          width: window.innerWidth,
+        })
+      } else {
+        this.$store.commit('setCompactPopoutSize', {
+          height: window.innerHeight,
+          width: window.innerWidth,
+        })
+      }
     })
   },
   computed: {
@@ -153,14 +160,9 @@ export default {
 
     displaySettings(value) {
       if (value) {
-        if (window.innerWidth < 1200) {
-          const oldWidth = window.innerWidth
-          this.updateWindow({ width: 1200 }, () => {
-            setTimeout(() => this.$store.commit('setPopoutSize', { width: oldWidth }), 200)
-          })
-        }
+        this.updateWindow(this.$store.getters.fullPopoutSize)
       } else {
-        this.updateWindow({ width: this.$store.state.global.popoutWidth })
+        this.updateWindow(this.$store.getters.compactPopoutSize)
       }
     },
     darkMode(value) {
@@ -174,7 +176,6 @@ export default {
   methods: {
     updateWindow(options, cb = () => {}) {
       chrome.windows.getCurrent(w => {
-        console.log(w, options, cb)
         chrome.windows.update(w.id, options, cb)
       })
     },

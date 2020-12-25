@@ -362,27 +362,54 @@ export default {
       //return
 
       const lastVersion = this.$store.state.global.version || '0.0.0'
-
+      console.log('[ytcFilter] Last version detected:', lastVersion)
       if (gtr(manifest.version, lastVersion)) {
+        console.log('[ytcFilter] Version update')
         //Migration from 1.5.0 to 1.6.1 for default profile
         if (this.global.profiles.default && this.global.profiles.default.name == null && this.global.globalDefault == null) {
+          console.log('[ytcFilter] Migrate to 1.6.1')
           this.global.profiles.default.name = 'Default'
           this.global.globalDefault = 'default'
         }
         if (this.$store.state.global.version == null) {
           //Migration to 2.0.0
-          for (const [key, profile] of Object.entries(this.global.profiles)) {
-            Vue.set(profile, 'key', key)
-          }
-
-          this.$store.commit('setGlobal', { ...this.global, version: manifest.version })
+          console.log('[ytcFilter] Migrate to 2.0.0')
 
           const handleStorage = storage => {
+            console.log('[ytcFilter] Migrating storage', storage)
+            //Global
+            const global = JSON.parse(storage['cache:vcGlobal'].data)
+            for (const [key, profile] of Object.entries(global.profiles)) {
+              Vue.set(profile, 'key', key)
+            }
+            const newGlobal = {
+              ...global,
+              version: manifest.version,
+              darkMode: false,
+              fullPopout: {
+                height: 800,
+                width: 1200,
+              },
+              compactPopout: {
+                height: 600,
+                width: 400,
+              },
+            }
+            console.log('[ytcFilter] New global', newGlobal)
+            this.$store.commit('setGlobal', newGlobal)
+
+            if (chrome) {
+              chrome.storage.local.remove('cache:vcGlobal')
+            } else {
+              browser.storage.local.remove('cache:vcGlobal')
+            }
+
+            //Video settings
             for (const [key, value] of Object.entries(storage)) {
               if (key.startsWith('cache:vcVideo')) {
                 const id = key.slice(13)
                 const parsed = JSON.parse(value.data)
-                parsed.videoId = id
+                parsed.id = id
                 parsed.feeds = {
                   default: {
                     messages: parsed.messages,
@@ -393,18 +420,29 @@ export default {
                 delete parsed.messages
                 delete parsed.deduplication
                 delete parsed.filters
+                console.log('[ytcFilter]Migrating video', key, parsed)
                 this.$store.commit('addVideoSettings', parsed)
+                if (chrome) {
+                  chrome.storage.local.remove(key)
+                } else {
+                  browser.storage.local.remove(key)
+                }
               }
             }
           }
-
-          await new Promise(resolve => {
-            chrome.storage.local.get(s => {
-              handleStorage(s)
-              resolve()
+          if (chrome) {
+            await new Promise(resolve => {
+              chrome.storage.local.get(s => {
+                handleStorage(s)
+                resolve()
+              })
             })
-          })
+          } else {
+            const storage = await browser.storage.get()
+            handleStorage(storage)
+          }
         }
+        console.log('[ytcFilter] Migration ended.', this.$store.state)
         this.notifyChangelog()
       }
     },
@@ -591,6 +629,7 @@ export default {
       const hasConfig = this.$store.state.videoSettings[getVideoId()]
 
       if (!hasConfig) {
+        console.log('[ytcFilter] No config for currrent video')
         return false
       }
       try {
@@ -650,7 +689,7 @@ export default {
     importFilters() {
       try {
         const parsed = JSON.parse(this.importFilterTextArea)
-        
+
         this.filters = parsed.map(filterMigrate)
         this.importFilterTextArea = ''
         this.displayExport = false
