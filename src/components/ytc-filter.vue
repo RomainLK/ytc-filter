@@ -7,27 +7,9 @@
       </button>
     </div>
     <div class="vc-toolbar">
-      <div :class="{ hidden: !displayYtc }" class="vc-valign">
-        <button type="button" class="sm-btn" title="Go to bottom" @click="goToBottom">
-          <svg class="svg-icon" viewBox="0 0 20 20" width="18" height="18">
-            <path
-              d="M13.962,8.885l-3.736,3.739c-0.086,0.086-0.201,0.13-0.314,0.13S9.686,12.71,9.6,12.624l-3.562-3.56C5.863,8.892,5.863,8.611,6.036,8.438c0.175-0.173,0.454-0.173,0.626,0l3.25,3.247l3.426-3.424c0.173-0.172,0.451-0.172,0.624,0C14.137,8.434,14.137,8.712,13.962,8.885 M18.406,10c0,4.644-3.763,8.406-8.406,8.406S1.594,14.644,1.594,10S5.356,1.594,10,1.594S18.406,5.356,18.406,10 M17.521,10c0-4.148-3.373-7.521-7.521-7.521c-4.148,0-7.521,3.374-7.521,7.521c0,4.147,3.374,7.521,7.521,7.521C14.148,17.521,17.521,14.147,17.521,10"
-            ></path>
-          </svg>
-        </button>
-        <button type="button" class="sm-btn" title="Go to top" @click="goToTop">
-          <svg class="svg-icon" viewBox="0 0 20 20" width="18" height="18">
-            <path
-              d="M13.889,11.611c-0.17,0.17-0.443,0.17-0.612,0l-3.189-3.187l-3.363,3.36c-0.171,0.171-0.441,0.171-0.612,0c-0.172-0.169-0.172-0.443,0-0.611l3.667-3.669c0.17-0.17,0.445-0.172,0.614,0l3.496,3.493C14.058,11.167,14.061,11.443,13.889,11.611 M18.25,10c0,4.558-3.693,8.25-8.25,8.25c-4.557,0-8.25-3.692-8.25-8.25c0-4.557,3.693-8.25,8.25-8.25C14.557,1.75,18.25,5.443,18.25,10 M17.383,10c0-4.07-3.312-7.382-7.383-7.382S2.618,5.93,2.618,10S5.93,17.381,10,17.381S17.383,14.07,17.383,10"
-            ></path>
-          </svg>
-        </button>
-        <button type="button" class="sm-btn" @click="exportMessagesToPng" title="Screenshot current messages">
-          <svg class="svg-icon" viewBox="0 0 20 20" width="18" height="18">
-            <path
-              d="M10,6.536c-2.263,0-4.099,1.836-4.099,4.098S7.737,14.732,10,14.732s4.099-1.836,4.099-4.098S12.263,6.536,10,6.536M10,13.871c-1.784,0-3.235-1.453-3.235-3.237S8.216,7.399,10,7.399c1.784,0,3.235,1.452,3.235,3.235S11.784,13.871,10,13.871M17.118,5.672l-3.237,0.014L12.52,3.697c-0.082-0.105-0.209-0.168-0.343-0.168H7.824c-0.134,0-0.261,0.062-0.343,0.168L6.12,5.686H2.882c-0.951,0-1.726,0.748-1.726,1.699v7.362c0,0.951,0.774,1.725,1.726,1.725h14.236c0.951,0,1.726-0.773,1.726-1.725V7.195C18.844,6.244,18.069,5.672,17.118,5.672 M17.98,14.746c0,0.477-0.386,0.861-0.862,0.861H2.882c-0.477,0-0.863-0.385-0.863-0.861V7.384c0-0.477,0.386-0.85,0.863-0.85l3.451,0.014c0.134,0,0.261-0.062,0.343-0.168l1.361-1.989h3.926l1.361,1.989c0.082,0.105,0.209,0.168,0.343,0.168l3.451-0.014c0.477,0,0.862,0.184,0.862,0.661V14.746z"
-            ></path>
-          </svg>
+      <div>
+        <button type="button" @click="ytcPopout()">
+          Popout
         </button>
       </div>
       <div v-if="displayYtc" class="vc-toolbar vc-valign button">
@@ -51,6 +33,7 @@
             ></path>
           </svg>
         </button>
+
         <button type="button" @click="displayYtc = !displayYtc" :title="displayYtc ? 'Close ytcFilter' : 'Show ytcFilter'">{{ displayYtc ? 'X' : 'ytcFilter' }}</button>
       </div>
     </div>
@@ -111,14 +94,7 @@
           <ul class="vc-filter-list">
             <li class="vc-filter-item" v-for="(filter, index) in filters" :key="'f' + index">
               <span v-if="!filter.regex && filter.caseSensitive">(Case sensitive)</span>
-              <span v-if="filter.author">Author: {{ filter.author }}</span>
-              <span v-else-if="filter.msgIncludes">Text includes: {{ filter.msgIncludes }}</span>
-              <span v-else-if="filter.regex">Regex: {{ filter.regex }}</span>
-              <span v-else-if="filter.isMember">Author has membership</span>
-              <span v-else-if="filter.isModerator">Author is moderator</span>
-              <span v-else-if="filter.isOwner">Author is owner</span>
-              <span v-else-if="filter.isSuperChat">Message is Super Chat</span>
-              <span v-else-if="filter.isVerified">Author is verified</span>
+              <span>{{ getFilterLabel(filter) }}</span>
               <button type="button" class="sm-btn" @click="removeFilter(filter)" title="Remove filter">
                 <svg class="svg-icon" viewBox="0 0 20 20" width="13" height="13">
                   <path
@@ -206,52 +182,7 @@
         </div>
       </div>
       <!--Content-->
-      <div id="ytc-messages" class="vc-content" :style="{ height: heightPx }" ref="content">
-        <div class="vc-message-item" v-for="(msg, index) in messages" :key="msg.id">
-          <span v-if="msg.timestamp && msgOptions !== index" class="vc-timestamp" @click="msgOptions = index">{{ msg.timestamp }}</span>
-          <span v-else class="vc-options">
-            <button type="button" class="sm-btn" title="Go to message" @click="scrollYoutubeChatToId(msg.id)">
-              <svg class="svg-icon" viewBox="0 0 20 20" width="13" height="13">
-                <path
-                  d="M18.125,15.804l-4.038-4.037c0.675-1.079,1.012-2.308,1.01-3.534C15.089,4.62,12.199,1.75,8.584,1.75C4.815,1.75,1.982,4.726,2,8.286c0.021,3.577,2.908,6.549,6.578,6.549c1.241,0,2.417-0.347,3.44-0.985l4.032,4.026c0.167,0.166,0.43,0.166,0.596,0l1.479-1.478C18.292,16.234,18.292,15.968,18.125,15.804 M8.578,13.99c-3.198,0-5.716-2.593-5.733-5.71c-0.017-3.084,2.438-5.686,5.74-5.686c3.197,0,5.625,2.493,5.64,5.624C14.242,11.548,11.621,13.99,8.578,13.99 M16.349,16.981l-3.637-3.635c0.131-0.11,0.721-0.695,0.876-0.884l3.642,3.639L16.349,16.981z"
-                ></path>
-              </svg>
-            </button>
-            <button type="button" class="sm-btn" title="Delete message" @click="deleteMessage(msg)">
-              <svg class="svg-icon" viewBox="0 0 20 20" width="13" height="13">
-                <path
-                  d="M17.114,3.923h-4.589V2.427c0-0.252-0.207-0.459-0.46-0.459H7.935c-0.252,0-0.459,0.207-0.459,0.459v1.496h-4.59c-0.252,0-0.459,0.205-0.459,0.459c0,0.252,0.207,0.459,0.459,0.459h1.51v12.732c0,0.252,0.207,0.459,0.459,0.459h10.29c0.254,0,0.459-0.207,0.459-0.459V4.841h1.511c0.252,0,0.459-0.207,0.459-0.459C17.573,4.127,17.366,3.923,17.114,3.923M8.394,2.886h3.214v0.918H8.394V2.886z M14.686,17.114H5.314V4.841h9.372V17.114z M12.525,7.306v7.344c0,0.252-0.207,0.459-0.46,0.459s-0.458-0.207-0.458-0.459V7.306c0-0.254,0.205-0.459,0.458-0.459S12.525,7.051,12.525,7.306M8.394,7.306v7.344c0,0.252-0.207,0.459-0.459,0.459s-0.459-0.207-0.459-0.459V7.306c0-0.254,0.207-0.459,0.459-0.459S8.394,7.051,8.394,7.306"
-                ></path>
-              </svg>
-            </button>
-            <button v-if="msg.timestamp" type="button" class="sm-btn" title="Hide message options" @click="resetMessageOptions">
-              <svg class="svg-icon" viewBox="0 0 20 20" width="13" height="13">
-                <path
-                  d="M10.185,1.417c-4.741,0-8.583,3.842-8.583,8.583c0,4.74,3.842,8.582,8.583,8.582S18.768,14.74,18.768,10C18.768,5.259,14.926,1.417,10.185,1.417 M10.185,17.68c-4.235,0-7.679-3.445-7.679-7.68c0-4.235,3.444-7.679,7.679-7.679S17.864,5.765,17.864,10C17.864,14.234,14.42,17.68,10.185,17.68 M10.824,10l2.842-2.844c0.178-0.176,0.178-0.46,0-0.637c-0.177-0.178-0.461-0.178-0.637,0l-2.844,2.841L7.341,6.52c-0.176-0.178-0.46-0.178-0.637,0c-0.178,0.176-0.178,0.461,0,0.637L9.546,10l-2.841,2.844c-0.178,0.176-0.178,0.461,0,0.637c0.178,0.178,0.459,0.178,0.637,0l2.844-2.841l2.844,2.841c0.178,0.178,0.459,0.178,0.637,0c0.178-0.176,0.178-0.461,0-0.637L10.824,10z"
-                ></path>
-              </svg>
-            </button>
-          </span>
-          <span class="vc-author" :class="{ author: msg.authorType === 'moderator', owner: msg.authorType === 'owner' }">
-            {{ msg.author
-            }}<svg v-if="msg.authorType === 'moderator'" class="author-icon" viewBox="0 0 16 16" preserveAspectRatio="xMidYMid meet" focusable="false" width="16" height="16">
-              <g>
-                <path
-                  d="M9.64589146,7.05569719 C9.83346524,6.562372 9.93617022,6.02722257 9.93617022,5.46808511 C9.93617022,3.00042984 7.93574038,1 5.46808511,1 C4.90894765,1 4.37379823,1.10270499 3.88047304,1.29027875 L6.95744681,4.36725249 L4.36725255,6.95744681 L1.29027875,3.88047305 C1.10270498,4.37379824 1,4.90894766 1,5.46808511 C1,7.93574038 3.00042984,9.93617022 5.46808511,9.93617022 C6.02722256,9.93617022 6.56237198,9.83346524 7.05569716,9.64589147 L12.4098057,15 L15,12.4098057 L9.64589146,7.05569719 Z"
-                ></path>
-              </g>
-            </svg>
-            <img v-if="msg.badgeUrl" :src="msg.badgeUrl" />
-            <div class="vc-author-verified" v-if="msg.verified">
-              <svg viewBox="0 0 16 16" focusable="false" width="18" height="18">
-                <g transform="scale(0.66)"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"></path></g>
-              </svg>
-            </div>
-          </span>
-          <span class="vc-purchase-amount" :style="{ 'background-color': msg.backgroundColor ? msg.backgroundColor : 'none' }"> {{ msg.purchaseAmount }} </span>
-          <span class="vc-message" v-html="msg.html"></span>
-        </div>
-      </div>
+      <message-list :video-id="videoId" :height="heightPx" @notify="notify" />
       <div v-if="showMoreCommentsDisplayed" class="vc-text-center">No new messages can be filtered when the chat isn't autoscrolling</div>
     </div>
   </div>
@@ -259,33 +190,30 @@
 <script>
 import { ChatObserver } from '@/utils/chat-observer'
 import { MoreCommentsObserver } from '@/utils/more-comments-observer'
-import { getVideoId, getChannelId, getChannelName } from '@/utils/information-extractor'
-import cache from 'webext-storage-cache'
-import RegexParser from 'regex-parser'
+import { getVideoId, getChannelId, getChannelName, getVideoName } from '@/utils/information-extractor'
 import Vue from 'vue'
 import { gtr } from 'semver'
 import manifest from '@/manifest.json'
 import changelog from '@/../changelog.md'
 import xss from 'xss'
 import copy from 'copy-to-clipboard'
-import domtoimage from 'dom-to-image-improved'
-import { saveAs } from 'file-saver'
+import { ytcMount } from '@/utils/mount'
+import messageList from '@/components/message-list'
+import { eventBus } from '@/utils/event-bus'
+import { applyFilter } from '@/utils/apply-filter'
+import { filterMigrate } from '@/utils/migrate'
 
 const CHANNEL_ID = getChannelId()
-const VIDEO_ID = getVideoId()
-const MAX_AGE = { days: 14 }
-const MAX_GLOBAL_AGE = { days: 9999 }
-const VIDEO_STORAGE_KEY = `vcVideo${VIDEO_ID}`
-const GLOBAL_STORAGE_KEY = 'vcGlobal'
-const VERSION_STORAGE_KEY = 'vcVersion'
 
 let deduplicationMap = {}
 
-const regexCache = new WeakMap()
-
 export default {
+  components: {
+    messageList,
+  },
   data() {
     return {
+      videoId: getVideoId(),
       observer: {},
       displayYtc: false,
       displayFilters: false,
@@ -320,9 +248,16 @@ export default {
       editingProfileKey: null,
       maxHeight: 900,
       CHANNEL_ID,
+      ready: false,
     }
   },
   async mounted() {
+    console.log('[ytcFilter] Mounted hook start')
+    const loadButton = document.querySelector('#remount-ytc')
+    if (loadButton) {
+      document.removeEventListener('DOMContentLoaded', ytcMount)
+      document.querySelector('.ytc-loading').remove()
+    }
     this.maxHeight = document.getElementById('content-pages').getBoundingClientRect().height - 50
     this.observer = new ChatObserver()
     this.observer.observe()
@@ -331,9 +266,12 @@ export default {
     this.moreCommentsObserver.listeners.push(e => {
       this.showMoreCommentsDisplayed = !e.attributes.disabled
     })
+    console.log('[ytcFilter] Load global')
     await this.loadGlobal()
+    console.log('[ytcFilter] Global loaded')
     await this.checkUpdate()
     if (!(await this.loadConfig())) {
+      this.saveConfig()
       const channelDefault = this.global.defaultPerChannel[CHANNEL_ID]
       if (channelDefault) {
         await this.applyProfile(channelDefault.profileKey)
@@ -345,10 +283,31 @@ export default {
         this.notify(`Default global profile "${profileName}" was applied.`)
       }
     }
+
     if (this.filters.length === 0) {
       this.displayFilters = true
     }
     this.displayYtc = this.options.autoOpen
+
+    const isReady = () => {
+      if (this.$store.state?.global?.version == null) {
+        console.log('[ytcFilter] Store not ready')
+        setTimeout(isReady, 1000)
+      } else {
+        this.ready = true
+        console.log('[ytcFilter] Store ready')
+      }
+    }
+
+    this.$store.subscribe((mutation, state) => {
+      console.log('[ytcFilter] reload')
+      this.loadConfig()
+      this.loadGlobal()
+    })
+
+    isReady()
+
+    console.log('[ytcFilter] Mounted hook end')
   },
   beforeDestroy() {
     this.observer.clear()
@@ -392,76 +351,138 @@ export default {
       deep: true,
     },
     displayYtc() {
-      if (this.options.autoScroll && this.firstOpening) {
-        this.goToBottom()
+      if (this.firstOpening) {
+        eventBus.$emit('first-opening')
         this.firstOpening = false
       }
     },
   },
   methods: {
     async checkUpdate(force = false) {
-      let lastVersion = '0.0.0'
-      if (await cache.has(VERSION_STORAGE_KEY)) {
-        lastVersion = await cache.get(VERSION_STORAGE_KEY)
-      }
-      console.log('V', manifest.version, lastVersion)
+      //return
+
+      const lastVersion = this.$store.state.global.version || '0.0.0'
+      console.log('[ytcFilter] Last version detected:', lastVersion)
       if (gtr(manifest.version, lastVersion)) {
+        console.log('[ytcFilter] Version update')
         //Migration from 1.5.0 to 1.6.1 for default profile
         if (this.global.profiles.default && this.global.profiles.default.name == null && this.global.globalDefault == null) {
+          console.log('[ytcFilter] Migrate to 1.6.1')
           this.global.profiles.default.name = 'Default'
           this.global.globalDefault = 'default'
-          this.saveGlobal()
         }
+        if (this.$store.state.global.version == null) {
+          //Migration to 2.0.0
+          console.log('[ytcFilter] Migrate to 2.0.0')
+
+          const handleStorage = storage => {
+            console.log('[ytcFilter] Migrating storage', storage)
+            //Global
+            const global = JSON.parse(storage['cache:vcGlobal'].data)
+            for (const [key, profile] of Object.entries(global.profiles)) {
+              Vue.set(profile, 'key', key)
+            }
+            const newGlobal = {
+              ...global,
+              version: manifest.version,
+              darkMode: false,
+              fullPopout: {
+                height: 800,
+                width: 1200,
+              },
+              compactPopout: {
+                height: 600,
+                width: 400,
+              },
+            }
+            console.log('[ytcFilter] New global', newGlobal)
+            this.$store.commit('setGlobal', newGlobal)
+
+            if (chrome) {
+              chrome.storage.local.remove('cache:vcGlobal')
+            } else {
+              browser.storage.local.remove('cache:vcGlobal')
+            }
+
+            //Video settings
+            for (const [key, value] of Object.entries(storage)) {
+              if (key.startsWith('cache:vcVideo')) {
+                const id = key.slice(13)
+                const parsed = JSON.parse(value.data)
+                parsed.id = id
+                parsed.feeds = {
+                  default: {
+                    messages: parsed.messages,
+                    deduplication: parsed.deduplication,
+                    filters: parsed.filters.map(filterMigrate),
+                  },
+                }
+                delete parsed.messages
+                delete parsed.deduplication
+                delete parsed.filters
+                console.log('[ytcFilter]Migrating video', key, parsed)
+                this.$store.commit('addVideoSettings', parsed)
+                if (chrome) {
+                  chrome.storage.local.remove(key)
+                } else {
+                  browser.storage.local.remove(key)
+                }
+              }
+            }
+          }
+          if (chrome) {
+            await new Promise(resolve => {
+              chrome.storage.local.get(s => {
+                handleStorage(s)
+                resolve()
+              })
+            })
+          } else {
+            const storage = await browser.storage.get()
+            handleStorage(storage)
+          }
+        }
+        console.log('[ytcFilter] Migration ended.', this.$store.state)
         this.notifyChangelog()
-        cache.set(VERSION_STORAGE_KEY, manifest.version, MAX_GLOBAL_AGE)
       }
     },
     notifyChangelog() {
       this.notify(changelog, 0)
+    },
+    getFilterLabel(filter) {
+      switch (filter.type) {
+        case 'msgIncludes':
+          return `Text includes :${filter.value}`
+        case 'author':
+          return `Author :${filter.value}`
+        case 'regex':
+          return `Regex :${filter.value}`
+        case 'isMember':
+          return `Author has membership`
+        case 'isModerator':
+          return `Author is moderator`
+        case 'isOwner':
+          return `Author is owner`
+        case 'isSuperChat':
+          return `Message is Super Chat`
+        case 'isVerified':
+          return `Author is verified`
+      }
     },
     addFilter() {
       if (this.filterHasValue && !this.filterInput) {
         this.notify('This filter requires a value')
         return
       }
-      this.filters.push({ [this.filterType]: this.filterInput || true, caseSensitive: this.caseSensitive })
+      this.filters.push({ type: this.filterType, value: this.filterInput || true, caseSensitive: this.caseSensitive })
       this.filterInput = ''
       this.saveConfig()
     },
     onMessage(msg) {
       this.stats.msgNb++
       for (const filter of this.filters) {
-        if (filter.msgIncludes) {
-          const caseSensitive = filter.caseSensitive && msg.message.includes(filter.msgIncludes)
-          const caseInsensitive = !filter.caseSensitive && msg.message.toLowerCase().includes(filter.msgIncludes.toLowerCase())
-          if (caseSensitive || caseInsensitive) {
-            this.addMessage(msg)
-          }
-        } else if (filter.author) {
-          const caseSensitive = filter.caseSensitive && msg.author === filter.author
-          const caseInsensitive = !filter.caseSensitive && msg.author.toLowerCase() === filter.author.toLowerCase()
-          if (caseSensitive || caseInsensitive) {
-            this.addMessage(msg)
-          }
-        } else if (filter.isMember && msg.authorType === 'member') {
+        if (applyFilter(filter, msg)) {
           this.addMessage(msg)
-        } else if (filter.isModerator && msg.authorType === 'moderator') {
-          this.addMessage(msg)
-        } else if (filter.isOwner && msg.authorType === 'owner') {
-          this.addMessage(msg)
-        } else if (filter.isSuperChat && msg.messageType === 'paid-message') {
-          this.addMessage(msg)
-        } else if (filter.isVerified && msg.verified) {
-          this.addMessage(msg)
-        } else if (filter.regex) {
-          let regex = regexCache.get(filter)
-          if (!regex) {
-            regex = RegexParser(filter.regex)
-            regexCache.set(filter, regex)
-          }
-          if (regex.test(msg.message)) {
-            this.addMessage(msg)
-          }
         }
       }
     },
@@ -473,23 +494,10 @@ export default {
       }
       this.stats.filteredNb++
       msg.html = xss(msg.html, { stripIgnoreTag: true })
-      const isAtBottom = this.$refs.content.scrollTop + this.$refs.content.clientHeight >= this.$refs.content.scrollHeight - 50
 
       this.messages.push(msg)
 
-      if (this.options.autoScroll && isAtBottom) {
-        await this.goToBottom()
-      }
       this.saveConfig()
-    },
-
-    goToTop() {
-      this.$refs.content.scrollTop = 0
-    },
-
-    async goToBottom() {
-      await this.$nextTick()
-      this.$refs.content.scrollTop = this.$refs.content.scrollHeight
     },
 
     removeFilter(filter) {
@@ -505,30 +513,6 @@ export default {
       deduplicationMap = {}
       this.saveConfig()
     },
-    exportMessagesToPng() {
-      const messageNode = document.getElementById('ytc-messages')
-      domtoimage
-        .toBlob(messageNode, {
-          width: messageNode.scrollWidth,
-          height: messageNode.scrollHeight,
-          canvas: {
-            // Canvas for cropping screenshot
-            sx: 0,
-            sy: 0,
-            dy: -messageNode.scrollTop,
-            dx: 0,
-            sh: messageNode.scrollHeight,
-            sw: messageNode.scrollWidth,
-            dh: messageNode.scrollHeight,
-            dw: messageNode.scrollWidth,
-            height: this.finalHeight + 50,
-          },
-        })
-        .then(blob => {
-          console.log(this.finalHeight + 50)
-          saveAs(blob, `ytcFilter-${VIDEO_ID}.png`)
-        })
-    },
 
     async saveProfile() {
       const name = this.global.profiles[this.editingProfileKey].name
@@ -537,6 +521,7 @@ export default {
         return
       }
       const profile = Vue.observable({
+        key: this.editingProfileKey,
         name,
         filters: [...this.filters],
         options: {
@@ -565,20 +550,13 @@ export default {
       await this.saveGlobal()
     },
     saveGlobal() {
-      return cache.set(GLOBAL_STORAGE_KEY, JSON.stringify(this.global), MAX_GLOBAL_AGE)
+      this.$store.commit('setGlobal', this.global)
     },
 
     async loadGlobal() {
-      const hasGlobal = await cache.has(GLOBAL_STORAGE_KEY)
-      if (!hasGlobal) {
-        return false
-      }
       try {
         this.global = {
-          profiles: {},
-          defaultPerChannel: {},
-          globalDefault: null,
-          ...JSON.parse(await cache.get(GLOBAL_STORAGE_KEY)),
+          ...this.$store.getters.global,
         }
       } catch (e) {
         console.warn('applyProfile - Failed to load global')
@@ -591,7 +569,8 @@ export default {
       try {
         const { profiles } = this.global
         if (profiles?.[key]) {
-          this.setConfig(profiles[key])
+          this.$store.commit('applyProfile', { videoId: getVideoId(), feedName: 'default', profileKey: key })
+          this.loadConfig()
           return true
         } else {
           return false
@@ -628,27 +607,37 @@ export default {
       this.saveGlobal()
     },
 
-    async saveConfig() {
-      await cache.set(
-        VIDEO_STORAGE_KEY,
-        JSON.stringify({
-          messages: this.messages,
-          filters: this.filters,
-          options: this.options,
-          deduplication: deduplicationMap,
-        }),
-        MAX_AGE
-      )
+    saveConfig() {
+      this.$store.commit('addVideoSettings', {
+        id: getVideoId(),
+        name: getVideoName(),
+        channelId: getChannelId(),
+        channelName: getChannelName(),
+        options: this.options,
+        feeds: {
+          default: {
+            messages: this.messages,
+            filters: this.filters,
+            options: this.options,
+            deduplication: deduplicationMap,
+          },
+        },
+      })
     },
 
     async loadConfig() {
-      const hasConfig = await cache.has(VIDEO_STORAGE_KEY)
+      const hasConfig = this.$store.state.videoSettings[getVideoId()]
+
       if (!hasConfig) {
+        console.log('[ytcFilter] No config for currrent video')
         return false
       }
-      const config = await cache.get(VIDEO_STORAGE_KEY)
       try {
-        this.setConfig(JSON.parse(config))
+        const config = {
+          ...this.$store.state.videoSettings[getVideoId()].feeds.default,
+          options: this.$store.state.videoSettings[getVideoId()].options,
+        }
+        this.setConfig(config)
       } catch (e) {
         console.warn('loadConfig - Failed to load config', e)
         return false
@@ -687,22 +676,7 @@ export default {
       this.msgOptions = null
     },
 
-    deleteMessage(msg) {
-      const index = this.messages.indexOf(msg)
-      this.messages.splice(index, 1)
-      delete deduplicationMap[msg.id]
-      this.resetMessageOptions()
-      this.saveConfig()
-    },
-
-    scrollYoutubeChatToId(id) {
-      const ytMsg = document.getElementById(id)
-      if (!ytMsg) {
-        this.notify('The message is not currently available in Youtube chat.')
-        return
-      }
-      document.querySelector('#item-scroller').scrollTo(0, ytMsg.offsetTop)
-    },
+    scrollYoutubeChatToId(id) {},
 
     exportFilters() {
       if (copy(JSON.stringify(this.filters))) {
@@ -715,12 +689,14 @@ export default {
     importFilters() {
       try {
         const parsed = JSON.parse(this.importFilterTextArea)
-        this.filters = parsed
+
+        this.filters = parsed.map(filterMigrate)
         this.importFilterTextArea = ''
         this.displayExport = false
+        this.saveConfig()
       } catch (e) {
+        console.log('[ytcFilter] Import failed', e)
         this.notify('Error when importing filters. Please check you export.')
-        console.log(e)
       }
     },
 
@@ -730,6 +706,19 @@ export default {
         .substr(2, 9)
       this.$set(this.global.profiles, key, { name: '', filters: [], options: [] })
       this.editingProfileKey = key
+    },
+    ytcPopout() {
+      chrome.runtime.sendMessage({
+        action: 'popout',
+        payload: {
+          videoId: getVideoId(),
+          channelId: getChannelId(),
+          channelName: getChannelName(),
+          videoName: getVideoName(),
+          width: this.$store.state.global.popoutWidth,
+          height: this.$store.state.global.popoutHeight,
+        },
+      })
     },
   },
 }

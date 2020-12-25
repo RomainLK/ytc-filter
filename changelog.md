@@ -1,12 +1,39 @@
-# ytcFilter 1.8.0
+# ytcFilter 2.0.0
+
+A <a href="https://discord.gg/P6DUeuhSjU" target="_blank">Discord</a> server has been added for support, bug reports, and feedback, or if you want to help with ytcFilter v2.
+
+This message will only appear the first time you install this extension, or update it. It can be displayed again by clicking on "ytcFilter" > "Show options" > "Changelog".
 
 Please check the <a href="https://github.com/RomainLK/ytc-filter/wiki" target="_blank">wiki</a> for guide and help.
-
-Welcome to ytcFilter. This message will only appear the first time you install this extension, or update it. It can be displayed again by clicking on "ytcFilter" > "Show options" > "Changelog".
 
 For bug reports or feature request, contact the developer directly or on <a href="https://github.com/RomainLK/ytc-filter"  target="_blank">Github</a>.
 
 # Changelog
+
+## 2.0.0 Joe
+
+New features
+
+- New interface in popout window
+- Default profiles for translation, languages, and staff
+  - English tagged messages
+  - Messages with Japanese characters
+  - Messages with alphanumeric characters
+  - Messages from staff
+- Display archive and storage size usage
+- Clear archive button in case storage is full
+- Add a loading message in case ytcFilter doesn't load properly with a manual boot button
+
+Improvements:
+
+- UX
+- Add several console.log message in order to help debugging
+- Several part of ytcFilter have been rewritten
+
+Known issues:
+
+- Popout has not full feature parity with ytcFilter 1.8
+- Screenshot is slow to process
 
 ## 1.8.0 Ina
 

@@ -1,7 +1,7 @@
 {
   "name": "ytcFilter",
   "description": "When Youtube chat is too fast",
-  "version": "1.8.0",
+  "version": "2.0.0",
   "manifest_version": 2,
   "icons": {
     "48": "icons/icon_48.png",
@@ -13,8 +13,9 @@
   },
   "background": {
     "scripts": ["background.js"],
-    "persistent": false
+    "persistent": true
   },
+  "web_accessible_resources": ["content-style.css"],
   "content_scripts": [
     {
       "run_at": "document_start",
@@ -22,7 +23,14 @@
       "all_frames": true,
       "css": ["content-style.css"],
       "js": ["content.js"]
+    },
+    {
+      "run_at": "document_end",
+      "matches": ["https://www.youtube.com/live_chat*", "https://studio.youtube.com/video/*"],
+      "all_frames": true,
+      "js": ["loading.js"]
     }
   ],
-  "permissions": ["storage"]
+  "permissions": ["storage", "tabs"],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';"
 }

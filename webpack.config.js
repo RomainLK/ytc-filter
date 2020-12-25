@@ -13,7 +13,10 @@ const config = {
   entry: {
     background: './background.js',
     content: './content.js',
+    loading: './loading.js',
+    'popout-main': './popout-main.js',
     'content-style': './content-style.scss',
+    popout: './popout.scss',
     'popup/popup': './popup/popup.js',
     'options/options': './options/options.js',
   },
@@ -103,6 +106,7 @@ const config = {
     new CopyPlugin([
       { from: 'icons', to: 'icons', ignore: ['icon.xcf'] },
       { from: 'popup/popup.html', to: 'popup/popup.html', transform: transformHtml },
+      { from: 'popout.html', to: 'popout.html', transform: transformHtml },
       { from: 'options/options.html', to: 'options/options.html', transform: transformHtml },
       {
         from: 'manifest.json',

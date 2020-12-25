@@ -40,7 +40,7 @@ $moderator-color: #5e84f1;
   }
 }
 
-html[dark] #ytc-filter {
+html[dark] #ytc-filter, .dark-mode #ytc-filter {
   .vc-toolbar {
     background-color: $dark-bg;
   }
@@ -294,5 +294,25 @@ html[dark] #ytc-filter {
   }
   .vc-text-center {
     text-align: center;
+  }
+}
+
+.ytc-loading {
+  color: black;
+  background-color: white;
+  font-size: 1.5rem;
+}
+
+#remount-ytc {
+  color: $primary;
+  cursor: pointer;
+  &:hover {
+    color: darken($color: $primary, $amount: 20%);
+  }
+}
+
+.ytc-popout {
+  yt-live-chat-app {
+    max-width: 30rem;
   }
 }
