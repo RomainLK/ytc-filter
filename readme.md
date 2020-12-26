@@ -12,6 +12,8 @@ Otherwise, release packages are available on Github
 
 # Help
 
+You can join the [Discord server](https://discord.gg/P6DUeuhSjU)
+
 Check the Github's [wiki](https://github.com/RomainLK/ytc-filter/wiki)
 
 # Building the extension
@@ -33,3 +35,5 @@ npm run build
 # Special thanks
 
 Message observer by fiahfy from https://github.com/fiahfy/youtube-live-chat-flow
+
+And all the people testing! It helps tremendously.

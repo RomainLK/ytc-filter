@@ -50,10 +50,10 @@ export default new Vuex.Store({
       return state.global.profiles
     },
     compactPopoutSize(state) {
-      return { width: state.global.compactPopout.width, height: state.global.compactPopout.height }
+      return { width: state.global?.compactPopout?.width, height: state.global?.compactPopout.height }
     },
     fullPopoutSize(state) {
-      return { width: state.global.fullPopout.width, height: state.global.fullPopout.height }
+      return { width: state.global?.fullPopout.width, height: state.global?.fullPopout.height }
     },
     channelArchive(state) {
       const archive = { _missing: { id: '_missing', name: 'No channel name', videos: [] } }

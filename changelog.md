@@ -1,4 +1,4 @@
-# ytcFilter 2.0.0
+# ytcFilter 2.0.1
 
 A <a href="https://discord.gg/P6DUeuhSjU" target="_blank">Discord</a> server has been added for support, bug reports, and feedback, or if you want to help with ytcFilter v2.
 
@@ -9,6 +9,14 @@ Please check the <a href="https://github.com/RomainLK/ytc-filter/wiki" target="_
 For bug reports or feature request, contact the developer directly or on <a href="https://github.com/RomainLK/ytc-filter"  target="_blank">Github</a>.
 
 # Changelog
+
+## 2.0.1
+
+Bug fixes:
+- New install on 2.0.0 were borked.
+- Popout restore size
+- Button sizing
+
 
 ## 2.0.0 Joe
 

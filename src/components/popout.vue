@@ -5,8 +5,8 @@
         <div id="ytc-filter" class="col message-column" :class="{ 'limited-width': displaySettings }">
           <h5 class="message-column-title">{{ displayedVideoName }}</h5>
           <message-list :video-id="displayedVideoId" :is-popout="true">
-            <b-button :pressed.sync="displaySettings" variant="primary" class="float-right " size="sm"> {{ displaySettings ? 'Hide' : 'Show' }} settings</b-button>
-            <button class="btn btn-primary float-right btn-sm mr-2" @click="$store.commit('toggleDarkMode')">{{ darkMode ? 'Dark' : 'Light' }}</button>
+            <b-button :pressed.sync="displaySettings" variant="primary" class="float-right sm-btn"> {{ displaySettings ? 'Hide' : 'Show' }} settings</b-button>
+            <button class="btn btn-primary float-right sm-btn mr-2" @click="$store.commit('toggleDarkMode')">{{ darkMode ? 'Dark' : 'Light' }}</button>
           </message-list>
         </div>
         <div class="col py-2 pr-5 settings-column" v-show="displaySettings">
@@ -159,6 +159,7 @@ export default {
     },
 
     displaySettings(value) {
+      console.log('AA', this.$store.getters.global)
       if (value) {
         this.updateWindow(this.$store.getters.fullPopoutSize)
       } else {

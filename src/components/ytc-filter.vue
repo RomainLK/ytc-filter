@@ -359,7 +359,6 @@ export default {
   },
   methods: {
     async checkUpdate(force = false) {
-      //return
 
       const lastVersion = this.$store.state.global.version || '0.0.0'
       console.log('[ytcFilter] Last version detected:', lastVersion)
@@ -377,14 +376,21 @@ export default {
 
           const handleStorage = storage => {
             console.log('[ytcFilter] Migrating storage', storage)
-            //Global
-            const global = JSON.parse(storage['cache:vcGlobal'].data)
-            for (const [key, profile] of Object.entries(global.profiles)) {
-              Vue.set(profile, 'key', key)
+            let global = {}
+            try {
+              global = storage['cache:vcGlobal']?.data ? JSON.parse(storage['cache:vcGlobal']?.data) : {}
+            } catch (e) {
+              console.warning('[ytcFilter] Error retrieving/parsing old global', e)
             }
+            if (global.profiles) {
+              for (const [key, profile] of Object.entries(global.profiles)) {
+                Vue.set(profile, 'key', key)
+              }
+            }
+
             const newGlobal = {
               ...global,
-              version: manifest.version,
+              version: '2.0.0',
               darkMode: false,
               fullPopout: {
                 height: 800,
@@ -403,7 +409,6 @@ export default {
             } else {
               browser.storage.local.remove('cache:vcGlobal')
             }
-
             //Video settings
             for (const [key, value] of Object.entries(storage)) {
               if (key.startsWith('cache:vcVideo')) {
@@ -441,7 +446,32 @@ export default {
             const storage = await browser.storage.get()
             handleStorage(storage)
           }
+          console.log('[ytcFilter] End migrate to 2.0.0')
         }
+
+        if (gtr('2.0.1', lastVersion)) {
+          console.log('[ytcFilter] Migrate to 2.0.1. Global:', this.$store.getters.global)
+          //Unborking 2.0.0 migration and fresh install
+          const global = this.$store.getters.global
+          if (global.profiles) {
+            for (const profile of Object.values(global.profiles)) {
+              profile.filters = profile.filters.map(filterMigrate)
+            }
+          } else {
+            global.profiles = {}
+          }
+
+          const newGlobal = { ...global, profiles: global.profiles }
+          if (!newGlobal.defaultPerChannel) {
+            newGlobal.defaultPerChannel = Vue.observable({})
+          }
+          if (newGlobal.globalDefault === undefined) {
+            newGlobal.globalDefault = null
+          }
+          this.$store.commit('setGlobal', newGlobal)
+          await this.loadGlobal()
+        }
+        this.$store.commit('setGlobal', { ...this.$store.getters.global, version: manifest.version })
         console.log('[ytcFilter] Migration ended.', this.$store.state)
         this.notifyChangelog()
       }
@@ -708,6 +738,9 @@ export default {
       this.editingProfileKey = key
     },
     ytcPopout() {
+      const hasFilters = this.filters.length > 0
+      const size = hasFilters ? this.$store.getters.compactPopoutSize : this.$store.getters.fullePopoutSize
+      console.log(size)
       chrome.runtime.sendMessage({
         action: 'popout',
         payload: {
@@ -715,8 +748,7 @@ export default {
           channelId: getChannelId(),
           channelName: getChannelName(),
           videoName: getVideoName(),
-          width: this.$store.state.global.popoutWidth,
-          height: this.$store.state.global.popoutHeight,
+          ...size,
         },
       })
     },
