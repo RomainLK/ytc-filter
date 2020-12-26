@@ -378,7 +378,7 @@ export default {
             console.log('[ytcFilter] Migrating storage', storage)
             let global = {}
             try {
-              global = storage['cache:vcGlobal']?.data ? JSON.parse(storage['cache:vcGlobal']?.data) : {}
+              global = storage['cache:vcGlobal']?.data ? JSON.parse(storage['cache:vcGlobal'].data) : {}
             } catch (e) {
               console.warning('[ytcFilter] Error retrieving/parsing old global', e)
             }
