@@ -35,7 +35,7 @@
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';",
   "browser_specific_settings": {
     "gecko": {
-      "id": "ytcfilter@romain.lk",
+      "id": "{20f2dcdf-6f8d-4aeb-862b-b13174475d9c}",
       "strict_min_version": "42.0"
     }
   }

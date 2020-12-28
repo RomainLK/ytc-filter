@@ -1,4 +1,4 @@
-# ytcFilter 2.0.3
+# ytcFilter 2.0.4
 
 A <a href="https://discord.gg/P6DUeuhSjU" target="_blank">Discord</a> server has been added for support, bug reports, and feedback, or if you want to help with ytcFilter v2.
 
@@ -9,6 +9,11 @@ Please check the <a href="https://github.com/RomainLK/ytc-filter/wiki" target="_
 For bug reports or feature request, contact the developer directly or on <a href="https://github.com/RomainLK/ytc-filter"  target="_blank">Github</a>.
 
 # Changelog
+
+## 2.0.4
+
+Bug fixes:
+- Remove uneeded test files in release
 
 ## 2.0.3
 
