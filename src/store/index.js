@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import VuexWebExtensions from 'vuex-webextensions'
+import VuexWebExtensions from '@/lib/vuex-webextensions'
 
 Vue.use(Vuex)
 
@@ -11,7 +11,6 @@ const defaultProfiles = {
     key: 'englishtag',
     // eslint-disable-next-line
     filters: [{ type: 'regex', value: `/^[[(]?(?:eng?|t(?:(rans|l))?|英訳)(?:\/(?:eng?|t(?:(rans|l))?|英訳))?[\\]): -]/i` }],
-    //In case formatting bork it       /^[[(]?(?:eng?|t(?:rans)|英訳)(?:\/(?:eng?|t(?:rans)|英訳))?[\]): -]/i
     // /^[[(]?(?:eng?|t(?:(rans|l))?|英訳)(?:\/(?:eng?|t(?:(rans|l))?|英訳))?[\]): -]/i
   },
   alphanumeric: { name: 'Messages with alphanumeric', key: 'alphanumeric', filters: [{ type: 'regex', value: '/[a-z0-9]/i' }] },

@@ -1,4 +1,4 @@
-# ytcFilter 2.0.2
+# ytcFilter 2.0.3
 
 A <a href="https://discord.gg/P6DUeuhSjU" target="_blank">Discord</a> server has been added for support, bug reports, and feedback, or if you want to help with ytcFilter v2.
 
@@ -10,11 +10,19 @@ For bug reports or feature request, contact the developer directly or on <a href
 
 # Changelog
 
+## 2.0.3
+
+Bug fixes:
+- Due to how unpredictable storage usage has been for users, instead of migrating old messages, they are simply deleted.
+- Prevent immediate reload when resizing popout
+- Firefox only: Fix vuex-webextension library which failed to save the store in storage
+- Single bootstraping at any time to avoid potential corruption of the store
+
 ## 2.0.2
 
-I have reports of the extension needing history permission in 2.0.0 for Chrome. I don't know what happened but I have not requested history permission, only tabs was added, and even this will be removed in this version.
+I have reports of the extension needing history permission in 2.0.0 for Chrome. I don't know what happened but I have not requested history permission nor do I read it. Only tabs permission was added, and even this will be removed in this version.
 
-Firefox version has rollbacked to 1.8 due to it being unable to keep its configuration after a restart of the browser
+Firefox version has rollbacked to 1.8.0 due to it being unable to keep its configuration after a restart of the browser. A fix will come at later date.
 
 Bug fixes:
 - Remove uneeded tabs permission

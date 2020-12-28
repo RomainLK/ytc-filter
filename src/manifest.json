@@ -1,7 +1,7 @@
 {
   "name": "ytcFilter",
   "description": "When Youtube chat is too fast",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "manifest_version": 2,
   "icons": {
     "48": "icons/icon_48.png",
@@ -32,5 +32,12 @@
     }
   ],
   "permissions": ["storage"],
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';"
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "ytcfilter@romain.lk",
+      "strict_min_version": "42.0"
+    }
+  }
+  
 }
