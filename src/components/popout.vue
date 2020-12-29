@@ -76,6 +76,7 @@ import messageList from '@/components/message-list'
 import profileCard from '@/components/profile-card'
 import filterCard from '@/components/filter-card'
 import embeddedOptionsCard from '@/components/embedded-options-card'
+import { debounce } from 'lodash'
 
 export default {
   components: {
@@ -94,19 +95,22 @@ export default {
   async mounted() {
     console.log('[ytcFilter] popout mounting. channelId:', this.channelId, ' videoId:', this.videoId, ' channelName:', this.channelName)
     this.getUsedBytes()
-    window.addEventListener('resize', () => {
-      if (this.displaySettings) {
-        this.$store.commit('setFullPopoutSize', {
-          height: window.innerHeight,
-          width: window.innerWidth,
-        })
-      } else {
-        this.$store.commit('setCompactPopoutSize', {
-          height: window.innerHeight,
-          width: window.innerWidth,
-        })
-      }
-    })
+    window.addEventListener(
+      'resize',
+      debounce(() => {
+        if (this.displaySettings) {
+          this.$store.commit('setFullPopoutSize', {
+            height: window.innerHeight,
+            width: window.innerWidth,
+          })
+        } else {
+          this.$store.commit('setCompactPopoutSize', {
+            height: window.innerHeight,
+            width: window.innerWidth,
+          })
+        }
+      }, 500)
+    )
   },
   computed: {
     quotaByte() {
@@ -159,7 +163,6 @@ export default {
     },
 
     displaySettings(value) {
-      console.log('AA', this.$store.getters.global)
       if (value) {
         this.updateWindow(this.$store.getters.fullPopoutSize)
       } else {
