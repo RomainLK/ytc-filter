@@ -40,7 +40,8 @@ $moderator-color: #5e84f1;
   }
 }
 
-html[dark] #ytc-filter, .dark-mode #ytc-filter {
+html[dark] #ytc-filter,
+.dark-mode #ytc-filter {
   .vc-toolbar {
     background-color: $dark-bg;
   }
@@ -65,6 +66,9 @@ html[dark] #ytc-filter, .dark-mode #ytc-filter {
   }
 
   .vc-message-item {
+    &:hover {
+      background-color: lighten($dark-bg, 10%);
+    }
     .vc-author-verified {
       background-color: #888;
       svg {
@@ -75,6 +79,24 @@ html[dark] #ytc-filter, .dark-mode #ytc-filter {
 }
 
 #ytc-filter {
+
+  .stats {
+    margin-right: 1rem;
+  }
+  #clear-btn {
+    padding: 5px;
+    top: -3px;
+    position: relative;
+  }
+
+  hr.resize {
+    margin-left: 40%;
+    width: 20%;
+    border-top: 3px solid $grey-color;
+    height: 3px;
+    cursor: n-resize;
+  }
+
   #ytc-messages {
     background-color: white;
   }
@@ -140,8 +162,20 @@ html[dark] #ytc-filter, .dark-mode #ytc-filter {
     padding: 1rem;
   }
 
+  .toolbar {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+  }
+
   .vc-toolbar {
     display: flex;
+    background-color: $light-bg;
+    justify-content: space-between;
+  }
+
+  .ytc-msg-toolbar {
+    display: inline-flex;
     background-color: $light-bg;
     justify-content: space-between;
   }
@@ -192,6 +226,37 @@ html[dark] #ytc-filter, .dark-mode #ytc-filter {
     cursor: pointer;
   }
   .vc-message-item {
+    &:hover {
+      background-color: darken($light-bg, 10%);
+    }
+
+    .yt-menu-append {
+      display: inline;
+      line-height: 0px;
+      top: -5px;
+      padding: 0;
+      position: relative;
+      yt-icon-button {
+        padding: 0;
+        height: 24px;
+        width: 24px;
+      }
+      paper-ripple {
+        display: none;
+      }
+      button {
+        border: none;
+        fill: $grey-color;
+        padding: 0;
+        height: 24px;
+        width: 24px;
+      }
+
+      button.yt-icon-button > yt-icon {
+        width: 24px;
+        height: 24px;
+      }
+    }
     margin-top: 0.5rem;
     .vc-timestamp {
       font-size: 1rem;
@@ -277,7 +342,8 @@ html[dark] #ytc-filter, .dark-mode #ytc-filter {
   .vc-resize {
     text-align: center;
     width: 100%;
-    cursor: n-resize;
+
+    height: 3px;
   }
 
   .flex-align-center {
@@ -294,6 +360,10 @@ html[dark] #ytc-filter, .dark-mode #ytc-filter {
   }
   .vc-text-center {
     text-align: center;
+  }
+
+  .resizer {
+    border: 1px solid #353535;
   }
 }
 
@@ -315,4 +385,8 @@ html[dark] #ytc-filter, .dark-mode #ytc-filter {
   yt-live-chat-app {
     max-width: 30rem;
   }
+}
+
+.ytc-pointer {
+  cursor: pointer;
 }

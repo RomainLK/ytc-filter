@@ -1,6 +1,6 @@
 import '@/store'
 import { createYtcPopout, createYoutubePopout } from '@/utils/create-popout'
-
+import { debounce } from 'lodash'
 // const app = new Vue({
 //   store,
 //   template: '<div></div>',
@@ -8,8 +8,17 @@ import { createYtcPopout, createYoutubePopout } from '@/utils/create-popout'
 let isBootstraping = false
 const bootstrapCb = []
 
+const onBootstrapEnd = () => {
+  if (bootstrapCb.length > 0) {
+    bootstrapCb.splice(0, 1)[0]()
+  } else {
+    isBootstraping = false
+  }
+}
+
+const timeoutBootstrap = debounce(onBootstrapEnd, 5000)
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  console.log(request.action)
   if (request) {
     switch (request.action) {
       case 'bootstrap-start':
@@ -19,6 +28,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
           isBootstraping = true
           sendResponse()
         }
+        timeoutBootstrap()
         break
       case 'bootstrap-end':
         if (bootstrapCb.length > 0) {

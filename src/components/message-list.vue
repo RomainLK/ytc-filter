@@ -1,36 +1,39 @@
 <template>
   <div id="message-list">
     <div class="toolbar py-2">
-      <button type="button" class="sm-btn" title="Go to bottom" @click="goToBottom">
-        <svg class="svg-icon" viewBox="0 0 20 20" width="18" height="18">
-          <path
-            d="M13.962,8.885l-3.736,3.739c-0.086,0.086-0.201,0.13-0.314,0.13S9.686,12.71,9.6,12.624l-3.562-3.56C5.863,8.892,5.863,8.611,6.036,8.438c0.175-0.173,0.454-0.173,0.626,0l3.25,3.247l3.426-3.424c0.173-0.172,0.451-0.172,0.624,0C14.137,8.434,14.137,8.712,13.962,8.885 M18.406,10c0,4.644-3.763,8.406-8.406,8.406S1.594,14.644,1.594,10S5.356,1.594,10,1.594S18.406,5.356,18.406,10 M17.521,10c0-4.148-3.373-7.521-7.521-7.521c-4.148,0-7.521,3.374-7.521,7.521c0,4.147,3.374,7.521,7.521,7.521C14.148,17.521,17.521,14.147,17.521,10"
-          ></path>
-        </svg>
-      </button>
-      <button type="button" class="sm-btn" title="Go to top" @click="goToTop">
-        <svg class="svg-icon" viewBox="0 0 20 20" width="18" height="18">
-          <path
-            d="M13.889,11.611c-0.17,0.17-0.443,0.17-0.612,0l-3.189-3.187l-3.363,3.36c-0.171,0.171-0.441,0.171-0.612,0c-0.172-0.169-0.172-0.443,0-0.611l3.667-3.669c0.17-0.17,0.445-0.172,0.614,0l3.496,3.493C14.058,11.167,14.061,11.443,13.889,11.611 M18.25,10c0,4.558-3.693,8.25-8.25,8.25c-4.557,0-8.25-3.692-8.25-8.25c0-4.557,3.693-8.25,8.25-8.25C14.557,1.75,18.25,5.443,18.25,10 M17.383,10c0-4.07-3.312-7.382-7.383-7.382S2.618,5.93,2.618,10S5.93,17.381,10,17.381S17.383,14.07,17.383,10"
-          ></path>
-        </svg>
-      </button>
-      <button type="button" v-show="!isPopout" class="sm-btn" @click="exportMessagesToPng" title="Screenshot current messages">
-        <svg class="svg-icon" viewBox="0 0 20 20" width="18" height="18">
-          <path
-            d="M10,6.536c-2.263,0-4.099,1.836-4.099,4.098S7.737,14.732,10,14.732s4.099-1.836,4.099-4.098S12.263,6.536,10,6.536M10,13.871c-1.784,0-3.235-1.453-3.235-3.237S8.216,7.399,10,7.399c1.784,0,3.235,1.452,3.235,3.235S11.784,13.871,10,13.871M17.118,5.672l-3.237,0.014L12.52,3.697c-0.082-0.105-0.209-0.168-0.343-0.168H7.824c-0.134,0-0.261,0.062-0.343,0.168L6.12,5.686H2.882c-0.951,0-1.726,0.748-1.726,1.699v7.362c0,0.951,0.774,1.725,1.726,1.725h14.236c0.951,0,1.726-0.773,1.726-1.725V7.195C18.844,6.244,18.069,5.672,17.118,5.672 M17.98,14.746c0,0.477-0.386,0.861-0.862,0.861H2.882c-0.477,0-0.863-0.385-0.863-0.861V7.384c0-0.477,0.386-0.85,0.863-0.85l3.451,0.014c0.134,0,0.261-0.062,0.343-0.168l1.361-1.989h3.926l1.361,1.989c0.082,0.105,0.209,0.168,0.343,0.168l3.451-0.014c0.477,0,0.862,0.184,0.862,0.661V14.746z"
-          ></path>
-        </svg>
-      </button>
-      <button type="button" class="sm-btn" v-show="isPopout" @click="$store.commit('clearMessages', { videoId, feedName })">
-        Clear
-      </button>
+      <div>
+        <button type="button" class="sm-btn" title="Go to bottom" @click="goToBottom">
+          <svg class="svg-icon" viewBox="0 0 20 20" width="18" height="18">
+            <path
+              d="M13.962,8.885l-3.736,3.739c-0.086,0.086-0.201,0.13-0.314,0.13S9.686,12.71,9.6,12.624l-3.562-3.56C5.863,8.892,5.863,8.611,6.036,8.438c0.175-0.173,0.454-0.173,0.626,0l3.25,3.247l3.426-3.424c0.173-0.172,0.451-0.172,0.624,0C14.137,8.434,14.137,8.712,13.962,8.885 M18.406,10c0,4.644-3.763,8.406-8.406,8.406S1.594,14.644,1.594,10S5.356,1.594,10,1.594S18.406,5.356,18.406,10 M17.521,10c0-4.148-3.373-7.521-7.521-7.521c-4.148,0-7.521,3.374-7.521,7.521c0,4.147,3.374,7.521,7.521,7.521C14.148,17.521,17.521,14.147,17.521,10"
+            ></path>
+          </svg>
+        </button>
+        <button type="button" class="sm-btn" title="Go to top" @click="goToTop">
+          <svg class="svg-icon" viewBox="0 0 20 20" width="18" height="18">
+            <path
+              d="M13.889,11.611c-0.17,0.17-0.443,0.17-0.612,0l-3.189-3.187l-3.363,3.36c-0.171,0.171-0.441,0.171-0.612,0c-0.172-0.169-0.172-0.443,0-0.611l3.667-3.669c0.17-0.17,0.445-0.172,0.614,0l3.496,3.493C14.058,11.167,14.061,11.443,13.889,11.611 M18.25,10c0,4.558-3.693,8.25-8.25,8.25c-4.557,0-8.25-3.692-8.25-8.25c0-4.557,3.693-8.25,8.25-8.25C14.557,1.75,18.25,5.443,18.25,10 M17.383,10c0-4.07-3.312-7.382-7.383-7.382S2.618,5.93,2.618,10S5.93,17.381,10,17.381S17.383,14.07,17.383,10"
+            ></path>
+          </svg>
+        </button>
+        <button type="button" v-show="!isPopout" class="sm-btn" @click="exportMessagesToPng" title="Screenshot current messages">
+          <svg class="svg-icon" viewBox="0 0 20 20" width="18" height="18">
+            <path
+              d="M10,6.536c-2.263,0-4.099,1.836-4.099,4.098S7.737,14.732,10,14.732s4.099-1.836,4.099-4.098S12.263,6.536,10,6.536M10,13.871c-1.784,0-3.235-1.453-3.235-3.237S8.216,7.399,10,7.399c1.784,0,3.235,1.452,3.235,3.235S11.784,13.871,10,13.871M17.118,5.672l-3.237,0.014L12.52,3.697c-0.082-0.105-0.209-0.168-0.343-0.168H7.824c-0.134,0-0.261,0.062-0.343,0.168L6.12,5.686H2.882c-0.951,0-1.726,0.748-1.726,1.699v7.362c0,0.951,0.774,1.725,1.726,1.725h14.236c0.951,0,1.726-0.773,1.726-1.725V7.195C18.844,6.244,18.069,5.672,17.118,5.672 M17.98,14.746c0,0.477-0.386,0.861-0.862,0.861H2.882c-0.477,0-0.863-0.385-0.863-0.861V7.384c0-0.477,0.386-0.85,0.863-0.85l3.451,0.014c0.134,0,0.261-0.062,0.343-0.168l1.361-1.989h3.926l1.361,1.989c0.082,0.105,0.209,0.168,0.343,0.168l3.451-0.014c0.477,0,0.862,0.184,0.862,0.661V14.746z"
+            ></path>
+          </svg>
+        </button>
+        <button :id="!isPopout ? 'clear-btn' : null" type="button" class="sm-btn" @click="$store.commit('clearMessages', { videoId, feedName })">
+          Clear
+        </button>
+      </div>
       <slot></slot>
     </div>
     <div id="ytc-messages" class="vc-content" :style="{ height: height }" ref="content">
-      <div class="vc-message-item" v-for="(msg, index) in messages" :key="msg.id">
-        <span v-if="msg.timestamp && msgOptions !== index" class="vc-timestamp" @click="msgOptions = index">{{ msg.timestamp }}</span>
-        <span v-else class="vc-options">
+      <div class="vc-message-item ytc-pointer" v-for="(msg, index) in messages" :key="msg.id" :id="'ytc' + msg.id" @click="msgOptions = msgOptions == null ? index : null">
+        <div class="yt-menu-append"></div>
+        <span v-if="msg.timestamp && msgOptions !== index" class="vc-timestamp">{{ msg.timestamp }}</span>
+        <span v-else class="vc-options" @click.stop>
           <button type="button" class="sm-btn" title="Go to message" @click="scrollYoutubeChatToId(msg.id)" v-show="!isPopout">
             <svg class="svg-icon" viewBox="0 0 20 20" width="13" height="13">
               <path
@@ -38,6 +41,9 @@
               ></path>
             </svg>
           </button>
+          <!-- <button type="button" class="sm-btn" title="Blacklist author" @click="blacklistAuthor(msg.author)">
+            <b-icon-slash-circle />
+          </button> -->
           <button type="button" class="sm-btn" title="Delete message" @click="deleteMessage(index)">
             <svg class="svg-icon" viewBox="0 0 20 20" width="13" height="13">
               <path
@@ -45,13 +51,13 @@
               ></path>
             </svg>
           </button>
-          <button v-if="msg.timestamp" type="button" class="sm-btn" title="Hide message options" @click="resetMessageOptions">
+          <!-- <button v-if="msg.timestamp" type="button" class="sm-btn" title="Hide message options" @click="resetMessageOptions">
             <svg class="svg-icon" viewBox="0 0 20 20" width="13" height="13">
               <path
                 d="M10.185,1.417c-4.741,0-8.583,3.842-8.583,8.583c0,4.74,3.842,8.582,8.583,8.582S18.768,14.74,18.768,10C18.768,5.259,14.926,1.417,10.185,1.417 M10.185,17.68c-4.235,0-7.679-3.445-7.679-7.68c0-4.235,3.444-7.679,7.679-7.679S17.864,5.765,17.864,10C17.864,14.234,14.42,17.68,10.185,17.68 M10.824,10l2.842-2.844c0.178-0.176,0.178-0.46,0-0.637c-0.177-0.178-0.461-0.178-0.637,0l-2.844,2.841L7.341,6.52c-0.176-0.178-0.46-0.178-0.637,0c-0.178,0.176-0.178,0.461,0,0.637L9.546,10l-2.841,2.844c-0.178,0.176-0.178,0.461,0,0.637c0.178,0.178,0.459,0.178,0.637,0l2.844-2.841l2.844,2.841c0.178,0.178,0.459,0.178,0.637,0c0.178-0.176,0.178-0.461,0-0.637L10.824,10z"
               ></path>
             </svg>
-          </button>
+          </button> -->
         </span>
         <span class="vc-author" :class="{ author: msg.authorType === 'moderator', owner: msg.authorType === 'owner' }">
           {{ msg.author
@@ -79,8 +85,12 @@
 import domtoimage from 'dom-to-image-improved'
 import { saveAs } from 'file-saver'
 import { eventBus } from '@/utils/event-bus'
+//import { BIconSlashCircle } from 'bootstrap-vue'
 
 export default {
+  components: {
+    //BIconSlashCircle,
+  },
   props: {
     videoId: {
       type: String,
@@ -115,8 +125,7 @@ export default {
     },
   },
   mounted() {
-    console.log('[ytcFilter] Message List mounting. Video id:', this.videoId, this.$store.state.videoSettings)
-
+    console.log('[ytcFilter] Message List mounting. Video id:', this.videoId)
     if (this.autoSrollEnabled) {
       this.goToBottom()
       eventBus.$on('first-opening', () => {
@@ -179,6 +188,14 @@ export default {
           saveAs(blob, `ytcFilter-${this.videoId}.png`)
         })
     },
+    // blacklistAuthor(author) {
+    //   this.$store.commit('addBlacklistAuthor', author)
+    //   for (const [index, msg] of Object.entries(this.messages)) {
+    //     if (msg.author === author) {
+    //       this.deleteMessage(index)
+    //     }
+    //   }
+    // },
   },
 }
 </script>

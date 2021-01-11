@@ -1,92 +1,107 @@
 <template>
-  <div class="card">
-    <div class="card-body">
-      <h5 class="card-title">Profiles</h5>
-      <help-alert alert-key="profileHelp">
-        Profiles are a group of filters and options which you can reuse between videos. If you wish, we can add a default set of profiles for translation, languages, and staff.
-        <button class="btn btn-success" @click="addDefaultProfile">Add default profiles</button>
-      </help-alert>
-      <div class="form-inline">
-        <select v-model="selectedProfile" class="form-control">
-          <option :value="null" disabled>Select a profile</option>
-          <option v-for="(profile, key) of profiles" :key="key" :value="profile">
-            {{ profile.name }} {{ key === $store.state.global.globalDefault ? '(Global)' : '' }} {{ isDefaultForCurrentChannel(profile) ? '(Channel)' : '' }}
-          </option>
-        </select>
-        <button class="btn btn-primary ml-2" @click="openSaveModal">
-          Create or update profile
-        </button>
-      </div>
-      <div class="my-2">
-        <button class="btn btn-primary" :disabled="!hasSelected" @click="applyProfile">Apply</button>
-        <button class="btn btn-danger" :disabled="!hasSelected" @click="deleteProfile">Delete</button>
-      </div>
-      <div class="my-2">
-        <help-alert alert-key="profileDefaultHelp">
-          Default profile will automatically apply a profile to a new video. If set, ytcFilter will try to apply the channel profiles, otherwise the global profile.
+  <div>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Preset</h5>
+        <help-alert alert-key="profileHelp">
+          Preset are a group of filters and options which you can reuse between videos. If you wish, we can add a default set of presets for translation, languages, and staff.
+          <button class="btn btn-success" @click="addDefaultProfile">Add default presets</button>
         </help-alert>
-        <button class="btn btn-secondary" :disabled="!hasSelected || channelId == null" @click="setAsChannelDefault">Set as channel default</button>
-        <button class="btn btn-secondary" :disabled="!hasSelected" @click="setAsGlobalDefault">Set as global default</button>
-      </div>
-    </div>
-    <div v-show="profileDefaultChannel.length > 0" class="px-4">
-      <p>This profile is used by default on the following channels:</p>
-      <ul class="unstyled-list">
-        <li v-for="defaultInfo in profileDefaultChannel" :key="defaultInfo.channelId">
-          <a v-if="defaultInfo.channelId !== 'Studio'" :href="'https://www.youtube.com/channel/' + defaultInfo.channelId" target="_blank">
-            {{ defaultInfo.channelName }}
-          </a>
-          <span v-else>
-            {{ defaultInfo.channelName }}
-          </span>
-          <button class="btn btn-secondary btn-sm" @click="$store.commit('unsetChannelDefault', defaultInfo.channelId)">
-            X
+        <div class="form-inline">
+          <select v-model="selectedProfile" class="form-control">
+            <option :value="null" disabled>Select a preset</option>
+            <option v-for="(profile, key) of profiles" :key="key" :value="profile">
+              {{ profile.name }} {{ key === $store.state.global.globalDefault ? '(Global)' : '' }} {{ isDefaultForCurrentChannel(profile) ? '(Channel)' : '' }}
+            </option>
+          </select>
+          <profile-save-button class="ml-2" :can-update="false" label="Create" @save="onCreate" />
+          <!--button class="btn btn-primary ml-2" @click="openSaveModal">
+            Create or update profile
+          </button-->
+        </div>
+        <div class="my-2">
+          <button class="btn btn-primary" :disabled="!hasSelected" @click="applyProfile" title="Replace current video's filters and options">Apply</button>
+          <button class="btn btn-primary" :disabled="!hasSelected" @click="appendProfile" title="Add filters to current video's">Append filters</button>
+          <button class="btn btn-danger" :disabled="!hasSelected" @click="deleteProfile">Delete</button>
+        </div>
+        <div class="my-2">
+          <help-alert alert-key="profileDefaultHelp">
+            Default preset will automatically apply a preset to a new video. If set, ytcFilter will try to apply the channel preset, otherwise the global preset.
+          </help-alert>
+          <button class="btn btn-secondary" :disabled="!hasSelected" @click="toggleGlobalDefault">
+            {{ isCurrentGlobalDefault ? 'Unset as global default' : 'Set as global default' }}
           </button>
-        </li>
-      </ul>
+          <button class="btn btn-secondary" v-show="!isDefaultForCurrentChannel(selectedProfile)" :disabled="!hasSelected || channelId == null" @click="setAsChannelDefault">
+            Set as channel default
+          </button>
+        </div>
+      </div>
+      <div v-show="profileDefaultChannel.length > 0" class="px-4">
+        <p>This profile is used by default on the following channels:</p>
+        <ul class="unstyled-list">
+          <li v-for="defaultInfo in profileDefaultChannel" :key="defaultInfo.channelId">
+            <a v-if="defaultInfo.channelId !== 'Studio'" :href="'https://www.youtube.com/channel/' + defaultInfo.channelId" target="_blank">
+              {{ defaultInfo.channelName }}
+            </a>
+            <span v-else>
+              {{ defaultInfo.channelName }}
+            </span>
+            <button class="btn btn-secondary btn-sm" @click="$store.commit('unsetChannelDefault', defaultInfo.channelId)">
+              X
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!--b-modal v-model="showSaveModal" title="Save" ok-title="Save" @ok="onSaveProfile">
+        <p>Your current filters and options will be used for saving.</p>
+        <form class="form">
+          <div class="form-check mb-2">
+            <input id="save-create" type="radio" class="form-check-input" v-model="saveMode" value="create" />
+            <label class="form-check-label" for="save-create">
+              <strong>Create</strong>
+            </label>
+            <input type="text" v-model="saveName" class="form-control" :class="{ 'is-invalid': invalidCreateFeedback }" :disabled="saveMode !== 'create'" />
+            <div class="invalid-feedback">
+              {{ invalidCreateFeedback }}
+            </div>
+          </div>
+          <div class="form-check mb-2" v-show="profilesLength > 0">
+            <input id="save-update" class="form-check-input" type="radio" v-model="saveMode" value="update" />
+            <label class="form-check-label" for="save-update">
+              <strong>Update</strong>
+            </label>
+            <select v-model="selectedProfile" class="form-control" :class="{ 'is-invalid': invalidUpdateFeedback }" :disabled="saveMode !== 'update'">
+              <option :value="null">Select a profile</option>
+              <option v-for="(profile, key) of profiles" :key="key" :value="profile">{{ profile.name }} {{ key === $store.state.global.globalDefault ? '(Global)' : '' }}</option>
+            </select>
+            <div class="invalid-feedback">
+              {{ invalidUpdateFeedback }}
+            </div>
+          </div>
+          <div class="form-check">
+            <input id="save-include-embedded-options" class="form-check-input" type="checkbox" v-model="saveIncludeEmbeddedOptions" />
+            <label class="form-check-label" for="save-include-embedded-options">
+              Include embedded options
+            </label>
+          </div>
+        </form>
+      </b-modal-->
     </div>
 
-    <b-modal v-model="showSaveModal" title="Save" ok-title="Save" @ok="onSaveProfile">
-      <p>Your current filters and options will be used for saving.</p>
-      <form class="form">
-        <div class="form-check mb-2">
-          <input id="save-create" type="radio" class="form-check-input" v-model="saveMode" value="create" />
-          <label class="form-check-label" for="save-create">
-            <strong>Create</strong>
-          </label>
-          <input type="text" v-model="saveName" class="form-control" :class="{ 'is-invalid': invalidCreateFeedback }" :disabled="saveMode !== 'create'" />
-          <div class="invalid-feedback">
-            {{ invalidCreateFeedback }}
-          </div>
-        </div>
-        <div class="form-check mb-2" v-show="profilesLength > 0">
-          <input id="save-update" class="form-check-input" type="radio" v-model="saveMode" value="update" />
-          <label class="form-check-label" for="save-update">
-            <strong>Update</strong>
-          </label>
-          <select v-model="selectedProfile" class="form-control" :class="{ 'is-invalid': invalidUpdateFeedback }" :disabled="saveMode !== 'update'">
-            <option :value="null">Select a profile</option>
-            <option v-for="(profile, key) of profiles" :key="key" :value="profile">{{ profile.name }} {{ key === $store.state.global.globalDefault ? '(Global)' : '' }}</option>
-          </select>
-          <div class="invalid-feedback">
-            {{ invalidUpdateFeedback }}
-          </div>
-        </div>
-        <div class="form-check">
-          <input id="save-include-embedded-options" class="form-check-input" type="checkbox" v-model="saveIncludeEmbeddedOptions" />
-          <label class="form-check-label" for="save-include-embedded-options">
-            Include embedded options
-          </label>
-        </div>
-      </form>
-    </b-modal>
+    <filter-card v-if="selectedProfile" class="mb-3" :filters="currentFilters" @change="onFiltersChange" />
+    <embedded-options-card v-if="selectedProfile" :options="currentOptions" @change="onOptionsChange" />
   </div>
 </template>
 <script>
 import helpAlert from './help-alert.vue'
+import filterCard from '@/components/filter-card'
+import profileSaveButton from '@/components/profile-save-button'
+import embeddedOptionsCard from '@/components/embedded-options-card'
+import ProfileSaveButton from './profile-save-button.vue'
 
 export default {
-  components: { helpAlert },
+  components: { helpAlert, embeddedOptionsCard, filterCard, profileSaveButton, ProfileSaveButton },
   props: {
     videoId: {
       type: String,
@@ -130,6 +145,15 @@ export default {
     channelId() {
       return this.currentVideoSettings?.channelId
     },
+    currentFilters() {
+      return this.selectedProfile.filters
+    },
+    currentOptions() {
+      return this.selectedProfile.options
+    },
+    isCurrentGlobalDefault() {
+      return this.$store.state.global.globalDefault === this.selectedProfile?.key
+    },
   },
   methods: {
     isDefaultForCurrentChannel(profile) {
@@ -140,14 +164,23 @@ export default {
     },
     applyProfile() {
       this.$store.commit('applyProfile', { videoId: this.videoId, feedName: this.feedName, profileKey: this.selectedProfile.key })
-      this.$bvToast.toast(`Profile "${this.selectedProfile.name}" was applied`, { title: 'Success' })
+      this.$bvToast.toast(`Profile "${this.selectedProfile.name}" was applied to current video`, { title: 'Success' })
     },
-    setAsGlobalDefault() {
-      this.$store.commit('setGlobalDefault', this.selectedProfile.key)
-      this.$bvToast.toast(`Profile "${this.selectedProfile.name}" was set as global default`, { title: 'Success' })
+    appendProfile() {
+      this.$store.commit('appendProfile', { videoId: this.videoId, feedName: this.feedName, profileKey: this.selectedProfile.key })
+      this.$bvToast.toast(`The filters from the "${this.selectedProfile.name}" profile were appended`, { title: 'Success' })
+    },
+    toggleGlobalDefault() {
+      if (this.isCurrentGlobalDefault) {
+        this.$store.commit('setGlobalDefault', null)
+        this.$bvToast.toast(`Profile "${this.selectedProfile.name}" is no longer the global default`, { title: 'Success' })
+      } else {
+        this.$store.commit('setGlobalDefault', this.selectedProfile.key)
+        this.$bvToast.toast(`Profile "${this.selectedProfile.name}" was set as global default`, { title: 'Success' })
+      }
     },
     setAsChannelDefault() {
-      console.log('[ytcFilter] Set as channel default', this.videoId, this.currentVideoSettings.channelId, this.currentVideoSettings.channelName )
+      console.log('[ytcFilter] Set as channel default', this.videoId, this.currentVideoSettings.channelId, this.currentVideoSettings.channelName)
       this.$store.commit('setChannelDefault', {
         channelId: this.currentVideoSettings.channelId,
         profileKey: this.selectedProfile.key,
@@ -234,6 +267,17 @@ export default {
       this.$store.commit('addProfile', newProfile)
       this.selectedProfile = newProfile
       return true
+    },
+    onCreate(profile) {
+      this.selectedProfile = profile
+    },
+    onFiltersChange() {
+      this.$store.commit('addProfile', this.selectedProfile)
+      //this.$store.commit('updateFilters', { videoId: this.videoId, feedName: 'default', filters: this.currentFilters })
+    },
+    onOptionsChange(options) {
+      this.$store.commit('addProfile', this.selectedProfile)
+      //this.$store.commit('setVideoOptions', { videoId: this.videoId, options })
     },
   },
 }

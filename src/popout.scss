@@ -1,3 +1,4 @@
+$b-toast-background-opacity: 1;
 @import '~bootstrap/scss/bootstrap.scss';
 @import '~bootstrap-vue/src/index.scss';
 
@@ -17,6 +18,7 @@ $dark-bg: #181818;
     max-height: 3rem;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
@@ -34,7 +36,7 @@ $dark-bg: #181818;
     padding: 1rem;
     //max-height: 25rem;
     overflow-y: scroll;
-    height: calc(100vh - 8.5rem);
+    height: calc(100vh - 8rem);
   }
 }
 
@@ -50,6 +52,13 @@ $dark-bg: #181818;
     }
   }
 
+  .toast {
+    .toast-header,
+    .toast-body {
+      color: $body-color;
+    }
+  }
+
   .nav-tabs .nav-link {
     color: $white;
     &.active {
@@ -57,7 +66,8 @@ $dark-bg: #181818;
     }
   }
 
-  .card, .modal-content {
+  .card,
+  .modal-content {
     background-color: $gray-800;
   }
 

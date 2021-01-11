@@ -1,14 +1,27 @@
-# ytcFilter 2.0.4
-
-A <a href="https://discord.gg/P6DUeuhSjU" target="_blank">Discord</a> server has been added for support, bug reports, and feedback, or if you want to help with ytcFilter v2.
-
-This message will only appear the first time you install this extension, or update it. It can be displayed again by clicking on "ytcFilter" > "Show options" > "Changelog".
-
-Please check the <a href="https://github.com/RomainLK/ytc-filter/wiki" target="_blank">wiki</a> for guide and help.
-
-For bug reports or feature request, contact the developer directly or on <a href="https://github.com/RomainLK/ytc-filter"  target="_blank">Github</a>.
-
 # Changelog
+
+## 2.1.0 Kanata
+
+Good bye old interface
+
+New features:
+- Integrate Youtube's block/report menu in embedded ytcFilter so as to fight against spam even for those without the extension
+- Drag resize of embedded ytcFIlter
+- Configurable automatic storage management
+- Alert every minute if less than 5% of storage is available (Firefox is not supported)
+
+
+Improvements:
+- Removed legacy code for old interface which should result in better performance than 2.0.x
+- Profiles are renamed to preset to better convey how they should be used
+- Reworked the interface. All profile related configuration are moved to their own tab
+- Back to the 1 line compact interface for embedded ytcFilter
+- Reduce storage usage per message.
+
+Bug fixes:
+- Fix regex for English tagged messages. Big thanks to NaGel.
+- Fix slight size difference when opening popout with or without settings
+- Fix possible case where ytcFilter may no longer load if you close a video before it had time loading
 
 ## 2.0.4
 
