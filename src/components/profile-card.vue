@@ -52,45 +52,12 @@
           </li>
         </ul>
       </div>
-
-      <!--b-modal v-model="showSaveModal" title="Save" ok-title="Save" @ok="onSaveProfile">
-        <p>Your current filters and options will be used for saving.</p>
-        <form class="form">
-          <div class="form-check mb-2">
-            <input id="save-create" type="radio" class="form-check-input" v-model="saveMode" value="create" />
-            <label class="form-check-label" for="save-create">
-              <strong>Create</strong>
-            </label>
-            <input type="text" v-model="saveName" class="form-control" :class="{ 'is-invalid': invalidCreateFeedback }" :disabled="saveMode !== 'create'" />
-            <div class="invalid-feedback">
-              {{ invalidCreateFeedback }}
-            </div>
-          </div>
-          <div class="form-check mb-2" v-show="profilesLength > 0">
-            <input id="save-update" class="form-check-input" type="radio" v-model="saveMode" value="update" />
-            <label class="form-check-label" for="save-update">
-              <strong>Update</strong>
-            </label>
-            <select v-model="selectedProfile" class="form-control" :class="{ 'is-invalid': invalidUpdateFeedback }" :disabled="saveMode !== 'update'">
-              <option :value="null">Select a profile</option>
-              <option v-for="(profile, key) of profiles" :key="key" :value="profile">{{ profile.name }} {{ key === $store.state.global.globalDefault ? '(Global)' : '' }}</option>
-            </select>
-            <div class="invalid-feedback">
-              {{ invalidUpdateFeedback }}
-            </div>
-          </div>
-          <div class="form-check">
-            <input id="save-include-embedded-options" class="form-check-input" type="checkbox" v-model="saveIncludeEmbeddedOptions" />
-            <label class="form-check-label" for="save-include-embedded-options">
-              Include embedded options
-            </label>
-          </div>
-        </form>
-      </b-modal-->
     </div>
 
-    <filter-card v-if="selectedProfile" class="mb-3" :filters="currentFilters" @change="onFiltersChange" />
-    <embedded-options-card v-if="selectedProfile" :options="currentOptions" @change="onOptionsChange" />
+    <filter-card v-if="selectedProfile" class="mb-3" :filters="currentFilters" @change="onFiltersChange"></filter-card>
+    test
+    <embedded-options-card v-if="selectedProfile" :options="currentOptions" @change="onOptsChange" :key="'profile'"></embedded-options-card>
+    test
   </div>
 </template>
 <script>
@@ -272,10 +239,12 @@ export default {
       this.selectedProfile = profile
     },
     onFiltersChange() {
+      console.log('wut filter')
       this.$store.commit('addProfile', this.selectedProfile)
       //this.$store.commit('updateFilters', { videoId: this.videoId, feedName: 'default', filters: this.currentFilters })
     },
-    onOptionsChange(options) {
+    onOptsChange(options) {
+      console.log(options, this.selectedProfile)
       this.$store.commit('addProfile', this.selectedProfile)
       //this.$store.commit('setVideoOptions', { videoId: this.videoId, options })
     },

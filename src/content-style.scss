@@ -238,8 +238,8 @@ html[dark] #ytc-filter,
       position: relative;
       yt-icon-button {
         padding: 0;
-        height: 24px;
-        width: 24px;
+        height: 15px;
+        width: 15px;
       }
       paper-ripple {
         display: none;
@@ -248,13 +248,13 @@ html[dark] #ytc-filter,
         border: none;
         fill: $grey-color;
         padding: 0;
-        height: 24px;
-        width: 24px;
+        height: 15px;
+        width: 15px;
       }
 
       button.yt-icon-button > yt-icon {
-        width: 24px;
-        height: 24px;
+        width: 15px;
+        height: 15px;
       }
     }
     margin-top: 0.5rem;

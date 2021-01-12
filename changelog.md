@@ -1,5 +1,3 @@
-# Changelog
-
 ## 2.1.0 Kanata
 
 Good bye old interface
@@ -22,6 +20,8 @@ Bug fixes:
 - Fix regex for English tagged messages. Big thanks to NaGel.
 - Fix slight size difference when opening popout with or without settings
 - Fix possible case where ytcFilter may no longer load if you close a video before it had time loading
+- Fix auto max height being too tall
+- Potential fix for channel reordering when deleting a video archive
 
 ## 2.0.4
 

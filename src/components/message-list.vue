@@ -161,9 +161,10 @@ export default {
     goToTop() {
       this.$refs.content.scrollTop = 0
     },
-    async goToBottom() {
-      await this.$nextTick()
-      this.$refs.content.scrollTop = this.$refs.content.scrollHeight
+    goToBottom() {
+      setTimeout(() => {
+        this.$refs.content.scrollTop = this.$refs.content.scrollHeight + 1000
+      }, 150)
     },
     exportMessagesToPng() {
       const messageNode = document.getElementById('ytc-messages')

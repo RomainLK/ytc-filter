@@ -23,7 +23,7 @@
             <button type="button" @click="displayYtc = !displayYtc" :title="displayYtc ? 'Close ytcFilter' : 'Show ytcFilter'">{{ displayYtc ? 'X' : 'ytcFilter' }}</button>
           </div>
         </message-list>
-        <div class="vc-resize"><hr class="resize" @mousedown="resizing = true" /></div>
+        <div class="vc-resize" v-if="!options.autoMaxHeight"><hr class="resize" @mousedown="resizing = true" /></div>
         <div v-if="showMoreCommentsDisplayed" class="vc-text-center">No new messages can be filtered when the chat isn't autoscrolling</div>
       </div>
     </div>
@@ -82,7 +82,7 @@ export default {
     }
     await this.sendMessage('bootstrap-start')
     console.log('[ytcFilter] Bootstraping')
-    this.maxHeight = document.getElementById('content-pages').getBoundingClientRect().height - 50
+    this.maxHeight = document.getElementById('content-pages').getBoundingClientRect().height - 120
     this.observer = new ChatObserver()
     this.observer.observe()
     this.observer.listeners.push(this.onMessage.bind(this))

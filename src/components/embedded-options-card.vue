@@ -2,13 +2,13 @@
   <div class="card">
     <div class="card-body">
       <h5 class="card-title">Embedded ytcFilter options</h5>
-      <b-form-checkbox id="auto-open" v-model="options.autoOpen" @change="onChange">
+      <b-form-checkbox v-model="options.autoOpen" @change="onChange">
         Auto open embedded ytcFilter
       </b-form-checkbox>
-      <b-form-checkbox id="auto-scroll" v-model="options.autoScroll" @change="onChange">
+      <b-form-checkbox v-model="options.autoScroll" @change="onChange">
         Auto scroll ytcFilter's message feed
       </b-form-checkbox>
-      <b-form-checkbox id="auto-max-height" v-model="options.autoMaxHeight" @change="onChange">
+      <b-form-checkbox v-model="options.autoMaxHeight" @change="onChange">
         Automatically maximize ytcFilter's height
       </b-form-checkbox>
 

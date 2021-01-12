@@ -16,8 +16,8 @@
                 ytcFilter is running in degraded mode because it couldn't get channel and video information. This is normal if you are using ytcFilter outside of Youtube.com
               </b-alert>
               <filter-card class="mb-3" :filters="currentFilters" @change="onFiltersChange" :video-id="videoId" />
-              <embedded-options-card class="mb-3" :options="currentVideoSettings.options" @change="onOptionsChange" />
-              <profile-save-button />
+              <embedded-options-card class="mb-3" :options="currentVideoSettings.options" @change="onOptionsChange" :key="'currentVideoOptions'"></embedded-options-card>
+              <profile-save-button :filters="currentFilters" :options="currentVideoSettings.options" />
             </b-tab>
             <b-tab title="Preset management">
               <profile-card class="mb-3" :video-id="videoId" />
@@ -81,12 +81,12 @@
         </div>
       </div>
     </div>
-    <b-modal v-model="showChangeLog" title="Changelog" ok-only>
+    <b-modal v-model="showChangeLog" title="Changelog" size="lg" ok-only>
       <template #default>
         <div v-html="changelog"></div>
       </template>
     </b-modal>
-    <b-modal v-model="showWelcome" no-close-on-backdrop ok-only :title="`ytcFilter ${version} news`" @hide="onHiddenWelcome">
+    <b-modal v-model="showWelcome" size="lg" no-close-on-backdrop ok-only :title="`ytcFilter ${version} news`" @hidden="onHiddenWelcome">
       <p>
         2.1.0 is out after a rocky release of 2.0.x. Thanks for bearing with the huge changes which sadly brought so many issues.
       </p>
@@ -183,7 +183,7 @@ export default {
         })
       }, 500)
     )
-    await new Promise(resolve => setTimeout(resolve, 100))
+    await new Promise(resolve => setTimeout(resolve, 500))
     this.showWelcome = this.$store.state.helpAlert.welcome
   },
   computed: {
@@ -309,7 +309,6 @@ export default {
         key: 'welcome',
         value: false,
       })
-      console.log(this.$store.state.helpAlert)
     },
     // showChangeLog() {
     //   this.$bvModal.msgBoxOk(changelog, {
