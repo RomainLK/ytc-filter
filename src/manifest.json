@@ -15,7 +15,7 @@
     "scripts": ["background.js"],
     "persistent": true
   },
-  "web_accessible_resources": ["content-style.css"],
+  "web_accessible_resources": ["content-style.css","inject.js"],
   "content_scripts": [
     {
       "run_at": "document_start",
@@ -36,7 +36,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "{20f2dcdf-6f8d-4aeb-862b-b13174475d9c}",
-      "strict_min_version": "42.0"
+      "strict_min_version": "48.0"
     }
   }
   

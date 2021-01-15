@@ -16,7 +16,6 @@
       <div v-show="displayYtc" class="vc-container">
         <message-list :video-id="videoId" :height="heightPx" @notify="notify" ref="messageList">
           <div>
-            <span class="stats" title="Session stat: filtered/total">{{ stats.filteredNb }}/{{ stats.msgNb }}</span>
             <button type="button" @click="ytcPopout()" style="margin-right:1rem">
               Popout/Settings
             </button>
@@ -25,6 +24,9 @@
         </message-list>
         <div class="vc-resize" v-if="!options.autoMaxHeight"><hr class="resize" @mousedown="resizing = true" /></div>
         <div v-if="showMoreCommentsDisplayed" class="vc-text-center">No new messages can be filtered when the chat isn't autoscrolling</div>
+        <div v-else class="stats">
+          <span title="Session statistics: filtered/total">{{ stats.filteredNb }}/{{ stats.msgNb }}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -83,9 +85,7 @@ export default {
     await this.sendMessage('bootstrap-start')
     console.log('[ytcFilter] Bootstraping')
     this.maxHeight = document.getElementById('content-pages').getBoundingClientRect().height - 120
-    this.observer = new ChatObserver()
-    this.observer.observe()
-    this.observer.listeners.push(this.onMessage.bind(this))
+
     this.moreCommentsObserver = new MoreCommentsObserver()
     this.moreCommentsObserver.listeners.push(e => {
       this.showMoreCommentsDisplayed = !e.attributes.disabled
@@ -134,17 +134,31 @@ export default {
       if (this.resizing) {
         const messageList = this.$refs.messageList.$el
         const height = e.pageY - messageList.getBoundingClientRect().top - 50
-        this.height = height
-        commitHeight(height)
+        if (height < this.maxHeight) {
+          this.height = height
+          commitHeight(height)
+        }
       }
     })
 
+    this.observer = new ChatObserver()
+    this.observer.observe()
+    this.observer.listeners.push(this.onMessage.bind(this))
+    this.observer.listeners.push(this.moveMenu.bind(this))
+    document.addEventListener('chat-message-capture', e => {
+      if (this.observer.listeners.length > 1) {
+        console.log('[ytcFilter] Switching to fetch interceptor')
+        this.observer.listeners.splice(0, 1)
+      }
+      this.onMessage(e.detail)
+      console.log('receive', e.detail)
+    })
     document.body.addEventListener('mouseup', e => {
       this.resizing = false
     })
 
-    if (this.global.storageLifeTime > 0) {
-      const limit = new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * this.global.storageLifeTime)
+    if (this.global.storageLifetime > 0) {
+      const limit = new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * this.global.storageLifetime)
       for (const videoSetting of Object.values(this.$store.state.videoSettings)) {
         if (new Date(videoSetting.lastViewed) < limit) {
           this.$store.commit('removeVideoSettings', videoSetting.id)
@@ -328,7 +342,7 @@ export default {
           this.$store.commit('setGlobal', newGlobal)
         }
         if (gtr('2.1.0', lastVersion)) {
-          const newGlobal = { ...this.$store.getters.global, limitMsgPerVideo: 100, storageLifeTime: 7 }
+          const newGlobal = { ...this.$store.getters.global, limitMsgPerVideo: 100, storageLifetime: 7 }
           this.$store.commit('setGlobal', newGlobal)
           for (const videoSettings of Object.values(this.$store.state.videoSettings)) {
             const newVideoSettings = { ...videoSettings, lastViewed: new Date().toISOString() }
@@ -357,15 +371,25 @@ export default {
       for (const filter of this.filters) {
         if (applyFilter(filter, msg)) {
           this.addMessage(msg)
-          await this.$nextTick()
-          const menu = document.getElementById(msg.id).querySelector('#menu-button')
-          if (menu != null) {
-            document
-              .getElementById(`ytc${msg.id}`)
-              .querySelector('.yt-menu-append')
-              .append(menu)
-          }
+          await new Promise(resolve => setTimeout(resolve, 500))
+          // const menu = document.getElementById(msg.id).querySelector('#menu-button')
+          // if (menu != null) {
+          //   document
+          //     .getElementById(`ytc${msg.id}`)
+          //     .querySelector('.yt-menu-append')
+          //     .append(menu)
+          // }
         }
+      }
+    },
+    async moveMenu(msg) {
+      await new Promise(resolve => setTimeout(resolve, 500))
+      const menu = document.getElementById(msg.id).querySelector('#menu-button')
+      const ytcMsg = document.getElementById(`ytc${msg.id}`)
+      if (menu != null && ytcMsg != null) {
+        ytcMsg.querySelector('.yt-menu-append').append(menu)
+      } else {
+        console.log(menu, ytcMsg)
       }
     },
     async addMessage(msg) {
@@ -391,7 +415,7 @@ export default {
           return false
         }
       } catch (e) {
-        console.warn('applyProfile - Failed to apply profile')
+        console.warn('applyProfile - Failed to apply preset')
         console.error(e)
         return false
       }

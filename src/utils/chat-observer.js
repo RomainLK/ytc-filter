@@ -38,6 +38,7 @@ export class ChatObserver {
   }
 
   clear() {
+    this.listeners.length = 0
     this.observer.disconnect()
   }
 }

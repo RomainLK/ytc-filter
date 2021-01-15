@@ -81,7 +81,10 @@ html[dark] #ytc-filter,
 #ytc-filter {
 
   .stats {
+    width: 100%;
+    text-align: right;
     margin-right: 1rem;
+    font-size: 0.9rem;
   }
   #clear-btn {
     padding: 5px;
@@ -90,6 +93,7 @@ html[dark] #ytc-filter,
   }
 
   hr.resize {
+    margin-top:2px;
     margin-left: 40%;
     width: 20%;
     border-top: 3px solid $grey-color;
@@ -231,10 +235,11 @@ html[dark] #ytc-filter,
     }
 
     .yt-menu-append {
-      display: inline;
+      display: inline-block;
       line-height: 0px;
       top: -5px;
       padding: 0;
+      width:18px;
       position: relative;
       yt-icon-button {
         padding: 0;

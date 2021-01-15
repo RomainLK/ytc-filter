@@ -37,7 +37,7 @@
                   </ul>
                 </li>
               </ul>
-              <p>Extension storage (not real time): {{ usedBytes }}/{{ quotaByte }}</p>
+              <p>Extension storage (not real time): {{ usedBytes }}/{{ quotaByte }} ({{ storagePercent }}%)</p>
               <button class="btn btn-danger" @click="clearArchive">
                 Clear Archive
               </button>
@@ -49,7 +49,7 @@
                   Changelog
                 </b-button>
               </p>
-              <p>Extension storage (not real time): {{ usedBytes }}/{{ quotaByte }}</p>
+              <p>Extension storage (not real time): {{ usedBytes }}/{{ quotaByte }} ({{ storagePercent }}%)</p>
               <p>
                 For support, bug report, or feedback, you can use these channels to contact the developer:
               </p>
@@ -67,7 +67,7 @@
                     Reset hint messages
                   </button>
                   <button type="button" class="btn btn-warning" @click="onLoadDefaultProfiles">
-                    Load default profiles
+                    Load default presets
                   </button>
 
                   <button type="button" class="btn btn-danger" @click="onFactoryReset">
@@ -86,7 +86,7 @@
         <div v-html="changelog"></div>
       </template>
     </b-modal>
-    <b-modal v-model="showWelcome" size="lg" no-close-on-backdrop ok-only :title="`ytcFilter ${version} news`" @hidden="onHiddenWelcome">
+    <b-modal v-model="showWelcome" size="lg" no-close-on-backdrop ok-only :title="`ytcFilter ${version} 'Kanata'`" @hidden="onHiddenWelcome">
       <p>
         2.1.0 is out after a rocky release of 2.0.x. Thanks for bearing with the huge changes which sadly brought so many issues.
       </p>
@@ -94,16 +94,21 @@
       <h4>New features</h4>
       <ul>
         <li>
-          Integrate Youtube's block/report menu in embedded ytcFilter so as to fight against spam even for those without the extension
+          ytcFilter will now switch automatically to a Fetch interceptor after sometime in the chat. This has several effects: better performance without hitting the Youtube
+          server/bandwidth penalty, more precise so no more message/badge mixing, and for VOD, it will predict future messages.
+        </li>
+        <li>
+          Integrate Youtube's block/report menu in current session of embedded ytcFilter so as to fight against spam even for those without the extension. Make Youtube chat a
+          better place! Note that it may take some time when ytcFilter switch to the Fetch interceptor as interceptor is faster than Youtube's livechat.
         </li>
         <li>
           Drag resize of embedded ytcFIlter, replacing the slider in embedded ytcFilter
         </li>
         <li>
-          Configurable automatic storage management to clean the storage automatically
+          Configurable storage management to clean the storage automatically. Default to 100 messages per video and a lifetime of 7 days.
         </li>
         <li>
-          Alert every minute if less than 5% of storage is available (Firefox is not supported)
+          Alert every minute if less than 5% of storage is available (Not supported in Firefox)
         </li>
       </ul>
 
@@ -117,7 +122,10 @@
         <button class="btn btn-success" @click="addDefaultProfiles">Add default presets</button>
       </p>
 
-      <p>Contact: <a href="https://discord.gg/P6DUeuhSjU" target="_blank">Discord</a> or <a href="https://github.com/RomainLK/ytc-filter" target="_blank">Github</a></p>
+      <p>
+        Contact for feedback, support, bug report or help with development and beta: <a href="https://discord.gg/P6DUeuhSjU" target="_blank">Discord</a> or
+        <a href="https://github.com/RomainLK/ytc-filter" target="_blank">Github</a>
+      </p>
 
       <b-button variant="primary" class="ml-3" @click="showChangeLog = true">
         Full changelog
@@ -149,7 +157,7 @@ export default {
   data() {
     return {
       displaySettings: false,
-      usedBytes: null,
+      usedBytes: 0,
       selectedArchiveId: null,
       version: manifest.version,
       changelog,
@@ -187,6 +195,12 @@ export default {
     this.showWelcome = this.$store.state.helpAlert.welcome
   },
   computed: {
+    storagePercent() {
+      if (!chrome.storage.local.getBytesInUse) {
+        return 'N/A'
+      }
+      return Math.round((1 - this.usedBytes / this.quotaByte) * 100)
+    },
     quotaByte() {
       if (chrome) {
         return chrome.storage.local.QUOTA_BYTES
@@ -280,10 +294,10 @@ export default {
       this.$store.commit('setVideoOptions', { videoId: this.videoId, options })
     },
     async onLoadDefaultProfiles() {
-      const ok = await this.$bvModal.msgBoxConfirm('Any modifications to default profiles you have made will be overriden. Continue?', { title: 'Warning' })
+      const ok = await this.$bvModal.msgBoxConfirm('Any modifications to default presets you have made will be overriden. Continue?', { title: 'Warning' })
       if (ok) {
         this.$store.commit('loadDefaultProfile')
-        this.$bvToast.toast(`Default profiles were loaded`, { title: 'Success' })
+        this.$bvToast.toast(`Default presets were loaded`, { title: 'Success' })
       }
     },
     onResetHintMessages() {

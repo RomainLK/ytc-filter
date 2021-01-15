@@ -1,9 +1,9 @@
 ## 2.1.0 Kanata
 
-Good bye old interface
+Good bye old interface.
 
 New features:
-- Integrate Youtube's block/report menu in embedded ytcFilter so as to fight against spam even for those without the extension
+- Integrate Youtube's block/report menu in current session of embedded ytcFilter so as to fight against spam even for those without the extension. Note that due to the new fetch interceptor, the menu integration may take a minute to appear. It may also fail due to Youtube poor performance
 - Drag resize of embedded ytcFIlter
 - Configurable automatic storage management
 - Alert every minute if less than 5% of storage is available (Firefox is not supported)
@@ -11,8 +11,9 @@ New features:
 
 Improvements:
 - Removed legacy code for old interface which should result in better performance than 2.0.x
+- Added a fetch interceptor to complement the Mutation observer. At first, Mutation observer will filter the first few message, but when the chat start to refresh from server, the task is delegated to the fetch interceptor. This has several effects: better performance without hitting the Youtube server, no more message/badge mixing, and for VOD, it will predict future messages.
 - Profiles are renamed to preset to better convey how they should be used
-- Reworked the interface. All profile related configuration are moved to their own tab
+- Reworked the interface. All presets related configuration are moved to their own tab
 - Back to the 1 line compact interface for embedded ytcFilter
 - Reduce storage usage per message.
 

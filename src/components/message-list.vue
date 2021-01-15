@@ -31,7 +31,7 @@
     </div>
     <div id="ytc-messages" class="vc-content" :style="{ height: height }" ref="content">
       <div class="vc-message-item ytc-pointer" v-for="(msg, index) in messages" :key="msg.id" :id="'ytc' + msg.id" @click="msgOptions = msgOptions == null ? index : null">
-        <div class="yt-menu-append"></div>
+        <div v-if="!isPopout" class="yt-menu-append"></div>
         <span v-if="msg.timestamp && msgOptions !== index" class="vc-timestamp">{{ msg.timestamp }}</span>
         <span v-else class="vc-options" @click.stop>
           <button type="button" class="sm-btn" title="Go to message" @click="scrollYoutubeChatToId(msg.id)" v-show="!isPopout">
@@ -111,6 +111,7 @@ export default {
   data() {
     return {
       msgOptions: null,
+      wasAtBottom: null,
     }
   },
   computed: {
@@ -124,22 +125,31 @@ export default {
       return this.currentVideoSettings?.options.autoScroll
     },
   },
-  mounted() {
+  async mounted() {
     console.log('[ytcFilter] Message List mounting. Video id:', this.videoId)
+    eventBus.$on('first-opening', async () => {
+      await new Promise(resolve => setTimeout(resolve, 500))
+      if (this.autoSrollEnabled) {
+        this.goToBottom() //For embedded
+      }
+    })
+    await new Promise(resolve => setTimeout(resolve, 500))
     if (this.autoSrollEnabled) {
-      this.goToBottom()
-      eventBus.$on('first-opening', () => {
-        this.goToBottom()
-      })
+      this.goToBottom() //For popout
     }
   },
-  watch: {
-    'messages.length': async function() {
-      const isAtBottom = this.$refs.content.scrollTop + this.$refs.content.clientHeight >= this.$refs.content.scrollHeight - 50
-      if (this.autoSrollEnabled && isAtBottom) {
+  beforeUpdate() {
+    const msg = document.querySelector('.vc-message-item:last-child')
+    if (msg) {
+      this.wasAtBottom = this.$refs.content.scrollTop + this.$refs.content.clientHeight >= this.$refs.content.scrollHeight - msg.getBoundingClientRect().height - 20
+    }
+  },
+  async updated() {
+    if (this.autoSrollEnabled) {
+      if (this.wasAtBottom) {
         await this.goToBottom()
       }
-    },
+    }
   },
   methods: {
     scrollYoutubeChatToId(id) {
@@ -162,9 +172,10 @@ export default {
       this.$refs.content.scrollTop = 0
     },
     goToBottom() {
-      setTimeout(() => {
-        this.$refs.content.scrollTop = this.$refs.content.scrollHeight + 1000
-      }, 150)
+      const msg = document.querySelector('.vc-message-item:last-child')
+      if (msg) {
+        this.$refs.content.scrollTo(0, msg.offsetTop)
+      }
     },
     exportMessagesToPng() {
       const messageNode = document.getElementById('ytc-messages')

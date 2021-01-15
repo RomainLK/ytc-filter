@@ -49,7 +49,7 @@ export default new Vuex.Store({
         width: null,
       },
       limitMsgPerVideo: 100,
-      storageLifeTime: 7,
+      storageLifetime: 7,
     },
     helpAlert: {
       filterHelp: true,
@@ -125,7 +125,7 @@ export default new Vuex.Store({
           width: null,
         },
         limitMsgPerVideo: 100,
-        storageLifeTime: 7,
+        storageLifetime: 7,
       }
       state.helpAlert = {
         filterHelp: true,
@@ -157,7 +157,7 @@ export default new Vuex.Store({
       state.global = value
     },
     updateGlobal(state, { value, path }) {
-      set(state, path, value)
+      set(state.global, path, value)
     },
     addProfile(state, profile) {
       state.global.profiles = { ...state.global.profiles, [profile.key]: profile }

@@ -15,9 +15,6 @@
             </option>
           </select>
           <profile-save-button class="ml-2" :can-update="false" label="Create" @save="onCreate" />
-          <!--button class="btn btn-primary ml-2" @click="openSaveModal">
-            Create or update profile
-          </button-->
         </div>
         <div class="my-2">
           <button class="btn btn-primary" :disabled="!hasSelected" @click="applyProfile" title="Replace current video's filters and options">Apply</button>
@@ -37,7 +34,7 @@
         </div>
       </div>
       <div v-show="profileDefaultChannel.length > 0" class="px-4">
-        <p>This profile is used by default on the following channels:</p>
+        <p>This preset is used by default on the following channels:</p>
         <ul class="unstyled-list">
           <li v-for="defaultInfo in profileDefaultChannel" :key="defaultInfo.channelId">
             <a v-if="defaultInfo.channelId !== 'Studio'" :href="'https://www.youtube.com/channel/' + defaultInfo.channelId" target="_blank">
@@ -55,9 +52,7 @@
     </div>
 
     <filter-card v-if="selectedProfile" class="mb-3" :filters="currentFilters" @change="onFiltersChange"></filter-card>
-    test
     <embedded-options-card v-if="selectedProfile" :options="currentOptions" @change="onOptsChange" :key="'profile'"></embedded-options-card>
-    test
   </div>
 </template>
 <script>
@@ -131,7 +126,7 @@ export default {
     },
     applyProfile() {
       this.$store.commit('applyProfile', { videoId: this.videoId, feedName: this.feedName, profileKey: this.selectedProfile.key })
-      this.$bvToast.toast(`Profile "${this.selectedProfile.name}" was applied to current video`, { title: 'Success' })
+      this.$bvToast.toast(`Preset "${this.selectedProfile.name}" was applied to current video`, { title: 'Success' })
     },
     appendProfile() {
       this.$store.commit('appendProfile', { videoId: this.videoId, feedName: this.feedName, profileKey: this.selectedProfile.key })
@@ -140,10 +135,10 @@ export default {
     toggleGlobalDefault() {
       if (this.isCurrentGlobalDefault) {
         this.$store.commit('setGlobalDefault', null)
-        this.$bvToast.toast(`Profile "${this.selectedProfile.name}" is no longer the global default`, { title: 'Success' })
+        this.$bvToast.toast(`Preset "${this.selectedProfile.name}" is no longer the global default`, { title: 'Success' })
       } else {
         this.$store.commit('setGlobalDefault', this.selectedProfile.key)
-        this.$bvToast.toast(`Profile "${this.selectedProfile.name}" was set as global default`, { title: 'Success' })
+        this.$bvToast.toast(`Preset "${this.selectedProfile.name}" was set as global default`, { title: 'Success' })
       }
     },
     setAsChannelDefault() {
@@ -153,20 +148,20 @@ export default {
         profileKey: this.selectedProfile.key,
         channelName: this.currentVideoSettings.channelName,
       })
-      this.$bvToast.toast(`Profile "${this.selectedProfile.name}" was set as channel default`, { title: 'Success' })
+      this.$bvToast.toast(`Preset "${this.selectedProfile.name}" was set as channel default`, { title: 'Success' })
     },
     async deleteProfile() {
       const ok = await this.$bvModal.msgBoxConfirm(`Are you sure you want to delete the profile "${this.selectedProfile.name}"`, { title: 'Warning', okVariant: 'danger' })
       if (ok) {
         this.$store.commit('deleteProfile', this.selectedProfile.key)
         this.selectedProfile = null
-        this.$bvToast.toast(`Profile "${this.selectedProfile.name}" was deleted`, { title: 'Success' })
+        this.$bvToast.toast(`Preset "${this.selectedProfile.name}" was deleted`, { title: 'Success' })
       }
     },
     addDefaultProfile() {
       this.$store.commit('loadDefaultProfile')
       this.$store.commit('setHelpAlert', { key: 'profileHelp', value: false })
-      this.$bvToast.toast(`Default profiles were loaded`, { title: 'Success' })
+      this.$bvToast.toast(`Default presets were loaded`, { title: 'Success' })
     },
     openSaveModal() {
       this.saveMode = this.selectedProfile ? 'update' : 'create'
@@ -189,7 +184,7 @@ export default {
       if (!success) {
         e.preventDefault()
       }
-      this.$bvToast.toast(`"Profile ${this.selectedProfile.name}" was saved`, { title: 'Success' })
+      this.$bvToast.toast(`"Preset ${this.selectedProfile.name}" was saved`, { title: 'Success' })
     },
 
     generateProfile(name, key) {
@@ -211,7 +206,7 @@ export default {
 
     updateProfile() {
       if (this.selectedProfile == null) {
-        this.invalidUpdateFeedback = 'A profile must be selected'
+        this.invalidUpdateFeedback = 'A preset must be selected'
         return false
       }
       this.$store.commit('addProfile', this.generateProfile(this.selectedProfile.name, this.selectedProfile.key))
@@ -219,7 +214,7 @@ export default {
     },
     createProfile() {
       if (this.saveName === '') {
-        this.invalidCreateFeedback = 'Profile name must be filled'
+        this.invalidCreateFeedback = 'Preset name must be filled'
         return false
       }
       if (
@@ -227,7 +222,7 @@ export default {
           .map(p => p.name)
           .includes(this.saveName)
       ) {
-        this.invalidCreateFeedback = 'This profile name is already used'
+        this.invalidCreateFeedback = 'This preset name is already used'
         return false
       }
       const newProfile = this.generateProfile(this.saveName)
@@ -239,14 +234,10 @@ export default {
       this.selectedProfile = profile
     },
     onFiltersChange() {
-      console.log('wut filter')
       this.$store.commit('addProfile', this.selectedProfile)
-      //this.$store.commit('updateFilters', { videoId: this.videoId, feedName: 'default', filters: this.currentFilters })
     },
     onOptsChange(options) {
-      console.log(options, this.selectedProfile)
       this.$store.commit('addProfile', this.selectedProfile)
-      //this.$store.commit('setVideoOptions', { videoId: this.videoId, options })
     },
   },
 }

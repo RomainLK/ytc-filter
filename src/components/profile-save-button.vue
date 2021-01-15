@@ -149,7 +149,7 @@ export default {
 
     updateProfile() {
       if (this.selectedProfile == null) {
-        this.invalidUpdateFeedback = 'A profile must be selected'
+        this.invalidUpdateFeedback = 'A preset must be selected'
         return false
       }
       this.$store.commit('addProfile', this.generateProfile(this.selectedProfile.name, this.selectedProfile.key))
@@ -157,7 +157,7 @@ export default {
     },
     createProfile() {
       if (this.saveName === '') {
-        this.invalidCreateFeedback = 'Profile name must be filled'
+        this.invalidCreateFeedback = 'Preset name must be filled'
         return false
       }
       if (
@@ -165,7 +165,7 @@ export default {
           .map(p => p.name)
           .includes(this.saveName)
       ) {
-        this.invalidCreateFeedback = 'This profile name is already used'
+        this.invalidCreateFeedback = 'This preset name is already used'
         return false
       }
       const newProfile = this.generateProfile(this.saveName)

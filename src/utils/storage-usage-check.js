@@ -1,6 +1,5 @@
 export const storageUsageCheck = function(fn) {
   if (!chrome.storage.local.getBytesInUse) {
-    console.log('[ytcFilter] Storage check unuvailable')
     return
   }
   const check = () => {
