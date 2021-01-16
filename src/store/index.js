@@ -1,20 +1,34 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexWebExtensions from '@/lib/vuex-webextensions'
+import { set } from 'lodash'
 
 Vue.use(Vuex)
 
+const options = {
+  autoOpen: false,
+  autoScroll: true,
+  height: 100,
+  autoMaxHeight: false,
+}
+
 const defaultProfiles = {
-  staff: { name: 'Messages from staff', key: 'staff', filters: [{ type: 'isModerator' }, { type: 'isOwner' }] },
+  staff: { name: 'Messages from staff', key: 'staff', filters: [{ type: 'isModerator' }, { type: 'isOwner' }], options: { ...options } },
   englishtag: {
     name: 'English tagged messages',
     key: 'englishtag',
     // eslint-disable-next-line
-    filters: [{ type: 'regex', value: `/^[[(]?(?:eng?|t(?:(rans|l))?|英訳)(?:\/(?:eng?|t(?:(rans|l))?|英訳))?[\\]): -]/i` }],
-    // /^[[(]?(?:eng?|t(?:(rans|l))?|英訳)(?:\/(?:eng?|t(?:(rans|l))?|英訳))?[\]): -]/i
+    filters: [{ type: 'regex', value: `/^[[(]?(?:eng?|t(?:(rans|l))+|英訳)(?:\/(?:eng?|t(?:(rans|l))?|英訳))?[\\]): -]/i` }],
+    // /^[[(]?(?:eng?|t(?:(rans|l))+|英訳)(?:\/(?:eng?|t(?:(rans|l))?|英訳))?[\\]): -]/i
+    options: { ...options },
   },
-  alphanumeric: { name: 'Messages with alphanumeric', key: 'alphanumeric', filters: [{ type: 'regex', value: '/[a-z0-9]/i' }] },
-  japanese: { name: '日本語/Messages with japanese characters', key: 'japanese', filters: [{ type: 'regex', value: '/[一-龠]|[ぁ-ゔ]|[ァ-ヴー]|[ａ-ｚＡ-Ｚ０-９]|[々〆〤]/u' }] },
+  alphanumeric: { name: 'Messages with alphanumeric', key: 'alphanumeric', filters: [{ type: 'regex', value: '/[a-z0-9]/i' }], options: { ...options } },
+  japanese: {
+    name: '日本語/Messages with japanese characters',
+    key: 'japanese',
+    filters: [{ type: 'regex', value: '/[一-龠]|[ぁ-ゔ]|[ァ-ヴー]|[ａ-ｚＡ-Ｚ０-９]|[々〆〤]/u' }],
+    options: { ...options },
+  },
 }
 
 export default new Vuex.Store({
@@ -34,12 +48,16 @@ export default new Vuex.Store({
         height: null,
         width: null,
       },
+      limitMsgPerVideo: 100,
+      storageLifetime: 7,
     },
     helpAlert: {
       filterHelp: true,
       profileHelp: true,
       profileDefaultHelp: true,
+      welcome: true,
     },
+    //authorBlacklist: {},
   },
   getters: {
     global(state) {
@@ -69,7 +87,21 @@ export default new Vuex.Store({
         }
       }
 
-      return Object.values(archive).filter(c => c.videos.length > 0)
+      return Object.values(archive)
+        .filter(c => c.videos.length > 0)
+        .sort((a, b) => {
+          const nameA = a.name.toUpperCase() // ignore upper and lowercase
+          const nameB = b.name.toUpperCase() // ignore upper and lowercase
+          if (nameA < nameB) {
+            return -1
+          }
+          if (nameA > nameB) {
+            return 1
+          }
+
+          // names must be equal
+          return 0
+        })
     },
   },
   /**
@@ -92,11 +124,14 @@ export default new Vuex.Store({
           height: null,
           width: null,
         },
+        limitMsgPerVideo: 100,
+        storageLifetime: 7,
       }
       state.helpAlert = {
         filterHelp: true,
         profileHelp: true,
         profileDefaultHelp: true,
+        welcome: false,
       }
     },
     setFullPopoutSize(state, { height, width }) {
@@ -121,31 +156,76 @@ export default new Vuex.Store({
     setGlobal(state, value) {
       state.global = value
     },
+    updateGlobal(state, { value, path }) {
+      set(state.global, path, value)
+    },
     addProfile(state, profile) {
       state.global.profiles = { ...state.global.profiles, [profile.key]: profile }
     },
     loadDefaultProfile(state) {
       state.global.profiles = { ...state.global.profiles, ...defaultProfiles }
     },
+    initVideoSettings(state, { id, name, channelId, channelName }) {
+      state.videoSettings = {
+        ...state.videoSettings,
+        [id]: Vue.observable({
+          id,
+          name,
+          channelId,
+          channelName,
+          options: { autoOpen: false, autoScroll: true, height: 100, autoMaxHeight: false },
+          lastViewed: new Date().toISOString(),
+          feeds: {
+            default: {
+              messages: [],
+              filters: [],
+              deduplication: {},
+            },
+          },
+        }),
+      }
+    },
     addVideoSettings(state, videoSettings) {
       state.videoSettings = { ...state.videoSettings, [videoSettings.id]: Vue.observable(videoSettings) }
     },
+    removeVideoSettings(state, videoId) {
+      Vue.delete(state.videoSettings, videoId)
+    },
     setVideoOptions(state, { videoId, options }) {
       state.videoSettings[videoId] = { ...state.videoSettings[videoId], options }
+    },
+    updateVideoSettings(state, { videoId, path, value }) {
+      set(state.videoSettings[videoId], path, value)
     },
     updateFilters(state, { videoId, feedName, filters }) {
       const feed = state.videoSettings[videoId].feeds[feedName]
       feed.filters = [].concat(filters)
     },
+    addMessage(state, { videoId, feedName, message }) {
+      const { deduplication, messages } = state.videoSettings[videoId].feeds[feedName]
+      if (!deduplication[message.id]) {
+        Vue.set(deduplication, message.id, true)
+      } else {
+        return
+      }
+      messages.push(message)
+      while (state.global.limitMsgPerVideo > 0 && messages.length > state.global.limitMsgPerVideo) {
+        const toRemove = messages.splice(0, 1)[0]
+        Vue.delete(deduplication, toRemove.id)
+      }
+    },
     removeMessage(state, { videoId, feedName, messageIndex }) {
       const feed = state.videoSettings[videoId].feeds[feedName]
       const message = feed.messages[messageIndex]
       feed.messages.splice(messageIndex, 1)
-      //feed.messages = Vue.observable([...feed.messages])
-      //Vue.delete(feed.messages, index)
       Vue.delete(feed.deduplication, message.id)
-      //state.videoSettings = { ...state.videoSettings }
     },
+    // addBlacklistAuthor(state, value) {
+    //   Vue.set(state.global.authorBlacklist, value, true)
+    // },
+    // removeBlacklistAuthor(state, value) {
+    //   Vue.delete(state.global.authorBlacklist, value, true)
+    // },
     clearMessages(state, { videoId, feedName }) {
       const feed = state.videoSettings[videoId].feeds[feedName]
       while (feed.messages.length > 0) {
@@ -156,10 +236,14 @@ export default new Vuex.Store({
     },
     applyProfile(state, { videoId, feedName, profileKey }) {
       const { filters, options } = state.global.profiles[profileKey]
-      state.videoSettings[videoId].feeds[feedName].filters = state.videoSettings[videoId].feeds[feedName].filters.concat(filters)
+      state.videoSettings[videoId].feeds[feedName].filters = filters
       if (options) {
         state.videoSettings[videoId].options = { ...state.videoSettings[videoId].options, ...options }
       }
+    },
+    appendProfile(state, { videoId, feedName, profileKey }) {
+      const { filters } = state.global.profiles[profileKey]
+      state.videoSettings[videoId].feeds[feedName].filters = state.videoSettings[videoId].feeds[feedName].filters.concat(filters)
     },
     clearVideoSettings(state) {
       for (const videoSettings of Object.values(state.videoSettings)) {

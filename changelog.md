@@ -1,14 +1,28 @@
-# ytcFilter 2.0.4
+## 2.1.0 Kanata
 
-A <a href="https://discord.gg/P6DUeuhSjU" target="_blank">Discord</a> server has been added for support, bug reports, and feedback, or if you want to help with ytcFilter v2.
+Good bye old interface.
 
-This message will only appear the first time you install this extension, or update it. It can be displayed again by clicking on "ytcFilter" > "Show options" > "Changelog".
+New features:
+- Integrate Youtube's block/report menu in current session of embedded ytcFilter so as to fight against spam even for those without the extension. Note that due to the new fetch interceptor, the menu integration may take a minute to appear. It may also fail due to Youtube poor performance. Also, due to Youtube's limitation and performance, the menu can't be used if the message is no longer in the chat, so it's not permanent and may also be missing.
+- Drag resize of embedded ytcFIlter
+- Configurable automatic storage management
+- Alert every minute if less than 5% of storage is available (Firefox is not supported)
 
-Please check the <a href="https://github.com/RomainLK/ytc-filter/wiki" target="_blank">wiki</a> for guide and help.
 
-For bug reports or feature request, contact the developer directly or on <a href="https://github.com/RomainLK/ytc-filter"  target="_blank">Github</a>.
+Improvements:
+- Removed legacy code for old interface which should result in better performance than 2.0.x
+- Added a fetch interceptor to complement the Mutation observer. At first, Mutation observer will filter the first few message, but when the chat start to refresh from server, the task is delegated to the fetch interceptor. This has several effects: better performance without hitting the Youtube server, no more message/badge mixing, and for VOD, it will predict future messages.
+- Profiles are renamed to preset to better convey how they should be used
+- Reworked the interface. All presets related configuration are moved to their own tab
+- Back to the 1 line compact interface for embedded ytcFilter
+- Reduce storage usage per message.
 
-# Changelog
+Bug fixes:
+- Fix regex for English tagged messages. Big thanks to NaGel.
+- Fix slight size difference when opening popout with or without settings
+- Fix possible case where ytcFilter may no longer load if you close a video before it had time loading
+- Fix auto max height being too tall
+- Potential fix for channel reordering when deleting a video archive
 
 ## 2.0.4
 

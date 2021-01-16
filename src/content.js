@@ -4,10 +4,15 @@ console.log('[ytcFilter] Content loaded')
 
 const isStudio = document.location.origin === 'https://studio.youtube.com'
 
+const s = document.createElement('script')
+s.src = chrome.extension.getURL('inject.js')
+s.id = 'ytc-inject'
+;(document.head || document.documentElement).appendChild(s)
 // const isYtcPopout = new URLSearchParams(window.location.search).get('ytc')
 
 const listener = async () => {
   console.log('[ytcFilter] DOM loaded.')
+
   // WIP popout
   // if (isYtcPopout) {
   //   console.log('[ytcFilter] ytcPopout detected')

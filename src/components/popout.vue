@@ -5,8 +5,8 @@
         <div id="ytc-filter" class="col message-column" :class="{ 'limited-width': displaySettings }">
           <h5 class="message-column-title">{{ displayedVideoName }}</h5>
           <message-list :video-id="displayedVideoId" :is-popout="true">
-            <b-button :pressed.sync="displaySettings" variant="primary" class="float-right sm-btn"> {{ displaySettings ? 'Hide' : 'Show' }} settings</b-button>
-            <button class="btn btn-primary float-right sm-btn mr-2" @click="$store.commit('toggleDarkMode')">{{ darkMode ? 'Dark' : 'Light' }}</button>
+            <button class="btn btn-primary  sm-btn mr-2" @click="$store.commit('toggleDarkMode')">{{ darkMode ? 'Dark' : 'Light' }}</button>
+            <b-button :pressed.sync="displaySettings" variant="primary" class="sm-btn"> {{ displaySettings ? 'Hide' : 'Show' }} settings</b-button>
           </message-list>
         </div>
         <div class="col py-2 pr-5 settings-column" v-show="displaySettings">
@@ -15,9 +15,15 @@
               <b-alert variant="warning" :show="channelId == null">
                 ytcFilter is running in degraded mode because it couldn't get channel and video information. This is normal if you are using ytcFilter outside of Youtube.com
               </b-alert>
+              <filter-card class="mb-3" :filters="currentFilters" @change="onFiltersChange" :video-id="videoId" />
+              <embedded-options-card class="mb-3" :options="currentVideoSettings.options" @change="onOptionsChange" :key="'currentVideoOptions'"></embedded-options-card>
+              <profile-save-button :filters="currentFilters" :options="currentVideoSettings.options" />
+            </b-tab>
+            <b-tab title="Preset management">
               <profile-card class="mb-3" :video-id="videoId" />
-              <filter-card class="mb-3" :filters="currentFilters" @change="onFiltersChange" />
-              <embedded-options-card :options="currentVideoSettings.options" @change="onOptionsChange" />
+            </b-tab>
+            <b-tab title="Options">
+              <storage-management-card />
             </b-tab>
             <b-tab title="Archive">
               <ul class="list-unstyled">
@@ -31,12 +37,19 @@
                   </ul>
                 </li>
               </ul>
-              <p>Extension storage (not real time): {{ usedBytes }}/{{ quotaByte }}</p>
+              <p>Extension storage (not real time): {{ usedBytes }}/{{ quotaByte }} ({{ storagePercent }}%)</p>
               <button class="btn btn-danger" @click="clearArchive">
                 Clear Archive
               </button>
             </b-tab>
             <b-tab title="Help">
+              <p>
+                Version: {{ version }}
+                <b-button variant="primary" size="sm" class="ml-3" @click="showChangeLog = true">
+                  Changelog
+                </b-button>
+              </p>
+              <p>Extension storage (not real time): {{ usedBytes }}/{{ quotaByte }} ({{ storagePercent }}%)</p>
               <p>
                 For support, bug report, or feedback, you can use these channels to contact the developer:
               </p>
@@ -44,21 +57,20 @@
                 <li><a href="https://discord.gg/P6DUeuhSjU" target="_blank">Discord</a></li>
                 <li><a href="https://github.com/RomainLK/ytc-filter" target="_blank">Github</a></li>
               </ul>
-              <p>
-                Please check the <a href="https://github.com/RomainLK/ytc-filter/wiki" target="_blank">wiki</a>
-                for guide and help. Documentation applies to embedded ytcFilter
-              </p>
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">Factory settings</h4>
-                  <button class="btn btn-success" @click="onResetHintMessages">
+                  <button type="button" class="btn btn-success" @click="showWelcome = true">
+                    Show welcome message
+                  </button>
+                  <button type="button" class="btn btn-success" @click="onResetHintMessages">
                     Reset hint messages
                   </button>
-                  <button class="btn btn-warning" @click="onLoadDefaultProfiles">
-                    Load default profiles
+                  <button type="button" class="btn btn-warning" @click="onLoadDefaultProfiles">
+                    Load default presets
                   </button>
 
-                  <button class="btn btn-danger" @click="onFactoryReset">
+                  <button type="button" class="btn btn-danger" @click="onFactoryReset">
                     Full reset
                   </button>
                   <p>After a full reset, you will need to refresh every instance of ytcFilter by either reloading the pages or restarting your browser</p>
@@ -69,6 +81,58 @@
         </div>
       </div>
     </div>
+    <b-modal v-model="showChangeLog" title="Changelog" size="lg" ok-only>
+      <template #default>
+        <div v-html="changelog"></div>
+      </template>
+    </b-modal>
+    <b-modal v-model="showWelcome" size="lg" no-close-on-backdrop ok-only :title="`ytcFilter ${version} 'Kanata'`" @hidden="onHiddenWelcome">
+      <p>
+        2.1.0 is out after a rocky release of 2.0.x. Thanks for bearing with the huge changes which sadly brought so many issues.
+      </p>
+
+      <h4>New features and changes</h4>
+      <ul>
+        <li>
+          ytcFilter will now switch automatically to a Fetch interceptor after sometime in the chat. This has several effects: better performance without hitting the Youtube
+          server/bandwidth penalty, more precise so no more message/badge mixing, and for VOD, it will predict future messages. Note that since it's faster that Youtube chat, if
+          you add a new filter live, it will look like the filter isn't immediately active. Session stats will also increase at longer intervals.
+        </li>
+        <li>
+          Integrate Youtube's block/report menu in current session of embedded ytcFilter so as to fight against spam even for those without the extension. Make Youtube chat a
+          better place! Note that it may take some time when ytcFilter switch to the Fetch interceptor as interceptor is faster than Youtube's livechat. Also, due to Youtube's
+          limitation and performance, the menu can't be used if the message is no longer in the chat, so it's not permanent, and may also be missing..
+        </li>
+        <li>
+          Drag resize of embedded ytcFIlter, replacing the slider in embedded ytcFilter
+        </li>
+        <li>
+          Configurable storage management to clean the storage automatically. Default to 100 messages per video and a lifetime of 7 days.
+        </li>
+        <li>
+          Alert every minute if less than 5% of storage is available (Not supported in Firefox)
+        </li>
+      </ul>
+
+      <p>
+        3.0.0 is on the horizon and should bring filter combination allowing to both allow and block messages based on new conditions, like an emote filter.
+      </p>
+
+      <p>
+        If you have never set any presets before, ytcFilter can preinstall some for common usage like translation tagged messages, languages, and staff. If you have been using
+        2.0.x, you can also load them again in order to fix the "English tagged messages" preset.
+        <button class="btn btn-success" @click="addDefaultProfiles">Add default presets</button>
+      </p>
+
+      <p>
+        Contact for feedback, support, bug report or help with development and beta: <a href="https://discord.gg/P6DUeuhSjU" target="_blank">Discord</a> or
+        <a href="https://github.com/RomainLK/ytc-filter" target="_blank">Github</a>
+      </p>
+
+      <b-button variant="primary" class="ml-3" @click="showChangeLog = true">
+        Full changelog
+      </b-button>
+    </b-modal>
   </div>
 </template>
 <script>
@@ -76,7 +140,12 @@ import messageList from '@/components/message-list'
 import profileCard from '@/components/profile-card'
 import filterCard from '@/components/filter-card'
 import embeddedOptionsCard from '@/components/embedded-options-card'
+import profileSaveButton from '@/components/profile-save-button'
 import { debounce } from 'lodash'
+import manifest from '@/manifest.json'
+import changelog from '@/../changelog.md'
+import storageManagementCard from '@/components/storage-management-card'
+import { storageUsageCheck } from '@/utils/storage-usage-check'
 
 export default {
   components: {
@@ -84,35 +153,56 @@ export default {
     profileCard,
     filterCard,
     embeddedOptionsCard,
+    profileSaveButton,
+    storageManagementCard,
   },
   data() {
     return {
       displaySettings: false,
-      usedBytes: null,
+      usedBytes: 0,
       selectedArchiveId: null,
+      version: manifest.version,
+      changelog,
+      showChangeLog: false,
+      showWelcome: false,
     }
   },
   async mounted() {
     console.log('[ytcFilter] popout mounting. channelId:', this.channelId, ' videoId:', this.videoId, ' channelName:', this.channelName)
+    storageUsageCheck(left => {
+      this.$bvToast.toast(`WARNING! Less than ${left}% of storage space is left in ytcFilter. Please check the Popout > Archive tab to free some space.`, {
+        title: 'Warning',
+        variant: 'danger',
+        noAutoHide: true,
+      })
+    })
     this.getUsedBytes()
     window.addEventListener(
       'resize',
       debounce(() => {
-        if (this.displaySettings) {
-          this.$store.commit('setFullPopoutSize', {
-            height: window.innerHeight,
-            width: window.innerWidth,
-          })
-        } else {
-          this.$store.commit('setCompactPopoutSize', {
-            height: window.innerHeight,
-            width: window.innerWidth,
-          })
-        }
+        chrome.windows.getCurrent(w => {
+          const size = {
+            height: w.height,
+            width: w.width,
+          }
+          if (this.displaySettings) {
+            this.$store.commit('setFullPopoutSize', size)
+          } else {
+            this.$store.commit('setCompactPopoutSize', size)
+          }
+        })
       }, 500)
     )
+    await new Promise(resolve => setTimeout(resolve, 500))
+    this.showWelcome = this.$store.state.helpAlert.welcome
   },
   computed: {
+    storagePercent() {
+      if (!chrome.storage.local.getBytesInUse) {
+        return 'N/A'
+      }
+      return Math.round((1 - this.usedBytes / this.quotaByte) * 100)
+    },
     quotaByte() {
       if (chrome) {
         return chrome.storage.local.QUOTA_BYTES
@@ -206,10 +296,10 @@ export default {
       this.$store.commit('setVideoOptions', { videoId: this.videoId, options })
     },
     async onLoadDefaultProfiles() {
-      const ok = await this.$bvModal.msgBoxConfirm('Any modifications to default profiles you have made will be overriden. Continue?', { title: 'Warning' })
+      const ok = await this.$bvModal.msgBoxConfirm('Any modifications to default presets you have made will be overriden. Continue?', { title: 'Warning' })
       if (ok) {
         this.$store.commit('loadDefaultProfile')
-        this.$bvToast.toast(`Default profiles were loaded`, { title: 'Success' })
+        this.$bvToast.toast(`Default presets were loaded`, { title: 'Success' })
       }
     },
     onResetHintMessages() {
@@ -225,6 +315,22 @@ export default {
         this.$bvToast.toast(`Factory reset done. Please close this window.`, { title: 'Success' })
       }
     },
+    addDefaultProfiles() {
+      this.$store.commit('loadDefaultProfile')
+      this.$store.commit('setHelpAlert', { key: 'profileHelp', value: false })
+      this.$bvToast.toast(`Default presets were loaded`, { title: 'Success' })
+    },
+    onHiddenWelcome() {
+      this.$store.commit('setHelpAlert', {
+        key: 'welcome',
+        value: false,
+      })
+    },
+    // showChangeLog() {
+    //   this.$bvModal.msgBoxOk(changelog, {
+    //     title: 'Changelog',
+    //   })
+    // },
   },
 }
 </script>

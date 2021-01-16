@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2020 RomainLK
+Copyright (c) 2020-2021 RomainLK
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -36,4 +36,4 @@ npm run build
 
 Message observer by fiahfy from https://github.com/fiahfy/youtube-live-chat-flow
 
-And all the people testing! It helps tremendously.
+And all the people testing! It helps tremendously
