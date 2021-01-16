@@ -72,6 +72,7 @@ export default {
       CHANNEL_ID,
       ready: false,
       resizing: false,
+      menus: [],
     }
   },
   async mounted() {
@@ -357,7 +358,7 @@ export default {
     notifyChangelog() {
       this.notify(
         `
-      Welcome to ytcFilter ${manifest.version}. In order to start, please check the "Popout/Settings". Help information and changelog are in the help tab.
+      Welcome to ytcFilter ${manifest.version}. In order to start, please check the "Popout/Settings". 
       `,
         0
       )
@@ -384,8 +385,17 @@ export default {
     async moveMenu(msg) {
       await new Promise(resolve => setTimeout(resolve, 500))
       const menu = document.getElementById(msg.id).querySelector('#menu-button')
+      this.menus.push(menu)
+      if (this.menus.length > 240) {
+        const toRemove = this.menus.splice(0, 1)[0]
+        if (toRemove && toRemove.ytcMoved) {
+          toRemove.ytcMoved = false
+          toRemove.remove()
+        }
+      }
       const ytcMsg = document.getElementById(`ytc${msg.id}`)
       if (menu != null && ytcMsg != null) {
+        menu.ytcMoved = true
         ytcMsg.querySelector('.yt-menu-append').append(menu)
       }
     },

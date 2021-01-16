@@ -91,16 +91,17 @@
         2.1.0 is out after a rocky release of 2.0.x. Thanks for bearing with the huge changes which sadly brought so many issues.
       </p>
 
-      <h4>New features</h4>
+      <h4>New features and changes</h4>
       <ul>
         <li>
           ytcFilter will now switch automatically to a Fetch interceptor after sometime in the chat. This has several effects: better performance without hitting the Youtube
-          server/bandwidth penalty, more precise so no more message/badge mixing, and for VOD, it will predict future messages. Note that since it's faster that Youtube chat, if you add a new filter live,
-          it will look like the filter isn't immediately active. Session stats will also increase at longer intervals.
+          server/bandwidth penalty, more precise so no more message/badge mixing, and for VOD, it will predict future messages. Note that since it's faster that Youtube chat, if
+          you add a new filter live, it will look like the filter isn't immediately active. Session stats will also increase at longer intervals.
         </li>
         <li>
           Integrate Youtube's block/report menu in current session of embedded ytcFilter so as to fight against spam even for those without the extension. Make Youtube chat a
-          better place! Note that it may take some time when ytcFilter switch to the Fetch interceptor as interceptor is faster than Youtube's livechat.
+          better place! Note that it may take some time when ytcFilter switch to the Fetch interceptor as interceptor is faster than Youtube's livechat. Also, due to Youtube's
+          limitation and performance, the menu can't be used if the message is no longer in the chat, so it's not permanent, and may also be missing..
         </li>
         <li>
           Drag resize of embedded ytcFIlter, replacing the slider in embedded ytcFilter

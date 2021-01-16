@@ -11,23 +11,27 @@ const convertTimestampUsec = timestamp => {
 }
 
 const toMessage = messages => {
-  return messages.reduce((acc, msg) => {
-    if (msg.text) {
-      return acc + msg.text
-    }
-    return acc
-  }, '')
+  return (
+    messages.reduce((acc, msg) => {
+      if (msg.text) {
+        return acc + msg.text
+      }
+      return acc
+    }, '') || ''
+  )
 }
 const toHtml = messages => {
-  return messages.reduce((acc, msg) => {
-    if (msg.text) {
-      return acc + msg.text
-    }
-    if (msg.emoji) {
-      return acc + `<img src="${msg.emoji.image.thumbnails[0].url}"/>`
-    }
-    return acc
-  }, '')
+  return (
+    messages.reduce((acc, msg) => {
+      if (msg.text) {
+        return acc + msg.text
+      }
+      if (msg.emoji) {
+        return acc + `<img src="${msg.emoji.image.thumbnails[0].url}"/>`
+      }
+      return acc
+    }, '') || ''
+  )
 }
 window.fetch = async (...args) => {
   //example url https://www.youtube.com/youtubei/v1/live_chat/get_live_chat?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8

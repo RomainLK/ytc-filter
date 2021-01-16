@@ -32,6 +32,7 @@
     <div id="ytc-messages" class="vc-content" :style="{ height: height }" ref="content">
       <div class="vc-message-item ytc-pointer" v-for="(msg, index) in messages" :key="msg.id" :id="'ytc' + msg.id" @click="msgOptions = msgOptions == null ? index : null">
         <div v-if="!isPopout" class="yt-menu-append"></div>
+        <div class="yt-msg-append ytc-hidden"></div>
         <span v-if="msg.timestamp && msgOptions !== index" class="vc-timestamp">{{ msg.timestamp }}</span>
         <span v-else class="vc-options" @click.stop>
           <button type="button" class="sm-btn" title="Go to message" @click="scrollYoutubeChatToId(msg.id)" v-show="!isPopout">
