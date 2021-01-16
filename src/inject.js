@@ -1,32 +1,6 @@
 console.log('[ytcFilter] Inject start')
 const originalFetch = window.fetch
 
-// const src = document.querySelector('#ytc-inject').src
-// const extId = src.replace('chrome-extension://', '').replace('/inject.js', '')
-// console.log(extId)
-// chrome.tabs.getCurrent(t => console.log(t))
-// setInterval(() => {
-//   console.log('sending')
-//   //document.postMessage('test')
-//   document.dispatchEvent(new CustomEvent('app_state_message', { detail: 'test' }))
-//   chrome.runtime.sendMessage(extId, {
-//     action: 'get-live-chat-capture',
-//     payload: {},
-//   })
-// }, 1000)
-/*	{
-							"author": "Ing K",
-							"authorType": "member",
-							"badgeUrl": "https://yt3.ggpht.com/8DobXG1oHb_x3TD2DPUXt4mSNkZwvG2qbkpXVPn1Ob3qaXNL0kJSLj8SyyVa-360Hcr96H194Q=s16-c-k",
-							"html": "[EN] some hololive members have both human and animal ears but i only have the ears on top of my head",
-							"id": "CkUKGkNNWEl5WnlBbnU0Q0ZZbUl3UW9kYVZRRm5nEidDTVhGbU92X25lNENGUVJYc2dvZF9XMEswQTE2MTA3MTU4NzgzNzk%3D",
-							"message": "[EN] some hololive members have both human and animal ears but i only have the ears on top of my head",
-							"messageType": "text-message",
-							"timestamp": "2:04 PM",
-							"verified": false
-						},
- */
-
 const convertTimestampUsec = timestamp => {
   return new Intl.DateTimeFormat('default', {
     hour: 'numeric',
@@ -104,7 +78,6 @@ window.fetch = async (...args) => {
                 msg.purchaseAmount = chatMessage.purchaseAmountText.simpleText
                 msg.backgroundColor = chatMessage.bodyBackgroundColor
               }
-              console.log(msg.author, chatMessage)
               document.dispatchEvent(new CustomEvent('chat-message-capture', { detail: msg }))
             } else {
               console.log('[ytcFilter] Unsupported chat action', action)

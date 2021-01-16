@@ -151,7 +151,6 @@ export default {
         this.observer.listeners.splice(0, 1)
       }
       this.onMessage(e.detail)
-      console.log('receive', e.detail)
     })
     document.body.addEventListener('mouseup', e => {
       this.resizing = false
@@ -388,8 +387,6 @@ export default {
       const ytcMsg = document.getElementById(`ytc${msg.id}`)
       if (menu != null && ytcMsg != null) {
         ytcMsg.querySelector('.yt-menu-append').append(menu)
-      } else {
-        console.log(menu, ytcMsg)
       }
     },
     async addMessage(msg) {

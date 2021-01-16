@@ -7,10 +7,6 @@ const isStudio = document.location.origin === 'https://studio.youtube.com'
 const s = document.createElement('script')
 s.src = chrome.extension.getURL('inject.js')
 s.id = 'ytc-inject'
-s.onload = function() {
-  //this.remove()
-  //console.log('remove')
-}
 ;(document.head || document.documentElement).appendChild(s)
 // const isYtcPopout = new URLSearchParams(window.location.search).get('ytc')
 

@@ -19,8 +19,6 @@ const onBootstrapEnd = () => {
 const timeoutBootstrap = debounce(onBootstrapEnd, 5000)
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  console.log(request)
-
   if (request) {
     switch (request.action) {
       case 'bootstrap-start':
