@@ -60,9 +60,9 @@
             </svg>
           </button> -->
         </span>
-        <span class="vc-author" :class="{ author: msg.authorType === 'moderator', owner: msg.authorType === 'owner' }">
+        <span class="vc-author" :class="{ author: msg.moderator, owner: msg.owner }">
           {{ msg.author
-          }}<svg v-if="msg.authorType === 'moderator'" class="author-icon" viewBox="0 0 16 16" preserveAspectRatio="xMidYMid meet" focusable="false" width="16" height="16">
+          }}<svg v-if="msg.moderator" class="author-icon" viewBox="0 0 16 16" preserveAspectRatio="xMidYMid meet" focusable="false" width="16" height="16">
             <g>
               <path
                 d="M9.64589146,7.05569719 C9.83346524,6.562372 9.93617022,6.02722257 9.93617022,5.46808511 C9.93617022,3.00042984 7.93574038,1 5.46808511,1 C4.90894765,1 4.37379823,1.10270499 3.88047304,1.29027875 L6.95744681,4.36725249 L4.36725255,6.95744681 L1.29027875,3.88047305 C1.10270498,4.37379824 1,4.90894766 1,5.46808511 C1,7.93574038 3.00042984,9.93617022 5.46808511,9.93617022 C6.02722256,9.93617022 6.56237198,9.83346524 7.05569716,9.64589147 L12.4098057,15 L15,12.4098057 L9.64589146,7.05569719 Z"
@@ -76,7 +76,9 @@
             </svg>
           </div>
         </span>
-        <span class="vc-purchase-amount" :style="{ 'background-color': msg.backgroundColor ? msg.backgroundColor : 'none' }"> {{ msg.purchaseAmount }} </span>
+        <span class="vc-purchase-amount" :style="{ 'background-color': msg.backgroundColor ? msg.backgroundColor : 'none', color: contrastedTextColor(msg.backgroundColor) }">
+          {{ msg.purchaseAmount }}
+        </span>
         <span class="vc-message" v-html="msg.html"></span>
       </div>
     </div>
@@ -86,6 +88,7 @@
 import domtoimage from 'dom-to-image-improved'
 import { saveAs } from 'file-saver'
 import { eventBus } from '@/utils/event-bus'
+import Color from 'color'
 //import { BIconSlashCircle } from 'bootstrap-vue'
 
 export default {
@@ -200,6 +203,15 @@ export default {
         .then(blob => {
           saveAs(blob, `ytcFilter-${this.videoId}.png`)
         })
+    },
+    contrastedTextColor(bgColor) {
+      const hsl = Color(bgColor)
+        .hsl()
+        .object()
+      if (hsl.l > 50) {
+        return '#000'
+      }
+      return '#fff'
     },
     // blacklistAuthor(author) {
     //   this.$store.commit('addBlacklistAuthor', author)

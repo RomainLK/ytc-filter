@@ -26,12 +26,12 @@ export const applyFilter = (filter, msg) => {
       return caseSensitive || caseInsensitive
 
     case 'isMember':
-      return msg.authorType === 'member'
+      return Boolean(msg.member)
 
     case 'isModerator':
-      return msg.authorType === 'moderator'
+      return Boolean(msg.moderator)
     case 'isOwner':
-      return msg.authorType === 'owner'
+      return Boolean(msg.owner)
 
     case 'isVerified':
       return Boolean(msg.verified)

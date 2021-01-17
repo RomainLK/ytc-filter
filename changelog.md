@@ -1,3 +1,10 @@
+## 2.1.2
+
+Bug fixes:
+- Fix session stats for filtered message which would count 1 message several per filter it matched
+- Fix filtering when a user may be both a moderator and member
+- Fix missing color for super chat
+
 ## 2.1.1
 
 Bug fixes:
@@ -8,7 +15,7 @@ Bug fixes:
 Good bye old interface.
 
 New features:
-- Integrate Youtube's block/report menu in current session of embedded ytcFilter so as to fight against spam even for those without the extension. Note that due to the new fetch interceptor, the menu integration may take a minute to appear. It may also fail due to Youtube poor performance. Also, due to Youtube's limitation and performance, the menu can't be used if the message is no longer in the chat, so it's not permanent and may also be missing.
+- Integrate Youtube's block/report menu in current session of embedded ytcFilter so as to fight against spam even for those without the extension. Note that due to the new fetch interceptor, the menu integration may take a minute to appear as fetch interceptor is faster than the livechat. Also, due to Youtube's limitation and performance, the menu can't be used if the message is no longer in the chat, so it's not permanent and may also be missing.
 - Drag resize of embedded ytcFIlter
 - Configurable automatic storage management
 - Alert every minute if less than 5% of storage is available (Firefox is not supported)

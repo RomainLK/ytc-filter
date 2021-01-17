@@ -10,7 +10,7 @@ const convertTimestampUsec = timestamp => {
   }).format(new Date(timestamp / 1000))
 }
 
-const toMessage = messages => {
+const toMessage = (messages = []) => {
   return (
     messages.reduce((acc, msg) => {
       if (msg.text) {
@@ -20,7 +20,7 @@ const toMessage = messages => {
     }, '') || ''
   )
 }
-const toHtml = messages => {
+const toHtml = (messages = []) => {
   return (
     messages.reduce((acc, msg) => {
       if (msg.text) {
@@ -63,16 +63,16 @@ window.fetch = async (...args) => {
                   const chatBadge = authorBadge.liveChatAuthorBadgeRenderer
                   if (chatBadge.tooltip.toLowerCase().includes('member')) {
                     msg.badgeUrl = chatBadge.customThumbnail.thumbnails[0].url
-                    msg.authorType = 'member'
+                    msg.member = true
                   }
                   if (chatBadge.tooltip.toLowerCase().includes('moderator')) {
-                    msg.authorType = 'moderator'
+                    msg.moderator = true
                   }
                   if (chatBadge.tooltip.toLowerCase().includes('verified')) {
                     msg.verified = true
                   }
                   if (chatBadge.tooltip.toLowerCase().includes('owner')) {
-                    msg.authorType = 'owner'
+                    msg.owner = true
                   }
                 }
               } else {
@@ -80,7 +80,29 @@ window.fetch = async (...args) => {
               if (chatMessage.purchaseAmountText) {
                 msg.messageType = 'paid-message'
                 msg.purchaseAmount = chatMessage.purchaseAmountText.simpleText
-                msg.backgroundColor = chatMessage.bodyBackgroundColor
+                switch (chatMessage.bodyBackgroundColor) {
+                  case 4280191205:
+                    msg.backgroundColor = '#1565c0'
+                    break
+                  case 4278248959:
+                    msg.backgroundColor = '#00e5ff'
+                    break
+                  case 4280150454:
+                    msg.backgroundColor = '#1de9b6'
+                    break
+                  case 4294953512:
+                    msg.backgroundColor = '#ffb300'
+                    break
+                  case 4294278144:
+                    msg.backgroundColor = '#f57c00'
+                    break
+                  case 4293467747:
+                    msg.backgroundColor = '#e91e63'
+                    break
+                  case 4293271831:
+                    msg.backgroundColor = '#e62117'
+                    break
+                }
               }
               document.dispatchEvent(new CustomEvent('chat-message-capture', { detail: msg }))
             } else {

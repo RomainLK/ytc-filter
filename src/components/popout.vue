@@ -91,12 +91,23 @@
         2.1.0 is out after a rocky release of 2.0.x. Thanks for bearing with the huge changes which sadly brought so many issues.
       </p>
 
-      <h4>New features and changes</h4>
+      <p>
+        If you have never set any presets before, ytcFilter can preinstall some for common usage like translation tagged messages, languages, and staff. If you have been using
+        2.0.x, you can also load them again in order to fix the "English tagged messages" preset's filter.
+        <button class="btn btn-success btn-sm" @click="addDefaultProfiles">Add default presets</button>
+      </p>
+
+      <p>
+        Contact for feedback, support, bug report or help with development and beta: <a href="https://discord.gg/P6DUeuhSjU" target="_blank">Discord</a> or
+        <a href="https://github.com/RomainLK/ytc-filter" target="_blank">Github</a>
+      </p>
+
+      <h4>2.1 new features and changes</h4>
       <ul>
         <li>
           ytcFilter will now switch automatically to a Fetch interceptor after sometime in the chat. This has several effects: better performance without hitting the Youtube
-          server/bandwidth penalty, more precise so no more message/badge mixing, and for VOD, it will predict future messages. Note that since it's faster that Youtube chat, if
-          you add a new filter live, it will look like the filter isn't immediately active. Session stats will also increase at longer intervals.
+          server/bandwidth penalty, more precise so no more message/badge mixing, and it will seem to "predict" future messages. Note that since it's faster that Youtube chat, if
+          you add a new filter live, it will look like the filter isn't immediately active. Session stats will also increase more sporadically.
         </li>
         <li>
           Integrate Youtube's block/report menu in current session of embedded ytcFilter so as to fight against spam even for those without the extension. Make Youtube chat a
@@ -118,16 +129,12 @@
         3.0.0 is on the horizon and should bring filter combination allowing to both allow and block messages based on new conditions, like an emote filter.
       </p>
 
-      <p>
-        If you have never set any presets before, ytcFilter can preinstall some for common usage like translation tagged messages, languages, and staff. If you have been using
-        2.0.x, you can also load them again in order to fix the "English tagged messages" preset.
-        <button class="btn btn-success" @click="addDefaultProfiles">Add default presets</button>
-      </p>
-
-      <p>
-        Contact for feedback, support, bug report or help with development and beta: <a href="https://discord.gg/P6DUeuhSjU" target="_blank">Discord</a> or
-        <a href="https://github.com/RomainLK/ytc-filter" target="_blank">Github</a>
-      </p>
+      <h4>2.1.2 Bugfixes</h4>
+      <ul>
+        <li>Fix session stats for filtered message which would count 1 message several per filter it matched</li>
+        <li>Fix filtering when a user may be both a moderator and member</li>
+        <li>Fix missing color for super chat</li>
+      </ul>
 
       <b-button variant="primary" class="ml-3" @click="showChangeLog = true">
         Full changelog

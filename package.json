@@ -1,6 +1,6 @@
 {
   "name": "ytcFilter",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "A better youtube chat",
   "author": "RomainLK",
   "license": "MIT",
@@ -24,7 +24,7 @@
     "arrive": "^2.4.1",
     "bootstrap": "^4.5.3",
     "bootstrap-vue": "^2.20.1",
-    "color": "3.1.2",
+    "color": "^3.1.2",
     "copy-to-clipboard": "^3.3.1",
     "dom-to-image-improved": "^2.8.0",
     "file-saver": "^2.0.2",

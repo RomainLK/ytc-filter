@@ -16,12 +16,27 @@ const parseCommonElements = async el => {
   const id = el.id
   const author = el.querySelector('#author-name')?.textContent ?? undefined
   const authorType = el.getAttribute('author-type') ?? undefined
+  const roles = {}
+  switch (authorType) {
+    case 'member':
+      roles.member = true
+      break
+    case 'moderator':
+      roles.moderator = true
+      break
+    case 'owner':
+      roles.owner = true
+      break
+  }
   //const avatorImage = el.querySelector('#img')
   //const avatarUrl = (avatorImage && (await getImageSourceAsync(avatorImage))) ?? undefined
   const message = el.querySelector('#message')?.textContent ?? undefined
+  for (const badge of el.querySelectorAll('yt-live-chat-author-badge-renderer')) {
+    roles[badge.type] = true
+  }
   const badgeUrl = el.querySelector('img.yt-live-chat-author-badge-renderer')?.src
   const verified = Boolean(el.querySelector('yt-live-chat-author-badge-renderer[type="verified"]'))
-  return { id, message, author, authorType,/* avatarUrl,*/ badgeUrl, verified }
+  return { id, message, author, authorType, /* avatarUrl,*/ badgeUrl, verified, ...roles }
 }
 
 const parseTextMessage = async el => {
