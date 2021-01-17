@@ -202,16 +202,20 @@ export default new Vuex.Store({
       feed.filters = [].concat(filters)
     },
     addMessage(state, { videoId, feedName, message }) {
-      const { deduplication, messages } = state.videoSettings[videoId].feeds[feedName]
-      if (!deduplication[message.id]) {
-        Vue.set(deduplication, message.id, true)
-      } else {
-        return
-      }
-      messages.push(message)
-      while (state.global.limitMsgPerVideo > 0 && messages.length > state.global.limitMsgPerVideo) {
-        const toRemove = messages.splice(0, 1)[0]
-        Vue.delete(deduplication, toRemove.id)
+      try {
+        const { deduplication, messages } = state.videoSettings[videoId].feeds[feedName]
+        if (!deduplication[message.id]) {
+          Vue.set(deduplication, message.id, true)
+        } else {
+          return
+        }
+        messages.push(message)
+        while (state.global.limitMsgPerVideo > 0 && messages.length > state.global.limitMsgPerVideo) {
+          const toRemove = messages.splice(0, 1)[0]
+          Vue.delete(deduplication, toRemove.id)
+        }
+      } catch (e) {
+        console.error('[ytcFilter] addMessage:', e)
       }
     },
     removeMessage(state, { videoId, feedName, messageIndex }) {

@@ -1,3 +1,8 @@
+## 2.1.1
+
+Bug fixes:
+- (Firefox only) Fixed a bug preventing messages to be persisted/displayed in popout when switching to the fetch interceptor
+
 ## 2.1.0 Kanata
 
 Good bye old interface.

@@ -151,7 +151,7 @@ export default {
         console.log('[ytcFilter] Switching to fetch interceptor')
         this.observer.listeners.splice(0, 1)
       }
-      this.onMessage(e.detail)
+      this.onMessage({ ...e.detail })
     })
     document.body.addEventListener('mouseup', e => {
       this.resizing = false
