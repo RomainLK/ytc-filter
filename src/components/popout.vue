@@ -129,11 +129,12 @@
         3.0.0 is on the horizon and should bring filter combination allowing to both allow and block messages based on new conditions, like an emote filter.
       </p>
 
-      <h4>2.1.2 Bugfixes</h4>
+      <h4>2.1.3 Bugfixes</h4>
       <ul>
-        <li>Fix session stats for filtered message which would count 1 message several per filter it matched</li>
-        <li>Fix filtering when a user may be both a moderator and member</li>
-        <li>Fix missing color for super chat</li>
+        <li>Remove block/report button cleanly so that Youtube's livechat can recycle them</li>
+        <li>Optimize migration to 2.1.x. It should prevent high CPU/RAM usage during migration, if you haven't migrated already.</li>
+        <li>Fix filtering by role in other language than English</li>
+        <li>Avoid disconnecting chat when other extensions which require to patch Fetch like LiveTL are enabled</li>
       </ul>
 
       <b-button variant="primary" class="ml-3" @click="showChangeLog = true">

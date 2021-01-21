@@ -344,10 +344,7 @@ export default {
         if (gtr('2.1.0', lastVersion)) {
           const newGlobal = { ...this.$store.getters.global, limitMsgPerVideo: 100, storageLifetime: 7 }
           this.$store.commit('setGlobal', newGlobal)
-          for (const videoSettings of Object.values(this.$store.state.videoSettings)) {
-            const newVideoSettings = { ...videoSettings, lastViewed: new Date().toISOString() }
-            this.$store.commit('addVideoSettings', newVideoSettings)
-          }
+          this.$store.commit('migratedAddLastViewedDate')
         }
         this.$store.commit('setGlobal', { ...this.$store.getters.global, version: manifest.version })
         this.$store.commit('setHelpAlert', { key: 'welcome', value: true })
@@ -371,7 +368,7 @@ export default {
       for (const filter of this.filters) {
         if (applyFilter(filter, msg)) {
           this.addMessage(msg)
-          await new Promise(resolve => setTimeout(resolve, 500))
+          return
           // const menu = document.getElementById(msg.id).querySelector('#menu-button')
           // if (menu != null) {
           //   document
@@ -384,13 +381,16 @@ export default {
     },
     async moveMenu(msg) {
       await new Promise(resolve => setTimeout(resolve, 500))
-      const menu = document.getElementById(msg.id).querySelector('#menu-button')
+      const menu = document.getElementById(msg.id)?.querySelector('#menu-button')
       this.menus.push(menu)
-      if (this.menus.length > 240) {
+      if (this.menus.length > 230) {
         const toRemove = this.menus.splice(0, 1)[0]
         if (toRemove && toRemove.ytcMoved) {
+          const id = toRemove.parentElement.attributes['original-id'].value
           toRemove.ytcMoved = false
           toRemove.remove()
+          const menuContainer = document.getElementById(id).querySelector('#menu')
+          menuContainer.append(toRemove)
         }
       }
       const ytcMsg = document.getElementById(`ytc${msg.id}`)

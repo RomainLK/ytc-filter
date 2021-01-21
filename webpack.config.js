@@ -25,6 +25,9 @@ const config = {
     path: __dirname + '/dist',
     filename: '[name].js',
   },
+  optimization: {
+    minimize: false,
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src/'),

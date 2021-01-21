@@ -38,8 +38,7 @@ window.fetch = async (...args) => {
   try {
     if (args[0].url.includes('live_chat/get_live_chat')) {
       const response = await originalFetch(...args)
-      const text = await response.text()
-      const json = JSON.parse(text)
+      const json = await response.clone().json()
       try {
         if (json.continuationContents.liveChatContinuation.actions) {
           for (let action of json.continuationContents.liveChatContinuation.actions) {
@@ -61,18 +60,22 @@ window.fetch = async (...args) => {
               if (chatMessage.authorBadges) {
                 for (const authorBadge of chatMessage.authorBadges) {
                   const chatBadge = authorBadge.liveChatAuthorBadgeRenderer
-                  if (chatBadge.tooltip.toLowerCase().includes('member')) {
-                    msg.badgeUrl = chatBadge.customThumbnail.thumbnails[0].url
-                    msg.member = true
-                  }
-                  if (chatBadge.tooltip.toLowerCase().includes('moderator')) {
-                    msg.moderator = true
-                  }
-                  if (chatBadge.tooltip.toLowerCase().includes('verified')) {
-                    msg.verified = true
-                  }
-                  if (chatBadge.tooltip.toLowerCase().includes('owner')) {
-                    msg.owner = true
+                  const iconType = chatBadge?.icon?.iconType
+                  switch (iconType) {
+                    case 'MODERATOR':
+                      //https://youtu.be/ujCxiHpVYmg?t=8
+                      msg.moderator = true
+                      break
+                    case 'VERIFIED':
+                      msg.verified = true
+                      break
+                    case 'OWNER':
+                      //https://youtu.be/rZzeDS4EAz0?t=10323 2:56:30
+                      msg.owner = true
+                      break
+                    default:
+                      msg.badgeUrl = chatBadge?.customThumbnail?.thumbnails[0].url
+                      msg.member = true
                   }
                 }
               } else {
@@ -113,18 +116,10 @@ window.fetch = async (...args) => {
           console.log('[ytcFilter] Non interesting actions', json)
         }
       } catch (e) {
-        console.log('[ytcFilter] Fetch interceptor failed parsing', json)
+        console.error('[ytcFilter] Fetch interceptor failed parsing:', text)
         console.error(e)
       }
-      return {
-        ...response,
-        text() {
-          return Promise.resolve(text)
-        },
-        json() {
-          return Promise.resolve(json)
-        },
-      }
+      return response
     }
   } catch (e) {
     console.error(e)

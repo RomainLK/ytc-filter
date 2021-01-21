@@ -31,7 +31,7 @@
     </div>
     <div id="ytc-messages" class="vc-content" :style="{ height: height }" ref="content">
       <div class="vc-message-item ytc-pointer" v-for="(msg, index) in messages" :key="msg.id" :id="'ytc' + msg.id" @click="msgOptions = msgOptions == null ? index : null">
-        <div v-if="!isPopout" class="yt-menu-append"></div>
+        <div v-if="!isPopout" class="yt-menu-append" :original-id="msg.id"></div>
         <div class="yt-msg-append ytc-hidden"></div>
         <span v-if="msg.timestamp && msgOptions !== index" class="vc-timestamp">{{ msg.timestamp }}</span>
         <span v-else class="vc-options" @click.stop>
@@ -76,7 +76,11 @@
             </svg>
           </div>
         </span>
-        <span class="vc-purchase-amount" :style="{ 'background-color': msg.backgroundColor ? msg.backgroundColor : 'none', color: contrastedTextColor(msg.backgroundColor) }">
+        <span
+          v-if="msg.purchaseAmount"
+          class="vc-purchase-amount"
+          :style="{ 'background-color': msg.backgroundColor ? msg.backgroundColor : 'none', color: contrastedTextColor(msg.backgroundColor) }"
+        >
           {{ msg.purchaseAmount }}
         </span>
         <span class="vc-message" v-html="msg.html"></span>

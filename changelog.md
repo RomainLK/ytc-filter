@@ -1,3 +1,14 @@
+## 2.1.3
+
+Changes:
+- Build no longer compress files in order to hopefully, accelerate review process
+
+Bug fixes:
+- Remove block/report button cleanly so that Youtube's livechat can recycle them
+- Optimize migration to 2.1.x. It should prevent high CPU/RAM usage during migration, if you haven't migrated already.
+- Fix filtering by role in other language than English
+- Avoid disconnecting chat when other extensions which require to patch Fetch like LiveTL are enabled
+
 ## 2.1.2
 
 Bug fixes:
