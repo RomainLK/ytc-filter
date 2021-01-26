@@ -31,10 +31,10 @@
     </div>
     <div id="ytc-messages" class="vc-content" :style="{ height: height }" ref="content">
       <div class="vc-message-item ytc-pointer" v-for="(msg, index) in messages" :key="msg.id" :id="'ytc' + msg.id" @click="msgOptions = msgOptions == null ? index : null">
-        <div v-if="!isPopout" class="yt-menu-append" :original-id="msg.id"></div>
         <div class="yt-msg-append ytc-hidden"></div>
-        <span v-if="msg.timestamp && msgOptions !== index" class="vc-timestamp">{{ msg.timestamp }}</span>
-        <span v-else class="vc-options" @click.stop>
+        <span v-show="msg.timestamp && msgOptions !== index" class="vc-timestamp">{{ msg.timestamp }}</span>
+        <span v-show="msgOptions === index" class="vc-options" @click.stop>
+          <div v-if="!isPopout" class="yt-menu-append" :original-id="msg.id"></div>
           <button type="button" class="sm-btn" title="Go to message" @click="scrollYoutubeChatToId(msg.id)" v-show="!isPopout">
             <svg class="svg-icon" viewBox="0 0 20 20" width="13" height="13">
               <path
@@ -71,8 +71,8 @@
           </svg>
           <img v-if="msg.badgeUrl" :src="msg.badgeUrl" />
           <div class="vc-author-verified" v-if="msg.verified">
-            <svg viewBox="0 0 16 16" focusable="false" width="18" height="18">
-              <g transform="scale(0.66)"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"></path></g>
+            <svg viewBox="0 0 18 18" focusable="false" width="18" height="18">
+              <g transform="scale(0.50"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"></path></g>
             </svg>
           </div>
         </span>

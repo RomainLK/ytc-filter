@@ -1,6 +1,6 @@
 {
   "name": "ytcFilter",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "A better youtube chat",
   "author": "RomainLK",
   "license": "MIT",
@@ -30,6 +30,7 @@
     "file-saver": "^2.0.2",
     "lodash": "^4.17.20",
     "portal-vue": "^2.1.7",
+    "printable-characters": "^1.0.42",
     "regex-parser": "2.2.11",
     "semver": "^7.3.2",
     "vue": "^2.6.12",

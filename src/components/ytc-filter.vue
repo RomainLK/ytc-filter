@@ -105,12 +105,12 @@ export default {
 
       const channelDefault = this.global.defaultPerChannel[CHANNEL_ID]
       if (channelDefault) {
-        await this.applyProfile(channelDefault.profileKey)
+        this.applyProfile(channelDefault.profileKey)
         const profileName = this.global.profiles[channelDefault.profileKey].name
         this.notify(`Default channel profile "${profileName}" was applied.`)
         console.log('[ytcFilter] Applied channel profile')
       } else if (this.global.globalDefault) {
-        await this.applyProfile(this.global.globalDefault)
+        this.applyProfile(this.global.globalDefault)
         const profileName = this.global.profiles[this.global.globalDefault].name
         this.notify(`Default global profile "${profileName}" was applied.`)
         console.log('[ytcFilter] Applied global profile')
@@ -389,8 +389,11 @@ export default {
           const id = toRemove.parentElement.attributes['original-id'].value
           toRemove.ytcMoved = false
           toRemove.remove()
-          const menuContainer = document.getElementById(id).querySelector('#menu')
-          menuContainer.append(toRemove)
+          const menuContainer = document.getElementById(id)
+          if (menuContainer) {
+            menuContainer.querySelector('#menu')
+            menuContainer.append(toRemove)
+          }
         }
       }
       const ytcMsg = document.getElementById(`ytc${msg.id}`)
@@ -399,7 +402,7 @@ export default {
         ytcMsg.querySelector('.yt-menu-append').append(menu)
       }
     },
-    async addMessage(msg) {
+    addMessage(msg) {
       this.stats.filteredNb++
       msg.html = xss(msg.html, { stripIgnoreTag: true })
       this.$store.commit('addMessage', {
@@ -412,7 +415,7 @@ export default {
       this.$store.commit('setGlobal', this.global)
     },
 
-    async applyProfile(key) {
+    applyProfile(key) {
       try {
         const { profiles } = this.global
         if (profiles?.[key]) {
