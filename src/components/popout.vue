@@ -137,7 +137,7 @@
         <li>Started to write help documentation. Still in progrss.</li>
         <li>Some styling work. Still in progrss.</li>
         <li>Alphanumeric preset now ensure that there is at least 1 character.</li>
-        <li>Polling to load ytcFilter in case browser is slow</li>
+        <li>Polling to load ytcFilter. Less "ytcFilter is loading message" for the user.</li>
         <li>Popout's title now has the title of the video</li>
         <li>Properly manage messages without author</li>
         <li>Word break for message without space</li>
@@ -145,6 +145,7 @@
         <li>Prevent breaking the popout when a video's settings are corrupted</li>
         <li>Thanks Kento Nishi for suggesting to remove 0 width characters from messages</li>
         <li>Fix the remaning storage space indicator</li>
+        <li>Tooltip for statistic explains the 2 capture modes</li>
       </ul>
 
       <b-button variant="primary" class="ml-3" @click="showChangeLog = true">

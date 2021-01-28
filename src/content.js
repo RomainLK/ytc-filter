@@ -42,20 +42,20 @@ const listener = async () => {
     s.src = chrome.extension.getURL('inject.js')
     s.id = 'ytc-inject'
     ;(document.head || document.documentElement).appendChild(s)
-
-    if (document.querySelector('#ytc-filter') == null) {
-      console.log('[ytcFilter] Loading message insertion')
-      const loadingDiv = document.createElement('div')
-      loadingDiv.classList.add('ytc-loading')
-      loadingDiv.innerHTML = `ytcFilter is loading. Click <span id="remount-ytc">here</span>  if it doesn't load properly `
-      // const loadingMessage = document.createTextNode(`ytcFilter is loading. Click <a id="remount-ytc">here</a>  if it doesn't load properly `)
-      // loadingDiv.appendChild(loadingMessage)
-      document.body.insertBefore(loadingDiv, document.body.firstChild)
-      const loadButton = document.querySelector('#remount-ytc')
-      loadButton.addEventListener('click', ytcMount)
-      console.log('[ytcFilter] Loading message inserted')
-    }
-    
+    setTimeout(() => {
+      if (document.querySelector('#ytc-filter') == null) {
+        console.log('[ytcFilter] Loading message insertion')
+        const loadingDiv = document.createElement('div')
+        loadingDiv.classList.add('ytc-loading')
+        loadingDiv.innerHTML = `ytcFilter didn't load in reasonable time. Click <span id="remount-ytc">here</span> to retry.`
+        // const loadingMessage = document.createTextNode(`ytcFilter is loading. Click <a id="remount-ytc">here</a>  if it doesn't load properly `)
+        // loadingDiv.appendChild(loadingMessage)
+        document.body.insertBefore(loadingDiv, document.body.firstChild)
+        const loadButton = document.querySelector('#remount-ytc')
+        loadButton.addEventListener('click', ytcMount)
+        console.log('[ytcFilter] Loading message inserted')
+      }
+    }, 1000)
   }
   tryMount(0)
 }

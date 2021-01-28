@@ -8,6 +8,8 @@ Improvements:
 - Polling to load ytcFilter in case browser is slow
 - Popout's title now has the title of the video
 - Reduce asynchronous code
+- Less alarming logs
+- Tooltip for statistic explains the 2 capture modes
 
 Bug fixes:
 - Properly manage messages without author

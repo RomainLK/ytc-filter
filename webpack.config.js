@@ -13,7 +13,7 @@ const config = {
   entry: {
     background: './background.js',
     content: './content.js',
-    loading: './loading.js',
+    //loading: './loading.js',
     inject: './inject.js',
     'popout-main': './popout-main.js',
     'content-style': './content-style.scss',

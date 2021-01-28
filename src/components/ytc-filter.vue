@@ -25,7 +25,16 @@
         <div class="vc-resize" v-if="!options.autoMaxHeight"><hr class="resize" @mousedown="resizing = true" /></div>
         <div v-if="showMoreCommentsDisplayed" class="vc-text-center">No new messages can be filtered when the chat isn't autoscrolling</div>
         <div v-else class="stats">
-          <span title="Session statistics: filtered/total">{{ stats.filteredNb }}/{{ stats.msgNb }}</span>
+          <span
+            :title="
+              `Session statistics: filtered/total. ${
+                captureMode === 'mutation'
+                  ? 'Using Mutation observer. Message count increases as messages appears in chat.'
+                  : 'Using Fetch interceptor. Message count increases sporadically by batch.'
+              }`
+            "
+            >{{ stats.filteredNb }}/{{ stats.msgNb }}</span
+          >
         </div>
       </div>
     </div>
@@ -73,6 +82,7 @@ export default {
       ready: false,
       resizing: false,
       menus: [],
+      captureMode: 'mutation',
     }
   },
   async mounted() {
@@ -92,7 +102,7 @@ export default {
       this.showMoreCommentsDisplayed = !e.attributes.disabled
     })
     await this.checkUpdate()
-    if (this.$store.state.videoSettings[getVideoId()] == null) {
+    if (this.$store.state.videoSettings[getVideoId()] == null || this.$store.state.videoSettings[getVideoId()]?.feeds?.default == null) {
       console.log('[ytcFilter] No settings detected, initiating')
 
       this.$store.commit('initVideoSettings', {
@@ -116,6 +126,7 @@ export default {
         console.log('[ytcFilter] Applied global profile')
       }
     } else {
+      console.log('[ytcFilter] Existing settings detected')
       this.$store.commit('updateVideoSettings', {
         videoId: getVideoId(),
         path: 'lastViewed',
@@ -148,6 +159,7 @@ export default {
     this.observer.listeners.push(this.moveMenu.bind(this))
     document.addEventListener('chat-message-capture', e => {
       if (this.observer.listeners.length > 1) {
+        this.captureMode = 'fetch'
         console.log('[ytcFilter] Switching to fetch interceptor')
         this.observer.listeners.splice(0, 1)
       }

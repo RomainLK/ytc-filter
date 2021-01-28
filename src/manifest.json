@@ -23,12 +23,6 @@
       "all_frames": true,
       "css": ["content-style.css"],
       "js": ["content.js"]
-    },
-    {
-      "run_at": "document_end",
-      "matches": ["https://www.youtube.com/live_chat*", "https://studio.youtube.com/video/*"],
-      "all_frames": true,
-      "js": ["loading.js"]
     }
   ],
   "permissions": ["storage"],
