@@ -76,6 +76,8 @@
                   <p>After a full reset, you will need to refresh every instance of ytcFilter by either reloading the pages or restarting your browser</p>
                 </div>
               </div>
+              <div class="mt-5" v-html="helpDoc">
+              </div>
             </b-tab>
           </b-tabs>
         </div>
@@ -129,12 +131,21 @@
         3.0.0 is on the horizon and should bring filter combination allowing to both allow and block messages based on new conditions, like an emote filter.
       </p>
 
-      <h4>2.1.3 Bugfixes</h4>
+      <h4>2.1.4 changes</h4>
       <ul>
-        <li>Remove block/report button cleanly so that Youtube's livechat can recycle them</li>
-        <li>Optimize migration to 2.1.x. It should prevent high CPU/RAM usage during migration, if you haven't migrated already.</li>
-        <li>Fix filtering by role in other language than English</li>
-        <li>Avoid disconnecting chat when other extensions which require to patch Fetch like LiveTL are enabled</li>
+        <li>Block/report button is now in the message toolbar to prevent the slight resizing of message</li>
+        <li>Started to write help documentation. Still in progrss.</li>
+        <li>Some styling work. Still in progrss.</li>
+        <li>Alphanumeric preset now ensure that there is at least 1 character.</li>
+        <li>Polling to load ytcFilter. Less "ytcFilter is loading message" for the user.</li>
+        <li>Popout's title now has the title of the video</li>
+        <li>Properly manage messages without author</li>
+        <li>Word break for message without space</li>
+        <li>Prevent configuration leak between presets and current video</li>
+        <li>Prevent breaking the popout when a video's settings are corrupted</li>
+        <li>Thanks Kento Nishi for suggesting to remove 0 width characters from messages</li>
+        <li>Fix the remaning storage space indicator</li>
+        <li>Tooltip for statistic explains the 2 capture modes</li>
       </ul>
 
       <b-button variant="primary" class="ml-3" @click="showChangeLog = true">
@@ -152,6 +163,7 @@ import profileSaveButton from '@/components/profile-save-button'
 import { debounce } from 'lodash'
 import manifest from '@/manifest.json'
 import changelog from '@/../changelog.md'
+import helpDoc from '@/docs/help.md'
 import storageManagementCard from '@/components/storage-management-card'
 import { storageUsageCheck } from '@/utils/storage-usage-check'
 
@@ -173,6 +185,7 @@ export default {
       changelog,
       showChangeLog: false,
       showWelcome: false,
+      helpDoc,
     }
   },
   async mounted() {
@@ -201,6 +214,7 @@ export default {
         })
       }, 500)
     )
+    document.title = `ytcFilter: ${this.videoName}`
     await new Promise(resolve => setTimeout(resolve, 500))
     this.showWelcome = this.$store.state.helpAlert.welcome
   },
@@ -209,7 +223,7 @@ export default {
       if (!chrome.storage.local.getBytesInUse) {
         return 'N/A'
       }
-      return Math.round((1 - this.usedBytes / this.quotaByte) * 100)
+      return Math.round((this.usedBytes / this.quotaByte) * 100)
     },
     quotaByte() {
       if (chrome) {

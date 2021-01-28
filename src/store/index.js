@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexWebExtensions from '@/lib/vuex-webextensions'
-import { set } from 'lodash'
+import { set, cloneDeep } from 'lodash'
 
 Vue.use(Vuex)
 
@@ -22,7 +22,7 @@ const defaultProfiles = {
     // /^[[(]?(?:eng?|t(?:(rans|l))+|英訳)(?:\/(?:eng?|t(?:(rans|l))?|英訳))?[\\]): -]/i
     options: { ...options },
   },
-  alphanumeric: { name: 'Messages with alphanumeric', key: 'alphanumeric', filters: [{ type: 'regex', value: '/[a-z0-9]/i' }], options: { ...options } },
+  alphanumeric: { name: 'Messages with alphanumeric', key: 'alphanumeric', filters: [{ type: 'regex', value: '/[a-z0-9]+/i' }], options: { ...options } },
   japanese: {
     name: '日本語/Messages with japanese characters',
     key: 'japanese',
@@ -75,15 +75,19 @@ export default new Vuex.Store({
     channelArchive(state) {
       const archive = { _missing: { id: '_missing', name: 'No channel name', videos: [] } }
       for (const videoSettings of Object.values(state.videoSettings)) {
-        if (videoSettings.feeds.default.messages.length > 0) {
-          if (videoSettings.channelId) {
-            if (archive[videoSettings.channelId] == null) {
-              archive[videoSettings.channelId] = { id: videoSettings.channelId, name: videoSettings.channelName, videos: [] }
+        try {
+          if (videoSettings.feeds.default.messages.length > 0) {
+            if (videoSettings.channelId) {
+              if (archive[videoSettings.channelId] == null) {
+                archive[videoSettings.channelId] = { id: videoSettings.channelId, name: videoSettings.channelName, videos: [] }
+              }
+              archive[videoSettings.channelId].videos.push(videoSettings)
+            } else {
+              archive._missing.videos.push(videoSettings)
             }
-            archive[videoSettings.channelId].videos.push(videoSettings)
-          } else {
-            archive._missing.videos.push(videoSettings)
           }
+        } catch (e) {
+          console.error('[ytcFilter] Issue in channelArchive getter:', e)
         }
       }
 
@@ -163,7 +167,7 @@ export default new Vuex.Store({
       state.global.profiles = { ...state.global.profiles, [profile.key]: profile }
     },
     loadDefaultProfile(state) {
-      state.global.profiles = { ...state.global.profiles, ...defaultProfiles }
+      state.global.profiles = { ...state.global.profiles, ...cloneDeep(defaultProfiles) }
     },
     initVideoSettings(state, { id, name, channelId, channelName }) {
       state.videoSettings = {
@@ -240,14 +244,14 @@ export default new Vuex.Store({
     },
     applyProfile(state, { videoId, feedName, profileKey }) {
       const { filters, options } = state.global.profiles[profileKey]
-      state.videoSettings[videoId].feeds[feedName].filters = filters
+      state.videoSettings[videoId].feeds[feedName].filters = cloneDeep(filters)
       if (options) {
-        state.videoSettings[videoId].options = { ...state.videoSettings[videoId].options, ...options }
+        state.videoSettings[videoId].options = { ...state.videoSettings[videoId].options, ...cloneDeep(options) }
       }
     },
     appendProfile(state, { videoId, feedName, profileKey }) {
       const { filters } = state.global.profiles[profileKey]
-      state.videoSettings[videoId].feeds[feedName].filters = state.videoSettings[videoId].feeds[feedName].filters.concat(filters)
+      state.videoSettings[videoId].feeds[feedName].filters = state.videoSettings[videoId].feeds[feedName].filters.concat(cloneDeep(filters))
     },
     clearVideoSettings(state) {
       for (const videoSettings of Object.values(state.videoSettings)) {

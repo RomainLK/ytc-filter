@@ -20,5 +20,7 @@ export const ytcMount = (msg = 'No message') => {
     primaryContent.prepend(vueAnchor)
     vchatter.$mount(vueAnchor)
     console.log('[ytcFilter] Mounting')
+    return true
   }
+  return false
 }

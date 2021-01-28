@@ -1,3 +1,25 @@
+## 2.1.4
+
+Improvements:
+- Block/report button is now in the message toolbar to prevent the slight resizing of message
+- Started to write help documentation. Still in progrss.
+- Some styling work. Still in progrss.
+- Alphanumeric preset now ensure that there is at least 1 character.
+- Polling to load ytcFilter in case browser is slow
+- Popout's title now has the title of the video
+- Reduce asynchronous code
+- Less alarming logs
+- Tooltip for statistic explains the 2 capture modes
+
+Bug fixes:
+- Properly manage messages without author
+- Word break for message without spaces
+- Prevent configuration leak between presets and current video
+- Prevent breaking the popout when a video's settings are corrupted
+- Thanks Kento Nishi for suggesting to remove 0 width characters from messages
+- Fix the remaning storage space indicator
+
+
 ## 2.1.3
 
 Changes:

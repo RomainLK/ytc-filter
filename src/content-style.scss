@@ -230,6 +230,7 @@ html[dark] #ytc-filter,
     cursor: pointer;
   }
   .vc-message-item {
+
     &:hover {
       background-color: darken($light-bg, 10%);
     }
@@ -237,11 +238,13 @@ html[dark] #ytc-filter,
     .yt-menu-append {
       display: inline-block;
       line-height: 0px;
-      top: -5px;
+      
       padding: 0;
       width:18px;
       position: relative;
       yt-icon-button {
+        display: inline;
+        top:-5px;
         padding: 0;
         height: 15px;
         width: 15px;
@@ -253,8 +256,9 @@ html[dark] #ytc-filter,
         border: none;
         fill: $grey-color;
         padding: 0;
-        height: 15px;
+        margin: 0;
         width: 15px;
+        overflow: hidden;
       }
 
       button.yt-icon-button > yt-icon {
@@ -286,19 +290,23 @@ html[dark] #ytc-filter,
       &.owner {
         color: #111111;
         background-color: #ffd600;
+        border-radius: $rounding;
       }
     }
 
     .vc-author-verified {
       border-radius: $rounding;
-      display: inline-block;
+      display: inline;
       background-color: #c9c9c9;
+      height: 18px;
       svg {
         fill: #353535;
       }
     }
 
     .vc-message {
+      word-break: break-all;
+      hyphens: auto;
       margin-left: 1rem;
       img {
         width: 24px;

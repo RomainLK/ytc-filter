@@ -25,7 +25,16 @@
         <div class="vc-resize" v-if="!options.autoMaxHeight"><hr class="resize" @mousedown="resizing = true" /></div>
         <div v-if="showMoreCommentsDisplayed" class="vc-text-center">No new messages can be filtered when the chat isn't autoscrolling</div>
         <div v-else class="stats">
-          <span title="Session statistics: filtered/total">{{ stats.filteredNb }}/{{ stats.msgNb }}</span>
+          <span
+            :title="
+              `Session statistics: filtered/total. ${
+                captureMode === 'mutation'
+                  ? 'Using Mutation observer. Message count increases as messages appears in chat.'
+                  : 'Using Fetch interceptor. Message count increases sporadically by batch.'
+              }`
+            "
+            >{{ stats.filteredNb }}/{{ stats.msgNb }}</span
+          >
         </div>
       </div>
     </div>
@@ -73,6 +82,7 @@ export default {
       ready: false,
       resizing: false,
       menus: [],
+      captureMode: 'mutation',
     }
   },
   async mounted() {
@@ -92,7 +102,7 @@ export default {
       this.showMoreCommentsDisplayed = !e.attributes.disabled
     })
     await this.checkUpdate()
-    if (this.$store.state.videoSettings[getVideoId()] == null) {
+    if (this.$store.state.videoSettings[getVideoId()] == null || this.$store.state.videoSettings[getVideoId()]?.feeds?.default == null) {
       console.log('[ytcFilter] No settings detected, initiating')
 
       this.$store.commit('initVideoSettings', {
@@ -105,17 +115,18 @@ export default {
 
       const channelDefault = this.global.defaultPerChannel[CHANNEL_ID]
       if (channelDefault) {
-        await this.applyProfile(channelDefault.profileKey)
+        this.applyProfile(channelDefault.profileKey)
         const profileName = this.global.profiles[channelDefault.profileKey].name
         this.notify(`Default channel profile "${profileName}" was applied.`)
         console.log('[ytcFilter] Applied channel profile')
       } else if (this.global.globalDefault) {
-        await this.applyProfile(this.global.globalDefault)
+        this.applyProfile(this.global.globalDefault)
         const profileName = this.global.profiles[this.global.globalDefault].name
         this.notify(`Default global profile "${profileName}" was applied.`)
         console.log('[ytcFilter] Applied global profile')
       }
     } else {
+      console.log('[ytcFilter] Existing settings detected')
       this.$store.commit('updateVideoSettings', {
         videoId: getVideoId(),
         path: 'lastViewed',
@@ -148,6 +159,7 @@ export default {
     this.observer.listeners.push(this.moveMenu.bind(this))
     document.addEventListener('chat-message-capture', e => {
       if (this.observer.listeners.length > 1) {
+        this.captureMode = 'fetch'
         console.log('[ytcFilter] Switching to fetch interceptor')
         this.observer.listeners.splice(0, 1)
       }
@@ -389,8 +401,11 @@ export default {
           const id = toRemove.parentElement.attributes['original-id'].value
           toRemove.ytcMoved = false
           toRemove.remove()
-          const menuContainer = document.getElementById(id).querySelector('#menu')
-          menuContainer.append(toRemove)
+          const menuContainer = document.getElementById(id)
+          if (menuContainer) {
+            menuContainer.querySelector('#menu')
+            menuContainer.append(toRemove)
+          }
         }
       }
       const ytcMsg = document.getElementById(`ytc${msg.id}`)
@@ -399,7 +414,7 @@ export default {
         ytcMsg.querySelector('.yt-menu-append').append(menu)
       }
     },
-    async addMessage(msg) {
+    addMessage(msg) {
       this.stats.filteredNb++
       msg.html = xss(msg.html, { stripIgnoreTag: true })
       this.$store.commit('addMessage', {
@@ -412,7 +427,7 @@ export default {
       this.$store.commit('setGlobal', this.global)
     },
 
-    async applyProfile(key) {
+    applyProfile(key) {
       try {
         const { profiles } = this.global
         if (profiles?.[key]) {
