@@ -4,7 +4,7 @@
       {{ label }}
     </button>
     <b-modal v-model="showSaveModal" title="Save" ok-title="Save" @ok="onSaveProfile">
-      <form class="form">
+      <form class="form" @submit.prevent="onSaveProfile">
         <div class="form-check mb-2">
           <input id="save-create" type="radio" class="form-check-input" v-model="saveMode" value="create" />
           <label class="form-check-label" for="save-create">
@@ -128,6 +128,7 @@ export default {
       }
       this.$bvToast.toast(`"Profile ${this.selectedProfile.name}" was saved`, { title: 'Success' })
       this.$emit('save', this.selectedProfile)
+      this.showSaveModal = false
     },
 
     generateProfile(name, key) {

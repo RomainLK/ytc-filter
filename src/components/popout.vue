@@ -57,6 +57,7 @@
                 <li><a href="https://discord.gg/P6DUeuhSjU" target="_blank">Discord</a></li>
                 <li><a href="https://github.com/RomainLK/ytc-filter" target="_blank">Github</a></li>
               </ul>
+              <p>With your support request, please join your storage extract: <button type="button" class="btn btn-primary btn-sm" @click="copyStorage">Copy storage</button></p>
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">Factory settings</h4>
@@ -76,8 +77,7 @@
                   <p>After a full reset, you will need to refresh every instance of ytcFilter by either reloading the pages or restarting your browser</p>
                 </div>
               </div>
-              <div class="mt-5" v-html="helpDoc">
-              </div>
+              <div class="mt-5" v-html="helpDoc"></div>
             </b-tab>
           </b-tabs>
         </div>
@@ -90,7 +90,14 @@
     </b-modal>
     <b-modal v-model="showWelcome" size="lg" no-close-on-backdrop ok-only :title="`ytcFilter ${version} 'Kanata'`" @hidden="onHiddenWelcome">
       <p>
-        2.1.0 is out after a rocky release of 2.0.x. Thanks for bearing with the huge changes which sadly brought so many issues.
+        A word about bugs. There are 2 bugs which I'm trying to fix, dissapearing configurations and high CPU usage. I have received very few reports so statically, the odds of me
+        getting a SSR in a gacha game is 10 to 100 times higher than finding those bugs. If you encounter them or event other bugs, please, post a bug report on the appropriate
+        channels. It would greatly help me improve the extension since I can't reproduce them.
+      </p>
+
+      <p>
+        Contact for feedback, support, bug report or help with development and beta: <a href="https://discord.gg/P6DUeuhSjU" target="_blank">Discord</a> or
+        <a href="https://github.com/RomainLK/ytc-filter" target="_blank">Github</a>
       </p>
 
       <p>
@@ -99,10 +106,30 @@
         <button class="btn btn-success btn-sm" @click="addDefaultProfiles">Add default presets</button>
       </p>
 
-      <p>
-        Contact for feedback, support, bug report or help with development and beta: <a href="https://discord.gg/P6DUeuhSjU" target="_blank">Discord</a> or
-        <a href="https://github.com/RomainLK/ytc-filter" target="_blank">Github</a>
-      </p>
+      <h4>2.1.5 changes</h4>
+      <ul>
+        <li>Added a button in the Help tab to copy the storage for support request</li>
+        <li>Double check version when starting ytcFilter in order to be sure that store is loaded. This is a theorical bug fix for dissapearing configurations.</li>
+        <li>Avoid error message in console when a message has no content or no author</li>
+        <li>Prevent submit on preset creation, resulting in popout reload</li>
+        <li>Fix embedded ytcFilter's height not being restored properly</li>
+      </ul>
+      <h4>2.1.4 changes</h4>
+      <ul>
+        <li>Block/report button is now in the message toolbar to prevent the slight resizing of message</li>
+        <li>Started to write help documentation. Still in progrss.</li>
+        <li>Some styling work. Still in progrss.</li>
+        <li>Alphanumeric preset now ensure that there is at least 1 character.</li>
+        <li>Polling to load ytcFilter. Less "ytcFilter is loading message" for the user.</li>
+        <li>Popout's title now has the title of the video</li>
+        <li>Properly manage messages without author</li>
+        <li>Word break for message without space</li>
+        <li>Prevent configuration leak between presets and current video</li>
+        <li>Prevent breaking the popout when a video's settings are corrupted</li>
+        <li>Thanks Kento Nishi for suggesting to remove 0 width characters from messages</li>
+        <li>Fix the remaning storage space indicator</li>
+        <li>Tooltip for statistic explains the 2 capture modes</li>
+      </ul>
 
       <h4>2.1 new features and changes</h4>
       <ul>
@@ -131,23 +158,16 @@
         3.0.0 is on the horizon and should bring filter combination allowing to both allow and block messages based on new conditions, like an emote filter.
       </p>
 
-      <h4>2.1.4 changes</h4>
+      <<<<<<< Updated upstream
+      <h4>2.1.3 Bugfixes</h4>
       <ul>
-        <li>Block/report button is now in the message toolbar to prevent the slight resizing of message</li>
-        <li>Started to write help documentation. Still in progrss.</li>
-        <li>Some styling work. Still in progrss.</li>
-        <li>Alphanumeric preset now ensure that there is at least 1 character.</li>
-        <li>Polling to load ytcFilter. Less "ytcFilter is loading message" for the user.</li>
-        <li>Popout's title now has the title of the video</li>
-        <li>Properly manage messages without author</li>
-        <li>Word break for message without space</li>
-        <li>Prevent configuration leak between presets and current video</li>
-        <li>Prevent breaking the popout when a video's settings are corrupted</li>
-        <li>Thanks Kento Nishi for suggesting to remove 0 width characters from messages</li>
-        <li>Fix the remaning storage space indicator</li>
-        <li>Tooltip for statistic explains the 2 capture modes</li>
+        <li>Remove block/report button cleanly so that Youtube's livechat can recycle them</li>
+        <li>Optimize migration to 2.1.x. It should prevent high CPU/RAM usage during migration, if you haven't migrated already.</li>
+        <li>Fix filtering by role in other language than English</li>
+        <li>Avoid disconnecting chat when other extensions which require to patch Fetch like LiveTL are enabled</li>
       </ul>
 
+      ======= >>>>>>> Stashed changes
       <b-button variant="primary" class="ml-3" @click="showChangeLog = true">
         Full changelog
       </b-button>
@@ -163,9 +183,9 @@ import profileSaveButton from '@/components/profile-save-button'
 import { debounce } from 'lodash'
 import manifest from '@/manifest.json'
 import changelog from '@/../changelog.md'
-import helpDoc from '@/docs/help.md'
 import storageManagementCard from '@/components/storage-management-card'
 import { storageUsageCheck } from '@/utils/storage-usage-check'
+import { extStorage } from '@/utils/ext-storage'
 
 export default {
   components: {
@@ -185,7 +205,6 @@ export default {
       changelog,
       showChangeLog: false,
       showWelcome: false,
-      helpDoc,
     }
   },
   async mounted() {
@@ -214,7 +233,6 @@ export default {
         })
       }, 500)
     )
-    document.title = `ytcFilter: ${this.videoName}`
     await new Promise(resolve => setTimeout(resolve, 500))
     this.showWelcome = this.$store.state.helpAlert.welcome
   },
@@ -223,7 +241,7 @@ export default {
       if (!chrome.storage.local.getBytesInUse) {
         return 'N/A'
       }
-      return Math.round((this.usedBytes / this.quotaByte) * 100)
+      return Math.round((1 - this.usedBytes / this.quotaByte) * 100)
     },
     quotaByte() {
       if (chrome) {
@@ -347,6 +365,10 @@ export default {
         key: 'welcome',
         value: false,
       })
+    },
+    async copyStorage() {
+      await extStorage.copyToClipboard()
+      this.$bvToast.toast(`Your storage was copied to clipboard`, { title: 'Success' })
     },
     // showChangeLog() {
     //   this.$bvModal.msgBoxOk(changelog, {

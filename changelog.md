@@ -1,3 +1,13 @@
+## 2.1.5
+
+Improvements:
+- Added a button to copy storage so as to simplify bug reports.
+
+Bug fixes:
+- Double check version number to be sure that store is loaded. This a theorical bug fix for dissapearing configurations. The problem is random/can't be reproduced so this fix may or may not work.
+- Avoid error message in console when a message has no content or no author
+- Prevent submit on preset creation, resulting in popout reload
+- Fix embedded ytcFilter's height not being restored properly
 ## 2.1.4
 
 Improvements:

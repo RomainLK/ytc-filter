@@ -10,7 +10,7 @@ export const applyFilter = (filter, msg) => {
   let regex
   switch (filter.type) {
     case 'author':
-      if (filter.value === '' || filter.value == null) {
+      if (filter.value === '' || filter.value == null || msg.author === '') {
         return false
       }
       caseSensitive = filter.caseSensitive && msg.author === filter.author
@@ -18,7 +18,7 @@ export const applyFilter = (filter, msg) => {
       return caseSensitive || caseInsensitive
 
     case 'msgIncludes':
-      if (filter.value === '' || filter.value == null) {
+      if (filter.value === '' || filter.value == null || msg.message === '') {
         return false
       }
       caseSensitive = filter.caseSensitive && msg.message.includes(filter.msgIncludes)

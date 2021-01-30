@@ -11,9 +11,15 @@
         <button type="button" @click="ytcPopout()">
           Popout/Settings
         </button>
-        <button type="button" @click="displayYtc = !displayYtc" :title="displayYtc ? 'Close ytcFilter' : 'Show ytcFilter'">{{ displayYtc ? 'X' : 'ytcFilter' }}</button>
+        <span v-if="errorReport != null" class="ytc-support-link">
+          <a href="https://github.com/RomainLK/ytc-filter" target="_blank">Support website</a>
+        </span>
+        <button v-if="errorReport != null" type="button" @click="copyErrorReport">Copy error report</button>
+        <button v-if="errorReport == null" type="button" @click="displayYtc = !displayYtc" :title="displayYtc ? 'Close ytcFilter' : 'Show ytcFilter'">
+          {{ displayYtc ? 'X' : 'ytcFilter' }}
+        </button>
       </div>
-      <div v-show="displayYtc" class="vc-container">
+      <div v-if="errorReport == null" v-show="displayYtc" class="vc-container">
         <message-list :video-id="videoId" :height="heightPx" @notify="notify" ref="messageList">
           <div>
             <button type="button" @click="ytcPopout()" style="margin-right:1rem">
@@ -55,6 +61,8 @@ import { applyFilter } from '@/utils/apply-filter'
 import { filterMigrate } from '@/utils/migrate'
 import { debounce } from 'lodash'
 import { storageUsageCheck } from '@/utils/storage-usage-check'
+import { extStorage } from '@/utils/ext-storage'
+import copy from 'copy-to-clipboard'
 
 const CHANNEL_ID = getChannelId()
 
@@ -83,6 +91,7 @@ export default {
       resizing: false,
       menus: [],
       captureMode: 'mutation',
+      errorReport: null,
     }
   },
   async mounted() {
@@ -101,7 +110,16 @@ export default {
     this.moreCommentsObserver.listeners.push(e => {
       this.showMoreCommentsDisplayed = !e.attributes.disabled
     })
-    await this.checkUpdate()
+    const updateSuccess = await this.checkUpdate()
+    if (!updateSuccess) {
+      this.notify(
+        'A fatal error occured when starting ytcFilter. Please contact <a href="https://github.com/RomainLK/ytc-filter" target="_blank">support</a>. A button to copy the error report to your clipboard is also present. Join the error report with your support request. You can also try reloading this window.',
+        0
+      )
+      this.errorReport = 'Failed to get storage' + JSON.stringify(await extStorage.get())
+      this.ready = true
+      return
+    }
     if (this.$store.state.videoSettings[getVideoId()] == null || this.$store.state.videoSettings[getVideoId()]?.feeds?.default == null) {
       console.log('[ytcFilter] No settings detected, initiating')
 
@@ -139,6 +157,7 @@ export default {
     this.ready = true
     this.sendMessage('bootstrap-end')
 
+    this.height = this.options.height
     const commitHeight = debounce(height => {
       this.$store.commit('setVideoOptions', { videoId: getVideoId(), options: { ...this.options, height } })
     }, 300)
@@ -242,10 +261,28 @@ export default {
   },
   methods: {
     async checkUpdate(force = false) {
-      const lastVersion = this.$store.state.global.version || '0.0.0'
+      const storageVersion = await extStorage.getYtcFilterVersion()
+      let lastVersion = this.$store.state.global.version
+      let retry = 0
+      if (storageVersion) {
+        while (lastVersion == null && retry < 20) {
+          lastVersion = await new Promise(resolve => {
+            console.log('[ytcFilter] Failed to load version from storage, retry:', ++retry)
+            setTimeout(() => resolve(this.$store.state.global.version), 500)
+          })
+        }
+        if (lastVersion == null) {
+          console.log(JSON.stringify(await extStorage.get()))
+          return false
+        }
+      } else {
+        lastVersion = '0.0.0'
+      }
+
       console.log('[ytcFilter] Last version detected:', lastVersion)
       if (gtr(manifest.version, lastVersion)) {
         console.log('[ytcFilter] Current version:', manifest.version)
+        console.log(JSON.stringify(await extStorage.get()))
         //Migration from 1.5.0 to 1.6.1 for default profile
         if (this.global && this.global.profiles.default && this.global.profiles.default.name == null && this.global.globalDefault == null) {
           console.log('[ytcFilter] Migrate to 1.6.1')
@@ -354,15 +391,21 @@ export default {
           this.$store.commit('setGlobal', newGlobal)
         }
         if (gtr('2.1.0', lastVersion)) {
+          console.log('[ytcFilter] Migrate to 2.1.0')
           const newGlobal = { ...this.$store.getters.global, limitMsgPerVideo: 100, storageLifetime: 7 }
           this.$store.commit('setGlobal', newGlobal)
-          this.$store.commit('migratedAddLastViewedDate')
+          this.$store.commit('migrateAddLastViewedDate')
         }
-        this.$store.commit('setGlobal', { ...this.$store.getters.global, version: manifest.version })
+        this.$store.commit('updateGlobal', { path: 'version', value: manifest.version })
         this.$store.commit('setHelpAlert', { key: 'welcome', value: true })
         console.log('[ytcFilter] Migration ended.', this.$store.state)
         this.notifyChangelog()
       }
+      return true
+    },
+    copyErrorReport() {
+      copy(this.errorReport)
+      this.notify('Error report copied to clipboard')
     },
     notifyChangelog() {
       this.notify(

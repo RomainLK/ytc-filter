@@ -5,16 +5,17 @@ A web extension to help you when Youtube chat is too fast by filtering messages.
 # Installation
 
 [Chrome web store](https://chrome.google.com/webstore/detail/ytcfilter/mnldnbhgfocmkehnlkeanlhfmopepnko)
+The extension is compatible with other Chromium based browsers, but it's not officially supported.
 
 [Firefox](https://addons.mozilla.org/en-US/firefox/addon/ytcfilter/)
 
-Otherwise, release packages are available on Github
+Otherwise, release packages are available on Github.
 
 # Help
 
-You can join the [Discord server](https://discord.gg/P6DUeuhSjU)
+You can join the [Discord server](https://discord.gg/P6DUeuhSjU) or post an issue here, on Github.
 
-Check the Github's [wiki](https://github.com/RomainLK/ytc-filter/wiki)
+Check the Github's [wiki](https://github.com/RomainLK/ytc-filter/wiki) (Outdated for now)
 
 # Building the extension
 

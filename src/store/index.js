@@ -296,7 +296,7 @@ export default new Vuex.Store({
         state.helpAlert[key] = true
       }
     },
-    migratedAddLastViewedDate(state) {
+    migrateAddLastViewedDate(state) {
       const newVideoSettings = { ...state.videoSettings }
       for (const videoSettings of Object.values(state.videoSettings)) {
         videoSettings.lastViewed = new Date().toISOString()
