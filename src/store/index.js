@@ -262,7 +262,6 @@ export default new Vuex.Store({
           feed.deduplication = {}
         }
       }
-      state.videoSettings = {}
     },
     setGlobalDefault(state, profileKey) {
       state.global.globalDefault = profileKey

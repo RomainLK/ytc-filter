@@ -32,9 +32,9 @@ const toHtml = (messages = []) => {
     }, '') || ''
   )
 }
-export const fetchParser = (text) => {
+export const fetchParser = text => {
   const json = JSON.parse(text)
-  const result = [];
+  const result = []
   try {
     if (json.continuationContents.liveChatContinuation.actions) {
       for (let action of json.continuationContents.liveChatContinuation.actions) {
@@ -67,14 +67,14 @@ export const fetchParser = (text) => {
                 const iconType = chatBadge?.icon?.iconType
                 switch (iconType) {
                   case 'MODERATOR':
-                    //https://youtu.be/ujCxiHpVYmg?t=8
+                    // https://youtu.be/ujCxiHpVYmg?t=8
                     msg.moderator = true
                     break
                   case 'VERIFIED':
                     msg.verified = true
                     break
                   case 'OWNER':
-                    //https://youtu.be/rZzeDS4EAz0?t=10323 2:56:30
+                    // https://youtu.be/rZzeDS4EAz0?t=10323 2:56:30
                     msg.owner = true
                     break
                   default:

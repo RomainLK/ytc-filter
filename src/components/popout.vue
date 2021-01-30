@@ -92,7 +92,7 @@
       <p>
         A word about bugs. There are 2 bugs which I'm trying to fix, dissapearing configurations and high CPU usage. I have received very few reports so statically, the odds of me
         getting a SSR in a gacha game is 10 to 100 times higher than finding those bugs. If you encounter them or event other bugs, please, post a bug report on the appropriate
-        channels. It would greatly help me improve the extension since I can't reproduce them.
+        channels. It would greatly help me improve the extension since I can't reproduce them. More beta tester would also help.
       </p>
 
       <p>
@@ -105,7 +105,11 @@
         2.0.x, you can also load them again in order to fix the "English tagged messages" preset's filter.
         <button class="btn btn-success btn-sm" @click="addDefaultProfiles">Add default presets</button>
       </p>
-
+      <h4>2.1.6 changes</h4>
+      <ul>
+        <li>Prevent clear archive button of breaking every video settings</li>
+        <li>Fix the remaning storage space indicator again, change was rollbacked in 2.1.5 accidentally</li>
+      </ul>
       <h4>2.1.5 changes</h4>
       <ul>
         <li>Added a button in the Help tab to copy the storage for support request</li>
@@ -117,10 +121,10 @@
       <h4>2.1.4 changes</h4>
       <ul>
         <li>Block/report button is now in the message toolbar to prevent the slight resizing of message</li>
-        <li>Started to write help documentation. Still in progrss.</li>
-        <li>Some styling work. Still in progrss.</li>
+        <li>Started to write help documentation. Still in progress.</li>
+        <li>Some styling work. Still in progress.</li>
         <li>Alphanumeric preset now ensure that there is at least 1 character.</li>
-        <li>Polling to load ytcFilter. Less "ytcFilter is loading message" for the user.</li>
+        <li>Polling to load ytcFilter. Avoid the "ytcFilter is loading" message. No known origin; it could be an update from Youtube.</li>
         <li>Popout's title now has the title of the video</li>
         <li>Properly manage messages without author</li>
         <li>Word break for message without space</li>
@@ -241,7 +245,7 @@ export default {
       if (!chrome.storage.local.getBytesInUse) {
         return 'N/A'
       }
-      return Math.round((1 - this.usedBytes / this.quotaByte) * 100)
+      return Math.round((this.usedBytes / this.quotaByte) * 100)
     },
     quotaByte() {
       if (chrome) {

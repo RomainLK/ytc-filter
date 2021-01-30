@@ -1,3 +1,8 @@
+## 2.1.6
+
+Bug fixes:
+- Prevent clear archive button of breaking every video settings
+- Fix the remaning storage space indicator again, change was rollbacked in 2.1.5 accidentally
 ## 2.1.5
 
 Improvements:
@@ -12,10 +17,10 @@ Bug fixes:
 
 Improvements:
 - Block/report button is now in the message toolbar to prevent the slight resizing of message
-- Started to write help documentation. Still in progrss.
-- Some styling work. Still in progrss.
-- Alphanumeric preset now ensure that there is at least 1 character.
-- Polling to load ytcFilter in case browser is slow
+- Started to write help documentation. Still in progress
+- Some styling work. Still in progress.
+- Alphanumeric preset now ensure that there is at least 1 character
+- Polling to load ytcFilter. Avoid the "ytcFilter is loading" message. No known origin; it could be an update from Youtube
 - Popout's title now has the title of the video
 - Reduce asynchronous code
 - Less alarming logs

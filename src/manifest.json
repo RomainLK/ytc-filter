@@ -1,7 +1,7 @@
 {
   "name": "ytcFilter",
   "description": "When Youtube chat is too fast",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "manifest_version": 2,
   "icons": {
     "48": "icons/icon_48.png",
