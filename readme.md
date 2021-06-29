@@ -1,3 +1,5 @@
+This project is no longer under active development.
+
 # ytcFilter
 
 A web extension to help you when Youtube chat is too fast by filtering messages.
@@ -10,12 +12,6 @@ The extension is compatible with other Chromium based browsers, but it's not off
 [Firefox](https://addons.mozilla.org/en-US/firefox/addon/ytcfilter/)
 
 Otherwise, release packages are available on Github.
-
-# Help
-
-You can join the [Discord server](https://discord.gg/P6DUeuhSjU) or post an issue here, on Github.
-
-Check the Github's [wiki](https://github.com/RomainLK/ytc-filter/wiki) (Outdated for now)
 
 # Building the extension
 
@@ -37,4 +33,4 @@ npm run build
 
 Message observer by fiahfy from https://github.com/fiahfy/youtube-live-chat-flow
 
-And all the people testing! It helps tremendously
+And all the people testing! It helps tremendously.

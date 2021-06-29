@@ -1,3 +1,7 @@
+## 2.2.0
+Bug fixes:
+- Word-break change
+
 ## 2.1.6
 
 Bug fixes:

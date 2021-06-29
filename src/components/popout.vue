@@ -54,7 +54,6 @@
                 For support, bug report, or feedback, you can use these channels to contact the developer:
               </p>
               <ul>
-                <li><a href="https://discord.gg/P6DUeuhSjU" target="_blank">Discord</a></li>
                 <li><a href="https://github.com/RomainLK/ytc-filter" target="_blank">Github</a></li>
               </ul>
               <p>With your support request, please join your storage extract: <button type="button" class="btn btn-primary btn-sm" @click="copyStorage">Copy storage</button></p>
@@ -88,92 +87,22 @@
         <div v-html="changelog"></div>
       </template>
     </b-modal>
-    <b-modal v-model="showWelcome" size="lg" no-close-on-backdrop ok-only :title="`ytcFilter ${version} 'Kanata'`" @hidden="onHiddenWelcome">
+    <b-modal v-model="showWelcome" size="lg" no-close-on-backdrop ok-only :title="`ytcFilter ${version} 'Lulu'`" @hidden="onHiddenWelcome">
       <p>
-        A word about bugs. There are 2 bugs which I'm trying to fix, dissapearing configurations and high CPU usage. I have received very few reports so statically, the odds of me
-        getting a SSR in a gacha game is 10 to 100 times higher than finding those bugs. If you encounter them or event other bugs, please, post a bug report on the appropriate
-        channels. It would greatly help me improve the extension since I can't reproduce them. More beta tester would also help.
+        This is the last version. Development of ytcFilter will stop but you can always fork. Oshi graduation, health, time, motivation, stress are all the reasons wny I won't continue. Thanks for your support everyone. I hope ytcFilter helped you enjoy more streams and chat.
       </p>
 
       <p>
-        Contact for feedback, support, bug report or help with development and beta: <a href="https://discord.gg/P6DUeuhSjU" target="_blank">Discord</a> or
+        If you have never set any presets before, ytcFilter can preinstall some for common usage like translation tagged messages, languages, and staff.
+        <button class="btn btn-success btn-sm" @click="addDefaultProfiles">Add default presets</button>
+      </p>
+
+      <p>
         <a href="https://github.com/RomainLK/ytc-filter" target="_blank">Github</a>
       </p>
 
-      <p>
-        If you have never set any presets before, ytcFilter can preinstall some for common usage like translation tagged messages, languages, and staff. If you have been using
-        2.0.x, you can also load them again in order to fix the "English tagged messages" preset's filter.
-        <button class="btn btn-success btn-sm" @click="addDefaultProfiles">Add default presets</button>
-      </p>
-      <h4>2.1.6 changes</h4>
-      <ul>
-        <li>Prevent clear archive button of breaking every video settings</li>
-        <li>Fix the remaning storage space indicator again, change was rollbacked in 2.1.5 accidentally</li>
-      </ul>
-      <h4>2.1.5 changes</h4>
-      <ul>
-        <li>Added a button in the Help tab to copy the storage for support request</li>
-        <li>Double check version when starting ytcFilter in order to be sure that store is loaded. This is a theorical bug fix for dissapearing configurations.</li>
-        <li>Avoid error message in console when a message has no content or no author</li>
-        <li>Prevent submit on preset creation, resulting in popout reload</li>
-        <li>Fix embedded ytcFilter's height not being restored properly</li>
-      </ul>
-      <h4>2.1.4 changes</h4>
-      <ul>
-        <li>Block/report button is now in the message toolbar to prevent the slight resizing of message</li>
-        <li>Started to write help documentation. Still in progress.</li>
-        <li>Some styling work. Still in progress.</li>
-        <li>Alphanumeric preset now ensure that there is at least 1 character.</li>
-        <li>Polling to load ytcFilter. Avoid the "ytcFilter is loading" message. No known origin; it could be an update from Youtube.</li>
-        <li>Popout's title now has the title of the video</li>
-        <li>Properly manage messages without author</li>
-        <li>Word break for message without space</li>
-        <li>Prevent configuration leak between presets and current video</li>
-        <li>Prevent breaking the popout when a video's settings are corrupted</li>
-        <li>Thanks Kento Nishi for suggesting to remove 0 width characters from messages</li>
-        <li>Fix the remaning storage space indicator</li>
-        <li>Tooltip for statistic explains the 2 capture modes</li>
-      </ul>
-
-      <h4>2.1 new features and changes</h4>
-      <ul>
-        <li>
-          ytcFilter will now switch automatically to a Fetch interceptor after sometime in the chat. This has several effects: better performance without hitting the Youtube
-          server/bandwidth penalty, more precise so no more message/badge mixing, and it will seem to "predict" future messages. Note that since it's faster that Youtube chat, if
-          you add a new filter live, it will look like the filter isn't immediately active. Session stats will also increase more sporadically.
-        </li>
-        <li>
-          Integrate Youtube's block/report menu in current session of embedded ytcFilter so as to fight against spam even for those without the extension. Make Youtube chat a
-          better place! Note that it may take some time when ytcFilter switch to the Fetch interceptor as interceptor is faster than Youtube's livechat. Also, due to Youtube's
-          limitation and performance, the menu can't be used if the message is no longer in the chat, so it's not permanent, and may also be missing..
-        </li>
-        <li>
-          Drag resize of embedded ytcFIlter, replacing the slider in embedded ytcFilter
-        </li>
-        <li>
-          Configurable storage management to clean the storage automatically. Default to 100 messages per video and a lifetime of 7 days.
-        </li>
-        <li>
-          Alert every minute if less than 5% of storage is available (Not supported in Firefox)
-        </li>
-      </ul>
-
-      <p>
-        3.0.0 is on the horizon and should bring filter combination allowing to both allow and block messages based on new conditions, like an emote filter.
-      </p>
-
-      <<<<<<< Updated upstream
-      <h4>2.1.3 Bugfixes</h4>
-      <ul>
-        <li>Remove block/report button cleanly so that Youtube's livechat can recycle them</li>
-        <li>Optimize migration to 2.1.x. It should prevent high CPU/RAM usage during migration, if you haven't migrated already.</li>
-        <li>Fix filtering by role in other language than English</li>
-        <li>Avoid disconnecting chat when other extensions which require to patch Fetch like LiveTL are enabled</li>
-      </ul>
-
-      ======= >>>>>>> Stashed changes
       <b-button variant="primary" class="ml-3" @click="showChangeLog = true">
-        Full changelog
+        Changelog
       </b-button>
     </b-modal>
   </div>
