@@ -149,7 +149,7 @@ export default {
   beforeUpdate() {
     const msg = document.querySelector('.vc-message-item:last-child')
     if (msg) {
-      this.wasAtBottom = this.$refs.content.scrollTop + this.$refs.content.clientHeight >= this.$refs.content.scrollHeight - msg.getBoundingClientRect().height - 20
+      this.wasAtBottom = (this.$refs.content.scrollTop + this.$refs.content.clientHeight) >= (this.$refs.content.scrollHeight - msg.getBoundingClientRect().height - 20)
     }
   },
   async updated() {
